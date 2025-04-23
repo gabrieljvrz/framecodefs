@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Login</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Login</h1>
+    <form id="loginForm">
+      <input type="email" id="email" placeholder="E‑mail" required>
+      <input type="password" id="password" placeholder="Senha" required>
+      <button type="submit">Entrar</button>
+      <p>Não tem conta? <a href="register.html">Cadastre‑se</a></p>
+    </form>
+  </div>
+  <script src="js/auth.js"></script>
+  <script>
+    const form = document.getElementById('loginForm');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const email = form.email.value.trim();
+      const pw = form.password.value;
+      try {
+        if (!email || !pw) throw 'Preencha todos os campos';
+        if (!isValidEmail(email)) throw 'E‑mail inválido';
+        loginUser(email, pw);
+        location.href = 'index.html';
+      } catch (err) {
+        alert(err);
+      }
+    });
+  </script>
+</body>
+</html>

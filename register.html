@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Cadastro</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Cadastro</h1>
+    <form id="registerForm">
+      <input type="text" id="name" placeholder="Nome completo" required>
+      <input type="email" id="email" placeholder="E‑mail" required>
+      <input type="password" id="password" placeholder="Senha (min 6 caracteres)" required>
+      <button type="submit">Cadastrar</button>
+      <p>Já tem conta? <a href="login.html">Faça login</a></p>
+    </form>
+  </div>
+  <script src="js/auth.js"></script>
+  <script>
+    const form = document.getElementById('registerForm');
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      const name = form.name.value.trim();
+      const email = form.email.value.trim();
+      const pw = form.password.value;
+      try {
+        if (!name || !email || !pw) throw 'Preencha todos os campos';
+        if (!isValidEmail(email)) throw 'E‑mail inválido';
+        if (!isStrongPassword(pw)) throw 'Senha muito fraca';
+        registerUser(name, email, pw);
+        alert('Cadastro realizado! Faça login.');
+        location.href = 'login.html';
+      } catch (err) {
+        alert(err);
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Meu Perfil</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <button id="logoutBtn">Sair</button>
+      <a href="index.html">Início</a>
+    </header>
+    <div class="profile-header">
+      <h1>Meu Perfil</h1>
+      <form id="profileForm">
+        <input type="text" id="name" placeholder="Nome completo" required>
+        <input type="email" id="email" placeholder="E‑mail" disabled>
+        <button type="submit">Salvar</button>
+      </form>
+    </div>
+    <h2>Minhas Resenhas</h2>
+    <ul class="review-list" id="myReviews"></ul>
+  </div>
+  <script src="js/auth.js"></script>
+  <script src="js/profile.js"></script>
+</body>
+</html>
