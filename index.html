@@ -3,22 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Inicio</title>
+  <title>FrameCode Filmes</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-  <div class="container">
-    <header>
-      <button id="logoutBtn">Sair</button>
-      <a href="profile.html">Meu Perfil</a>
-    </header>
+
+  <!-- Header estilizado -->
+  <header class="header">
+    <div class="logo">FrameCode</div>
+    <div class="header-actions">
+      <a href="profile.html" class="profile-link">Meu Perfil</a>
+      <button class="logout-btn" id="logoutBtn">Sair</button>
+    </div>
+  </header>
+
+  <!-- Banner de fundo -->
+  <section class="banner">
+    <div class="overlay">
+      <p class="banner-text">
+        Descubra, assista e escreva suas resenhas sobre os filmes mais populares do momento.
+      </p>
+    </div>
+  </section>
+
+  <!-- Área de lançamentos -->
+  <div class="container releases">
     <h1>Filmes Populares</h1>
+
     <form id="searchForm">
       <input type="text" id="query" placeholder="Pesquisar filmes..." required>
       <button type="submit">Buscar</button>
     </form>
+
     <div class="movies-grid" id="moviesGrid"></div>
   </div>
+
   <script src="js/auth.js"></script>
   <script src="js/index.js"></script>
 </body>
