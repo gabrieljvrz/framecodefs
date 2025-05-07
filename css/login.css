@@ -1,0 +1,112 @@
+/* Estilos gerais do corpo da página */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif; /* Você pode trocar por uma fonte mais parecida com a imagem se desejar */
+    background-color: #1a1a1a; /* Cor de fundo escura, similar à imagem */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh; /* Altura total da tela */
+    color: #f0f0f0; /* Cor do texto clara para contraste */
+}
+
+/* Container da caixa de login */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+/* Caixa de login principal */
+.login-box {
+    background-color: #2c2c2c; /* Cor de fundo da caixa de login */
+    padding: 40px;
+    border-radius: 15px; /* Bordas arredondadas */
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5); /* Sombra para dar profundidade */
+    text-align: center;
+    width: 100%;
+    max-width: 400px; /* Largura máxima da caixa */
+}
+
+/* Título principal "FRAMECODE" */
+.login-box h1 {
+    color: #e74c3c; /* Cor vermelha/laranja vibrante para o título */
+    font-size: 2.5em; /* Tamanho da fonte aumentado */
+    margin-bottom: 10px;
+    letter-spacing: 2px; /* Espaçamento entre letras */
+}
+
+/* Subtítulo "Login" */
+.login-box h2 {
+    color: #f0f0f0; /* Cor branca/cinza claro */
+    font-size: 1.8em;
+    margin-bottom: 30px;
+}
+
+/* Grupos de input (label + campo) */
+.input-group {
+    margin-bottom: 20px;
+    text-align: left; /* Alinha labels à esquerda */
+}
+
+/* Labels dos campos */
+.input-group label {
+    display: block; /* Faz o label ocupar a linha inteira */
+    margin-bottom: 8px;
+    color: #a0a0a0; /* Cor cinza para as labels */
+    font-size: 0.9em;
+}
+
+/* Campos de input (e-mail e senha) */
+.input-group input {
+    width: calc(100% - 20px); /* Largura total menos o padding interno */
+    padding: 12px 10px;
+    background-color: #3f3f3f; /* Fundo cinza escuro para os campos */
+    border: 1px solid #555; /* Borda sutil */
+    border-radius: 8px;
+    color: #f0f0f0; /* Cor do texto dentro do input */
+    font-size: 1em;
+}
+
+.input-group input:focus {
+    outline: none; /* Remove o contorno padrão ao focar */
+    border-color: #e74c3c; /* Muda a cor da borda ao focar */
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.5);
+}
+
+/* Botão "Entrar" */
+.btn-entrar {
+    background-color: #e74c3c; /* Cor vermelha/laranja do botão */
+    color: white;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease; /* Transição suave para o hover */
+    margin-top: 10px; /* Espaço acima do botão */
+}
+
+.btn-entrar:hover {
+    background-color: #c0392b; /* Cor um pouco mais escura no hover */
+}
+
+/* Link de cadastro */
+.cadastro-link {
+    margin-top: 30px;
+    font-size: 0.9em;
+    color: #a0a0a0;
+}
+
+.cadastro-link a {
+    color: #e74c3c; /* Cor vermelha/laranja para o link */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.cadastro-link a:hover {
+    text-decoration: underline;
+}

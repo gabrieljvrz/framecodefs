@@ -21,7 +21,7 @@ form.addEventListener('submit', e => {
   const u = users.find(u=>u.email===session.email);
   u.name = newName;
   saveUsers(users);
-  localStorage.setItem('session', JSON.stringify({ ...session, name: newName }));
+  localStorage.setItem('session', JSON.stringify({ ...session, name: newName }));''
   alert('Perfil atualizado');
   loadMyReviews();
 });
