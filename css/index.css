@@ -1,0 +1,97 @@
+body {
+    margin: 0;
+    background-color: #111;
+    color: #fff;
+    font-family: Arial, sans-serif;
+  }
+  
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #000;
+    padding: 10px 20px;
+  }
+  
+  .logo {
+    color: red;
+    font-weight: bold;
+    font-size: 1.5rem;
+  }
+  
+  .search {
+    width: 300px;
+    padding: 8px;
+    border-radius: 20px;
+    border: none;
+  }
+  
+  .profile-icon {
+    font-size: 1.5rem;
+  }
+  
+  .banner {
+    background-image: url('../assets/framecodeLogo.png'); /* troque se necessário */
+    background-size: cover;
+    background-position: center;
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .banner-text {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .movies-section {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 16px;
+    justify-items: center;
+    margin-top: 20px;
+  }
+  
+  .movie-card {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+  }
+  
+  .movie-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 4px;
+    transition: transform 0.3s ease;
+  }
+  
+  .movie-card:hover img {
+    transform: scale(1.05);
+  }
+  
+  .movie-title-hover {
+    position: absolute;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    width: 100%;
+    padding: 5px;
+    font-size: 0.9rem;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  .movie-card:hover .movie-title-hover {
+    opacity: 1;
+  }
+  

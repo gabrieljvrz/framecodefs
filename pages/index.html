@@ -1,44 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>FrameCode Filmes</title>
-  <link rel="stylesheet" href="../css/styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>FrameCode</title>
+  <link rel="stylesheet" href="../css/index.css" />
 </head>
 <body>
-
-  <!-- Header estilizado -->
   <header class="header">
-    <div class="logo">FrameCode</div>
-    <div class="header-actions">
-      <a href="profile.html" class="profile-link">Meu Perfil</a>
-      <button class="logout-btn" id="logoutBtn">Sair</button>
-    </div>
+    <div class="logo">FRAMECODE</div>
+    <input type="text" class="search" placeholder="🔍 Buscar filmes..." />
+    <div class="profile-icon">👤</div>
   </header>
 
-  <!-- Banner de fundo -->
   <section class="banner">
-    <div class="overlay">
-      <p class="banner-text">
-        Descubra, assista e escreva suas resenhas sobre os filmes mais populares do momento.
-      </p>
+    <div class="banner-text">
+      <p>Registre todos os filmes que você já assistiu.<br>
+      Escreva e compartilhe avaliações dos seus filmes favoritos com outros usuários.<br>
+      Compartilhe sua vida no cinema com o FrameCode.</p>
     </div>
   </section>
 
-  <!-- Área de lançamentos -->
-  <div class="container releases">
-    <h1>Filmes Populares</h1>
+  <section class="movies-section">
+    <h2>Lançamentos</h2>
+    <div id="moviesGrid" class="movies-grid"></div>
+  </section>
 
-    <form id="searchForm">
-      <input type="text" id="query" placeholder="Pesquisar filmes..." required>
-      <button type="submit">Buscar</button>
-    </form>
-
-    <div class="movies-grid" id="moviesGrid"></div>
-  </div>
-
-  <script src="../js/auth.js"></script>
-  <script src="../js/index.js"></script>
+  <script src="../js/index.js" defer></script>
 </body>
 </html>

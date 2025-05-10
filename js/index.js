@@ -97,3 +97,28 @@ if (searchForm) { // Verifica se o formulário de busca existe
       }
     });
 } 
+document.addEventListener("DOMContentLoaded", () => {
+  const moviesGrid = document.getElementById("moviesGrid");
+
+  const filmes = [
+    { id: 1, titulo: "Wedding Banquet", imagem: "https://image.tmdb.org/t/p/w500/7F3DD35JBy4D2vX9cuJYXbSlrbB.jpg" },
+    { id: 2, titulo: "Sinners", imagem: "https://image.tmdb.org/t/p/w500/3AK3kSdykCYw3GSCVZEKJ3eOaRn.jpg" },
+    { id: 3, titulo: "Wally's Island", imagem: "https://image.tmdb.org/t/p/w500/1CSWsd3wbnWVJbwMFfTzZKN6DMp.jpg" },
+    { id: 4, titulo: "Julie Keeps Quiet", imagem: "https://image.tmdb.org/t/p/w500/ndZ0SjN0Ki9n4QKzU7FMuBYuWCO.jpg" },
+    { id: 5, titulo: "Holy Cow", imagem: "https://image.tmdb.org/t/p/w500/t4tR5tD17aY0MOfMdN3ukRjqY1j.jpg" },
+    { id: 6, titulo: "Warfare", imagem: "https://image.tmdb.org/t/p/w500/3DZJEMcf7szfUgMJm3pODgOK0Qk.jpg" },
+  ];
+
+  filmes.forEach(filme => {
+    const movieLink = document.createElement("a");
+    movieLink.href = `movie.html?id=${filme.id}`;
+    movieLink.classList.add("movie-card");
+
+    movieLink.innerHTML = `
+      <img src="${filme.imagem}" alt="${filme.titulo}" />
+      <div class="movie-title-hover">${filme.titulo}</div>
+    `;
+
+    moviesGrid.appendChild(movieLink);
+  });
+});
