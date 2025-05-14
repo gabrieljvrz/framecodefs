@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro</title>
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="stylesheet" href="../css/reset.css" />
+</head>
+<body>
+  <div class="container">
+    <img src="../assets/framecodeLogo.png" alt="Logo do FrameCode">
+    <form id="registerForm">
+      <div id="messageArea" class="message-area" style="display:none"></div>
+      <input type="text" name="name" id="name" placeholder="Nome completo" required>
+      <input type="email" name="email" id="email" placeholder="E‑mail" required>
+      <input type="password" name="password" id="password" placeholder="Senha" required>
+      <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirmar senha" required>
+      <button type="submit">Criar conta</button>
+    </form>
+    <p>Já tem uma conta? <a href="login.html">Entrar</a></p>
+  </div>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+</body>
+</html>
