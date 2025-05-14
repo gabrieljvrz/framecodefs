@@ -22,12 +22,20 @@ async function loadMovie() {
   const id = getMovieId();
   const res = await fetch(`${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=pt-BR`);
   const movie = await res.json();
-  document.getElementById('movieDetails').innerHTML = `
-    <h1>${movie.title}</h1>
-    <img src="${IMG_URL + movie.poster_path}" alt="${movie.title}">
-    <p>${movie.overview}</p>
-    <p><strong>Lançamento:</strong> ${movie.release_date}</p>
-  `;
+
+  // Buscar elenco
+  const castRes = await fetch(`${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}`);
+  const castData = await castRes.json();
+  const cast = castData.cast.slice(0, 5).map(a => a.name).join(', ');
+
+  // Preencher os campos no HTML
+  document.getElementById('movieTitle').textContent = movie.title;
+  document.querySelector('.movie-poster').src = IMG_URL + movie.poster_path;
+  document.getElementById('movieOverview').textContent = movie.overview || 'Não disponível';
+  document.getElementById('movieReleaseDate').textContent = new Date(movie.release_date).toLocaleDateString();
+  document.getElementById('movieGenres').textContent = movie.genres.map(g => g.name).join(', ') || 'Não disponível';
+  document.getElementById('movieCast').textContent = cast || 'Não disponível';
+
   renderReviews();
 }
 

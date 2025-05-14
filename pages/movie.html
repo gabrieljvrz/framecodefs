@@ -1,20 +1,44 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Detalhes do Filme</title>
+  <link rel="stylesheet" href="../css/reset.css">
   <link rel="stylesheet" href="../css/styles.css">
   <link rel="stylesheet" href="../css/movie.css">
 </head>
 <body>
   <div class="container">
-    <button onclick="history.back()">← Voltar</button>
-    <div id="movieDetails"></div>
-    <h2>Deixe sua Resenha</h2>
-    <form id="reviewForm">
-      <label>Nota:
-        <select id="rating">
+    <!-- Botão Voltar -->
+    <button onclick="history.back()" class="back-button">← Voltar</button>
+
+    <!-- Detalhes do Filme -->
+    <section id="movieDetails" class="movie-details">
+      <div class="movie-poster-container">
+        <img src="" alt="Poster do Filme" class="movie-poster" />
+      </div>
+      <div class="movie-info-container">
+        <h1 id="movieTitle"></h1>
+        <p id="movieOverview"></p>
+        <p><strong>Lançamento:</strong> <span id="movieReleaseDate"></span></p>
+        <p><strong>Gênero:</strong> <span id="movieGenres"></span></p>
+        <p><strong>Elenco:</strong> <span id="movieCast"></span></p>
+      </div>
+    </section>
+
+    <!-- Média do Site -->
+    <div class="rating-section">
+      <h2>Média dos usuários</h2>
+      <div class="rating-box" id="avgRating">—</div>
+    </div>
+
+    <!-- Formulário de Resenha -->
+    <div class="review-section">
+      <h2>Deixe sua Resenha</h2>
+      <form id="reviewForm" class="review-form">
+        <select id="rating" required>
+          <option value="" disabled selected>Nota</option>
           <option value="0">0</option>
           <option value="1">1</option>
           <option value="2">2</option>
@@ -22,14 +46,19 @@
           <option value="4">4</option>
           <option value="5">5</option>
         </select>
-      </label>
-      <textarea id="text" rows="4" placeholder="Escreva sua resenha..." required></textarea>
-      <button type="submit">Publicar</button>
-    </form>
-    <h2>Resenhas</h2>
-    <p>Média do site: <span id="avgRating">—</span></p>
-    <ul class="review-list" id="reviewsList"></ul>
+        <textarea id="text" placeholder="Escreva sua resenha..." required></textarea>
+        <button type="submit">Publicar</button>
+      </form>
+
+      <!-- Lista de Resenhas -->
+      <h2>Resenhas</h2>
+      <ul class="reviews-list" id="reviewsList">
+        <!-- Resenhas dinâmicas aparecerão aqui -->
+      </ul>
+    </div>
   </div>
+
+  <!-- Scripts -->
   <script src="../js/utils.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/movie.js"></script>
