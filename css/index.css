@@ -2,119 +2,148 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 body {
-    margin: 0;
-    background-color: #000;
-    color: #fff;
-    font-family: Arial, sans-serif;
-  }
-  
-  .header {
-    position: relative; /* necessário para centralizar com position absolute */
-    height: 70px;
-    background-color: #000;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 20px;
-  }
-  
-  .logo img {
-    width: 200px;
-    height: 45px;
-  }
-  
+  margin: 0;
+  background-color: #000;
+  color: #fff;
+}
+
+.header {
+  position: relative;
+  height: 70px;
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+}
+
+.logo img {
+  width: 200px;
+  height: 45px;
+}
+
+.search {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 300px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+/* Responsividade */
+@media (max-width: 500px) {
   .search {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 300px;
-    padding: 10px 20px;
-    border-radius: 20px;
-    border: none;
-    outline: none;
-    font-size: 14px;
-  }
-  
-  .profile-icon {
-    font-size: 1.5rem;
-    color: white;
+    max-width: 90%;
   }
 
-  .profile-icon img{
-    width: 40px;
-    height: 40px;
-  }
-  
-  .banner {
-    background-image: 
-      linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0)),
-      linear-gradient(to top, rgba(0, 0, 0, 500), rgba(0, 0, 0, 0)),
-      url('../assets/hero-bg.png'); /* troque se necessário */
-    background-size: cover;
-    background-position: center;
-    height: 650px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-  }
-  
-  .banner-text {
-    background-color: rgba(0, 0, 0, 0.6);
-    padding: 20px;
-    border-radius: 8px;
-  }
-  
-  .movies-section {
-    padding: 20px;
-    text-align: center;
-  }
-  
-  .movies-grid {
-    display: grid;
-    grid-template-columns: repeat(8, 1fr); /* 8 colunas fixas */
-    gap: 16px;
-    justify-items: center;
-    margin-top: 20px;
-    padding: 20px;
-  }
-  
-  .movie-card {
-    position: relative;
-    cursor: pointer;
-    overflow: hidden;
-  }
-  
-  .movie-card img {
-    width: 100%;
+  .logo img {
+    width: 140px;
     height: auto;
-    display: block;
-    border-radius: 4px;
-    transition: transform 0.3s ease;
   }
-  
-  .movie-card:hover img {
-    transform:scale(1.05);
+
+  .profile-icon img {
+    width: 30px;
+    height: 30px;
   }
-  
-  .movie-title-hover {
-    position: absolute;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.7);
-    color: white;
-    width: 100%;
-    padding: 5px;
-    font-size: 0.9rem;
-    text-align: center;
-    opacity: 0;
-    transition: opacity 0.3s;
+
+  .banner {
+    height: 400px;
+    padding: 10px;
   }
-  
-  .movie-card:hover .movie-title-hover {
-    opacity: 1;
+
+  .banner-text {
+    font-size: 14px;
   }
-  
+}
+
+
+.profile-icon img {
+  width: 40px;
+  height: 40px;
+}
+
+.banner {
+  background-image: 
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0)),
+    url('../assets/hero-bg.png');
+  background-size: cover;
+  background-position: center;
+  height: 650px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.banner-text h2 {
+  font-size: 20px;
+  color: #fff;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+  line-height: 1.5;
+}
+
+
+.movies-section {
+  padding: 20px;
+  text-align: center;
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 16px;
+  justify-items: center;
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.movie-card {
+  position: relative;
+  cursor: pointer;
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+}
+
+
+.movie-card img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 4px;
+  transition: transform 0.3s ease;
+}
+
+
+.banner {
+  transition: opacity 0.3s ease;
+}
+
+.hidden {
+  opacity: 0;
+  pointer-events: none;
+  height: 0;
+  overflow: hidden;
+}
+
+#moviesTitle {
+  font-size: 28px;
+  margin-bottom: 10px;
+  font-weight: 600;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
+}

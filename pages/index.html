@@ -4,36 +4,45 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>FrameCode</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../css/reset.css" />
-  <link rel="stylesheet" href="../css/index.css" />
 
+  <!-- Fonte Inter corrigida -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter :wght@400;600;800&display=swap" rel="stylesheet">
+  
+  <!-- Caminho CSS ajustado se necessário -->
+  <link rel="stylesheet" href="../css/index.css" />
 </head>
 <body>
   <header class="header">
     <div class="logo">
       <a href="index.html"><img src="../assets/framecodeLogo.png" alt="FrameCode Logo"></a>
     </div>
-    <input type="text" class="search" placeholder="🔍 Buscar filmes..." />
+    
+    <!-- Campo de busca centralizado -->
+    <form id="searchForm">
+      <input type="text" id="searchInput" class="search" placeholder="🔍 Buscar filmes..." />
+    </form>
+    
     <div class="profile-icon">
-      <a href="profile.html"><img src="../assets/user icon.png" alt=""></a>
+      <a href="profile.html"><img src="../assets/user icon.png" alt="Perfil do usuário"></a>
     </div>
   </header>
 
   <section class="banner">
-    <!-- <div class="banner-text"> -->
-      <h2 id="home-txt">Registre todos os filmes que você já assistiu.<br>
-      Escreva e compartilhe avaliações dos seus filmes favoritos com outros usuários.<br>
-      Compartilhe sua vida no cinema com o FrameCode.</h2>
+    <div class="banner-text"> 
+      <h2 id="home-txt">
+        Registre todos os filmes que você já assistiu.<br>
+        Escreva e compartilhe avaliações dos seus filmes favoritos com outros usuários.<br>
+        Compartilhe sua vida no cinema com o FrameCode.
+      </h2>
     </div>
   </section>
 
   <section class="movies-section">
-    <h2>Lançamentos</h2>
+    <h2 id="moviesTitle">Lançamentos</h2>
     <div id="moviesGrid" class="movies-grid"></div>
   </section>
 
+  <!-- Script JS -->
   <script src="../js/index.js" defer></script>
 </body>
 </html>

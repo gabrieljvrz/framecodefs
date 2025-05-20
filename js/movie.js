@@ -1,117 +1,95 @@
-// movie.js — detalhes e resenhas por filme
-const API_KEY = '4b0e7368cf5b0af1c5e7627dd5cefd53';
-const BASE_URL = 'https://api.themoviedb.org/3';
-const IMG_URL = 'https://image.tmdb.org/t/p/w300';
-const REVIEWS_KEY = 'reviews';
+// movie.js
 
-if (!getSession()) location.href = 'login.html';
+const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984";
+const apiBase = "https://api.themoviedb.org/3";
+const imageBase = "https://image.tmdb.org/t/p/w500";
 
-function getReviews() {
-  return JSON.parse(localStorage.getItem(REVIEWS_KEY) || '[]');
+const banner = document.querySelector(".banner");
+const queryInput = document.querySelector("#searchInput");
+const moviesGrid = document.querySelector(".movies-grid");
+const moviesTitle = document.querySelector("#moviesTitle");
+
+// Cria um card de filme com redirecionamento para a página de detalhes
+function createMovieCard(movie) {
+  const card = document.createElement("div");
+  card.classList.add("movie-card");
+
+  const title = movie.title || movie.name || "Título Desconhecido";
+  const releaseDate = movie.release_date || movie.first_air_date || "Data não disponível";
+
+  const posterPath = (movie.poster_path && movie.poster_path.trim() !== "")
+    ? `${imageBase}${movie.poster_path}`
+    : "https://via.placeholder.com/500x750?text=Sem+Imagem";
+
+  card.innerHTML = `
+    <a href="movie.html?id=${movie.id}">
+      <img src="${posterPath}" alt="${title}">
+      <div class="movie-info">
+        <h3>${title}</h3>
+        <p>Data de Lançamento: ${releaseDate}</p>
+      </div>
+    </a>
+  `;
+
+  return card;
 }
 
-function saveReviews(r) {
-  localStorage.setItem(REVIEWS_KEY, JSON.stringify(r));
-}
+// Carrega os filmes populares
+async function fetchPopularMovies() {
+  const url = `${apiBase}/movie/popular?api_key=${apiKey}&language=pt-BR`;
 
-function getMovieId() {
-  return new URLSearchParams(location.search).get('id');
-}
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
 
-async function loadMovie() {
-  const id = getMovieId();
-  const res = await fetch(`${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=pt-BR`);
-  const movie = await res.json();
-
-  // Buscar elenco
-  const castRes = await fetch(`${BASE_URL}/movie/${id}/credits?api_key=${API_KEY}`);
-  const castData = await castRes.json();
-  const cast = castData.cast.slice(0, 5).map(a => a.name).join(', ');
-
-  // Preencher os campos no HTML
-  document.getElementById('movieTitle').textContent = movie.title;
-  document.querySelector('.movie-poster').src = IMG_URL + movie.poster_path;
-  document.getElementById('movieOverview').textContent = movie.overview || 'Não disponível';
-  document.getElementById('movieReleaseDate').textContent = new Date(movie.release_date).toLocaleDateString();
-  document.getElementById('movieGenres').textContent = movie.genres.map(g => g.name).join(', ') || 'Não disponível';
-  document.getElementById('movieCast').textContent = cast || 'Não disponível';
-
-  renderReviews();
-}
-
-function renderReviews() {
-  const id = getMovieId();
-  const all = getReviews().filter(r => r.movieId === id);
-  const listEl = document.getElementById('reviewsList');
-  listEl.innerHTML = '';
-  if (all.length) {
-    const avg = (all.reduce((sum,r)=>sum+Number(r.rating),0) / all.length).toFixed(2);
-    document.getElementById('avgRating').textContent = avg;
-    all.forEach(r => {
-      const li = document.createElement('li');
-      li.className = 'review-item';
-      const user = getUsers().find(u=>u.email===r.userEmail);
-      li.innerHTML = `
-        <header>
-          <div class="meta"><strong>${user.name}</strong> — ${r.rating}/5</div>
-          ${r.userEmail===getSession().email 
-            ? `<div>
-                <button onclick="editReview('${r.id}')">Editar</button>
-                <button onclick="deleteReview('${r.id}')">Excluir</button>
-               </div>`
-            : ''
-          }
-        </header>
-        <p>${r.text}</p>
-      `;
-      listEl.appendChild(li);
+    moviesGrid.innerHTML = "";
+    moviesTitle.textContent = "Lançamentos";
+    data.results.forEach((movie) => {
+      const card = createMovieCard(movie);
+      moviesGrid.appendChild(card);
     });
-  } else {
-    document.getElementById('avgRating').textContent = '—';
+  } catch (error) {
+    moviesGrid.innerHTML = "<p>Erro ao carregar os filmes populares.</p>";
   }
 }
 
-document.getElementById('reviewForm').addEventListener('submit', e => {
-  e.preventDefault();
-  const session = getSession();
-  const text = e.target.text.value.trim();
-  const rating = e.target.rating.value;
-  if (!text) return alert('Escreva algo');
-  const id = getMovieId();
-  const title = document.querySelector('#movieDetails h1').textContent;
-  const reviews = getReviews();
-  const review = {
-    id: Date.now().toString(),
-    movieId: id,
-    movieTitle: title,
-    userEmail: session.email,
-    rating,
-    text
-  };
-  reviews.push(review);
-  saveReviews(reviews);
-  e.target.reset();
-  renderReviews();
+// Busca os filmes
+async function searchMovies(query) {
+  const url = `${apiBase}/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=pt-BR`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    moviesGrid.innerHTML = "";
+
+    if (!data.results || data.results.length === 0) {
+      moviesGrid.innerHTML = "<p>Nenhum filme encontrado!</p>";
+      return;
+    }
+
+    data.results.forEach((movie) => {
+      const card = createMovieCard(movie);
+      moviesGrid.appendChild(card);
+    });
+  } catch (error) {
+    moviesGrid.innerHTML = "<p>Erro ao buscar filmes.</p>";
+  }
+}
+
+// Evento para pesquisa
+queryInput.addEventListener("input", (event) => {
+  const searchTerm = event.target.value.trim();
+
+  if (searchTerm.length >= 1) {
+    searchMovies(searchTerm);
+    banner.classList.add("hidden");
+    moviesTitle.textContent = `Resultados da busca para: "${searchTerm}"`;
+  } else {
+    fetchPopularMovies();
+    banner.classList.remove("hidden");
+    moviesTitle.textContent = "Lançamentos";
+  }
 });
 
-function deleteReview(id) {
-  if (!confirm('Confirma exclusão?')) return;
-  const filtered = getReviews().filter(r => r.id !== id);
-  saveReviews(filtered);
-  renderReviews();
-}
-
-function editReview(id) {
-  const reviews = getReviews();
-  const r = reviews.find(r=>r.id===id);
-  const newText = prompt('Edite sua resenha:', r.text);
-  if (newText==null) return;
-  const newRating = prompt('Nova nota (0–5):', r.rating);
-  if (newRating==null) return;
-  r.text = newText.trim();
-  r.rating = newRating;
-  saveReviews(reviews);
-  renderReviews();
-}
-
-loadMovie();
+fetchPopularMovies();
