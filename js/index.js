@@ -25,14 +25,13 @@ function createMovieCard(movie) {
     </a>
     <div class="movie-info">
       <h3>${title}</h3>
-      <p>Data de Lançamento: ${releaseDate}</p>
     </div>
   `;
 
   return card;
 }
 
-// Exibir filmes populares inicialmente
+//Exibir filmes populares inicialmente
 async function fetchPopularMovies() {
   const url = `${apiBase}/movie/popular?api_key=${apiKey}&language=pt-BR`;
 
