@@ -1,0 +1,127 @@
+/* profile.css */
+
+/* container mais estreito */
+.profile-page {
+  padding: 2rem 1rem;
+  max-width: 1000px;
+  margin: auto;
+  color: #fff;
+  background-color: #000;
+}
+
+/* === USER INFO === */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+.user-info .avatar {
+  position: relative;
+}
+.user-info .avatar img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 3px solid #e50914;
+}
+.user-info .avatar button {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background: #e50914;
+  border: none;
+  border-radius: 50%;
+  padding: 0.3rem;
+  cursor: pointer;
+}
+.user-data h2 {
+  font-size: 1.8rem;
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+.user-data button {
+  background: transparent;
+  border: none;
+  color: #ccc;
+  cursor: pointer;
+}
+.user-data p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+#editProfileBtn {
+  margin-top: 0.7rem;
+  background: #e50914;
+  border: none;
+  color: #fff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* === ATIVIDADES RECENTES === */
+.recent-activities h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
+}
+.activities-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 1rem;
+}
+.activities-grid .activity-card {
+  text-align: center;
+}
+.activity-card img {
+  width: 100%;
+  border-radius: 6px;
+  transition: transform 0.2s;
+}
+.activity-card img:hover {
+  transform: scale(1.05);
+}
+.activity-card .stars {
+  margin-top: 0.4rem;
+  color: gold;
+  font-size: 1rem;
+}
+
+/* === AVALIAÇÕES === */
+.my-reviews h3 {
+  font-size: 1.5rem;
+  margin: 2rem 0 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+.my-reviews button {
+    border: none;
+    background: none;
+    color: white;
+    cursor: pointer;
+}
+.my-reviews hr {
+  border: none;
+  border-top: 1px solid #333;
+  margin-bottom: 1.5rem;
+}
+/* reaproveita .review-item do movie.css, mas ajusta cores */
+.reviews-list .review-item {
+  background-color: #1a1a1a;
+  color: #e5e5e5;
+  border-radius: 8px;
+  padding: 1rem;
+}
+.reviews-list .review-item header .meta {
+  color: #e50914;
+}
+.reviews-list .review-item button {
+  margin-left: 0.5rem;
+}
+.review-item{
+    margin-bottom: 1rem;
+}
+

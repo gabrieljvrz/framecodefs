@@ -33,15 +33,21 @@ function createMovieCard(movie) {
 
 //Exibir filmes populares inicialmente
 async function fetchPopularMovies() {
-  const url = `${apiBase}/movie/popular?api_key=${apiKey}&language=pt-BR`;
+  const urlPage1 = `${apiBase}/movie/popular?api_key=${apiKey}&language=pt-BR&page=1`;
+  const urlPage2 = `${apiBase}/movie/popular?api_key=${apiKey}&language=pt-BR&page=2`;
 
   try {
-    const response = await fetch(url);
-    const data = await response.json();
+    const [res1, res2] = await Promise.all([fetch(urlPage1), fetch(urlPage2)]);
+    const data1 = await res1.json();
+    const data2 = await res2.json();
+
+    const combinedResults = [...data1.results, ...data2.results];
+    const limitedResults = combinedResults.slice(0, 24); 
 
     moviesGrid.innerHTML = "";
     moviesTitle.textContent = "Lançamentos";
-    data.results.forEach((movie) => {
+
+    limitedResults.forEach((movie) => {
       const card = createMovieCard(movie);
       moviesGrid.appendChild(card);
     });
@@ -50,6 +56,7 @@ async function fetchPopularMovies() {
     moviesGrid.innerHTML = "<p>Erro ao carregar os filmes populares.</p>";
   }
 }
+
 
 // Buscar filmes
 async function searchMovies(query) {

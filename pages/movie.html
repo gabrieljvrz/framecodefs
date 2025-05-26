@@ -9,9 +9,20 @@
   <link rel="stylesheet" href="../css/stars.css"> <!-- Novo CSS para estrelas -->
 </head>
 <body>
+  <header class="header">
+    <div class="logo">
+      <a href="index.html">
+        <img src="../assets/framecodeLogo.png" alt="FrameCode Logo">
+      </a>
+    </div>
+    <div class="profile-icon">
+      <a href="profile.html">
+        <img src="../assets/user icon.png" alt="Perfil">
+      </a>
+    </div>
+  </header>
+
   <div class="container">
-    <!-- Botão Voltar -->
-    <button onclick="history.back()" class="back-button">← Voltar</button>
 
     <!-- Detalhes do Filme -->
     <section id="movieDetails" class="movie-details">
@@ -35,7 +46,7 @@
 
     <!-- Formulário de Resenha -->
     <div class="review-section">
-      <h2>Deixe sua Resenha</h2>
+      <h2>Deixe sua Avaliação:</h2>
       <form id="reviewForm" class="review-form">
         <div class="star-rating">
           <input type="radio" id="star5" name="star" value="5"><label for="star5">★</label>
@@ -59,7 +70,6 @@
   <!-- Scripts -->
   <script src="../js/utils.js"></script>
   <script src="../js/auth.js"></script>
-  <script src="../js/movie.js"></script> <!-- Continua sendo usado para a home -->
   <script src="../js/movie-details.js"></script> <!-- Novo JS exclusivo da página de detalhes -->
 </body>
 </html>

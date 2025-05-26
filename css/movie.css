@@ -10,7 +10,7 @@ body {
   background-color: #121212;
   color: #e5e5e5;
   line-height: 1.6;
-  padding: 2rem;
+  padding: 0.7rem;
 }
 
 .container {
@@ -34,6 +34,7 @@ body {
 /* Detalhes do Filme */
 .movie-details {
   display: flex;
+  /* width: 1000px; */
   gap: 2rem;
   padding: 2rem;
   background-color: #1f1f1f;
@@ -51,8 +52,8 @@ body {
 }
 
 .movie-poster {
-  width: 200px;
-  height: 300px;
+  width: 300px;
+  height: 450px;
   object-fit: cover;
   border-radius: 12px;
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
@@ -90,6 +91,24 @@ body {
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
+
+.review-section h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: center;
+}
+
+.review-form{
+  background-color: #2a2a2a;
+}
+
+.star-rating input{
+  display: flex;
+  justify-content: center;
+}
+
 .rating-box {
   font-size: 2.5rem;
   font-weight: bold;
@@ -111,8 +130,8 @@ body {
   border-radius: 8px;
   border: none;
   font-size: 1rem;
-  background-color: #2c2c2c;
-  color: #fff;
+  background-color: #bdbdbd;
+  color: #2a2a2a;
 }
 .review-form select {
   background-color: #2c2c2c;
@@ -154,7 +173,7 @@ body {
   margin-bottom: 0.5rem;
 }
 .review-item .meta {
-  color: #e50914;
+  color: #e5e5e5;
   font-weight: 600;
   font-size: 0.95rem;
 }
@@ -191,4 +210,30 @@ body {
   .rating-box {
     font-size: 2rem;
   }
+}
+
+/* HEADER */
+.header {
+  position: relative;
+  height: 70px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  top: 0;
+  /* border-radius: 0; */
+  /* background-color: none; */
+  box-shadow: none;
+  background-color: #121212;
+  padding-top: 0;
+}
+
+.logo img{
+  width: 200px;
+  height: 45px;
+}
+
+.profile-icon img {
+  width: 40px;
+  height: 40px;
 }

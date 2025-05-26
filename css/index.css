@@ -74,8 +74,8 @@ body {
 
 .banner {
   background-image: 
-    linear-gradient(to bottom, rgb(10, 10, 10), rgba(0, 0, 0, 0)),
-    linear-gradient(to top, rgb(10, 10, 10), rgba(0, 0, 0, 0)),
+    linear-gradient(to bottom, rgb(0, 0, 0), rgba(0, 0, 0, 0)),
+    linear-gradient(to top, rgb(0, 0, 0, 1), rgba(0, 0, 0, 0)),
     url('../assets/hero-bg.png');
   background-size: cover;
   background-position: center;
@@ -100,34 +100,40 @@ body {
 }
 
 .movies-grid {
-  display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(8, 1fr);
+  display: flex;
+  flex-wrap: wrap;
   gap: 16px;
-  justify-items: center;
-  margin-top: 20px;
-  padding: 20px;
+  justify-content: center;
+  padding: 20px 0;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 .movie-card {
-  position: relative;
+  width: 140px; /* largura ideal para caber 8 por linha em desktops */
+  text-align: center;
   cursor: pointer;
-  overflow: hidden;
-  border-radius: 8px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 2px 4px rgba(255, 255, 255, 0.05);
 }
-
-.movie-card:hover {
-  transform: scale(1.05);
-}
-
 
 .movie-card img {
   width: 100%;
-  height: auto;
-  display: block;
-  border-radius: 4px;
+  height: 210px;
+  object-fit: cover;
+  border-radius: 8px;
   transition: transform 0.3s ease;
+}
+
+.movie-card img:hover {
+  transform: scale(1.05);
+}
+
+.movie-card span {
+  display: block;
+  margin-top: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #fff;
 }
 
 

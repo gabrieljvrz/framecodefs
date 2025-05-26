@@ -1,13 +1,14 @@
 .star-rating {
   direction: rtl;
   display: inline-flex;
-  justify-content: flex-start;
+  justify-content: center;
   gap: 4px;
   margin-bottom: 1rem;
 }
 
 .star-rating input {
   display: none;
+  justify-content: center;
 }
 
 .star-rating label {

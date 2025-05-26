@@ -3,27 +3,62 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Meu Perfil</title>
-  <link rel="stylesheet" href="../css/styles.css">
-  <link rel="stylesheet" href="../css/reset.css" />
+  <title>Meu Perfil | FrameCode</title>
+  <!-- trouxe o mesmo CSS da home -->
+  <link rel="stylesheet" href="../css/index.css">
+  <!-- CSS específico de perfil -->
+  <link rel="stylesheet" href="../css/profile.css">
 </head>
 <body>
-  <div class="container">
-    <header class="header">
-      <button id="logoutBtn">Sair</button>
-      <a href="index.html" class="profile-link">Início</a>
-    </header>
-    <div class="profile-header">
-      <h1>Meu Perfil</h1>
-      <form id="profileForm">
-        <input type="text" id="name" placeholder="Nome completo" required>
-        <input type="email" id="email" placeholder="E‑mail" disabled>
-        <button type="submit">Salvar</button>
-      </form>
+  <!-- ========== HEADER (igual ao da home) ========== -->
+  <header class="header">
+    <div class="logo">
+      <a href="index.html">
+        <img src="../assets/framecodeLogo.png" alt="FrameCode Logo">
+      </a>
     </div>
-    <h2>Minhas Resenhas</h2>
-    <ul class="review-list" id="myReviews"></ul>
-  </div>
+    <div class="profile-icon">
+      <a href="profile.html">
+        <img src="../assets/user icon.png" alt="Perfil">
+      </a>
+    </div>
+  </header>
+
+  <main class="container profile-page">
+    <!-- ====== DADOS DO USUÁRIO ====== -->
+    <section class="user-info">
+      <div class="avatar">
+        <img src="../assets/user icon.png" alt="Avatar do usuário">
+        <button id="changeAvatarBtn" title="Trocar foto">✏️</button>
+      </div>
+      <div class="user-data">
+        <h2 id="displayName">
+          <!-- será preenchido pelo JS -->
+        </h2>
+        <p id="displayName"></p>
+        <p id="displayEmail"></p>
+        <input type="password" name="Senha:" placeholder="*********" id="displayPassword" disabled> <br>
+        <button id="editProfileBtn">Editar Perfil</button>
+      </div>
+    </section>
+
+    <!-- ====== ATIVIDADES RECENTES ====== -->
+    <section class="recent-activities">
+      <h3>Atividades Recentes:</h3>
+      <div class="activities-grid" id="recentActivities">
+        <!-- cards serão injetados pelo JS -->
+      </div>
+    </section>
+
+    <!-- ====== AVALIAÇÕES ====== -->
+    <section class="my-reviews">
+      <h3>Avaliações:</h3>
+      <hr>
+      <ul class="reviews-list" id="myReviews"></ul>
+    </section>
+  </main>
+
+  <!-- scripts -->
   <script src="../js/utils.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/profile.js"></script>
