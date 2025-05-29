@@ -1,26 +1,113 @@
-// profile.js
-const editProfileBtn = document.getElementById('editProfileBtn');
-editProfileBtn.addEventListener('click', () => {
-  editProfileBtn.textContent = 'Salvar Alterações';
-})
+// Carrega elementos do DOM
+const editProfileBtn = document.getElementById("editProfileBtn");
+const displayNameEl = document.getElementById("displayName");
 
-// Verifica se o usuário está logado
-const session = JSON.parse(localStorage.getItem("session"));
+const editModeForm = document.getElementById("editMode"); // ✅ Agora controlamos o form todo
+const editNameInput = document.getElementById("editName");
+const editEmailInput = document.getElementById("editEmail");
+const editPasswordInput = document.getElementById("editPassword");
+
+
+// Elementos do avatar
+const avatarImg = document.querySelector(".user-info .avatar img");
+const changeAvatarBtn = document.getElementById("changeAvatarBtn");
+const avatarInput = document.getElementById("avatarInput");
+
+// Carrega avatar salvo (se existir)
+const savedAvatar = localStorage.getItem("userAvatar");
+if (savedAvatar) {
+  avatarImg.src = savedAvatar;
+}
+
+// Ao clicar no botão, abre o seletor de arquivos
+changeAvatarBtn.addEventListener("click", () => {
+  avatarInput.click();
+});
+
+// Quando um arquivo é selecionado
+avatarInput.addEventListener("change", (event) => {
+  const file = event.target.files[0];
+  if (file && file.type.startsWith("image/")) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      const newAvatarURL = e.target.result;
+      avatarImg.src = newAvatarURL;
+      localStorage.setItem("userAvatar", newAvatarURL); // Salva no localStorage
+    };
+    reader.readAsDataURL(file);
+  } else {
+    alert("Por favor, selecione uma imagem válida (jpg, png, etc).");
+  }
+});
+
+// Obtém sessão do usuário
+let session = JSON.parse(localStorage.getItem("session"));
+
 if (!session) {
   alert("Você precisa estar logado para acessar o perfil.");
   window.location.href = "login.html";
 }
 
-// Exibe nome e email do usuário
-document.getElementById("displayName").textContent = session.name;
-document.getElementById("displayEmail").textContent = session.email;
+// Preenche os campos com os dados da sessão
+editNameInput.value = session.name;
+editEmailInput.value = session.email;
+editPasswordInput.value = "*********"; // Placeholder visual
+displayNameEl.textContent = session.name;
 
-// Função para obter todas as reviews salvas
+// Estado de edição
+let isEditing = false;
+
+// Função do botão Editar/Salvar
+editProfileBtn.addEventListener("click", () => {
+  if (!isEditing) {
+    // Mostrar o formulário inteiro
+    editModeForm.style.display = "block";
+
+    // Habilitar campos
+    editNameInput.disabled = false;
+    editEmailInput.disabled = false;
+    editPasswordInput.disabled = false;
+    editPasswordInput.value = ""; // Limpa placeholder
+
+    editProfileBtn.textContent = "Salvar Alterações";
+    isEditing = true;
+  } else {
+    const newName = editNameInput.value.trim();
+    const newEmail = editEmailInput.value.trim();
+    const newPassword = editPasswordInput.value.trim();
+
+    if (!newName || !newEmail) {
+      alert("Nome e e-mail são obrigatórios!");
+      return;
+    }
+
+    // Atualiza a sessão
+    session.name = newName;
+    session.email = newEmail;
+    if (newPassword) session.password = newPassword;
+
+    localStorage.setItem("session", JSON.stringify(session));
+    alert("Perfil atualizado com sucesso!");
+
+    // Desabilitar campos
+    editNameInput.disabled = true;
+    editEmailInput.disabled = true;
+    editPasswordInput.disabled = true;
+    editPasswordInput.value = "*********"; // Restaura placeholder visual
+
+    editProfileBtn.textContent = "Editar Perfil";
+    isEditing = false;
+
+    // Atualiza exibição do nome
+    displayNameEl.textContent = newName;
+  }
+});
+
+// ====== RESTANTE DO CÓDIGO ======
 function getReviews() {
   return JSON.parse(localStorage.getItem("reviews")) || [];
 }
 
-// Carrega as avaliações do usuário
 function loadMyReviews() {
   const reviews = getReviews().filter((r) => r.userEmail === session.email);
   const list = document.getElementById("myReviews");
@@ -32,16 +119,16 @@ function loadMyReviews() {
     li.innerHTML = `
       <header>
         <strong>${r.movieTitle}</strong>
-        <span class="meta"> • Nota: ${r.rating}⭐</span> <button onclick="editReview(${index})">✏️ Editar</button> <button onclick="deleteReview(${index})">❌ Excluir</button>
+        <span class="meta"> • Nota: ${r.rating}⭐</span>
+        <button onclick="editReview(${index})">✏️ Editar</button>
+        <button onclick="deleteReview(${index})">❌ Excluir</button>
       </header>
       <p>${r.comment}</p>
-      
     `;
     list.appendChild(li);
   });
 }
 
-// Editar avaliação
 function editReview(index) {
   const reviews = getReviews().filter((r) => r.userEmail === session.email);
   const review = reviews[index];
@@ -66,7 +153,6 @@ function editReview(index) {
   }
 }
 
-// Excluir avaliação
 function deleteReview(index) {
   if (!confirm("Tem certeza que deseja excluir esta avaliação?")) return;
   const userReviews = getReviews().filter((r) => r.userEmail === session.email);
@@ -101,7 +187,7 @@ async function loadRecentActivities() {
     let poster = "https://via.placeholder.com/200x300?text=Sem+Imagem";
     try {
       const res = await fetch(
-        `https://api.themoviedb.org/3/movie/${r.movieId}?api_key=${apiKey}&language=pt-BR`
+        `https://api.themoviedb.org/3/movie/ ${r.movieId}?api_key=${apiKey}&language=pt-BR`
       );
       const data = await res.json();
       if (data.poster_path) {
