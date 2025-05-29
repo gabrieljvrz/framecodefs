@@ -50,15 +50,33 @@
   opacity: 0.8;
 }
 #editProfileBtn {
-  margin-top: 0.7rem;
-  background: #e50914;
+  background-color: #dc060d;
+  color: white;
   border: none;
-  color: #fff;
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
-
+#editProfileBtn:hover{
+   background-color: #dc060d;
+   color: white;
+}
+#backProfileBtn{
+  background-color: #dc060d;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+#backProfileBtn:hover{
+  background-color: #dc060d;
+   color: white;
+}
 /* === MODOS DE PERFIL - VISUALIZAÇÃO E EDIÇÃO === */
 #viewMode h2 {
   margin: 0;
@@ -182,4 +200,8 @@
 
 .review-item {
   margin-bottom: 1rem;
+}
+
+.review-item img {
+  border-radius: 5px;
 }

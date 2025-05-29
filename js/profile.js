@@ -6,7 +6,8 @@ const editModeForm = document.getElementById("editMode"); // ✅ Agora controlam
 const editNameInput = document.getElementById("editName");
 const editEmailInput = document.getElementById("editEmail");
 const editPasswordInput = document.getElementById("editPassword");
-
+const saveProfileBtn = document.getElementById("saveProfileBtn");
+const backProfileBtn = document.getElementById("backProfileBtn"); // Novo botão Voltar
 
 // Elementos do avatar
 const avatarImg = document.querySelector(".user-info .avatar img");
@@ -54,53 +55,89 @@ editEmailInput.value = session.email;
 editPasswordInput.value = "*********"; // Placeholder visual
 displayNameEl.textContent = session.name;
 
+// Garante que os campos comecem desabilitados
+editNameInput.disabled = true;
+editEmailInput.disabled = true;
+editPasswordInput.disabled = true;
+
+// Garante que os botões Salvar e Voltar comecem escondidos
+saveProfileBtn.style.display = "none";
+backProfileBtn.style.display = "none"; // Esconde o botão Voltar inicialmente
+
 // Estado de edição
 let isEditing = false;
 
-// Função do botão Editar/Salvar
+// Função do botão Editar
 editProfileBtn.addEventListener("click", () => {
-  if (!isEditing) {
-    // Mostrar o formulário inteiro
-    editModeForm.style.display = "block";
+  // Mostrar o formulário inteiro
+  editModeForm.style.display = "block";
 
-    // Habilitar campos
-    editNameInput.disabled = false;
-    editEmailInput.disabled = false;
-    editPasswordInput.disabled = false;
-    editPasswordInput.value = ""; // Limpa placeholder
+  // Habilitar campos
+  editNameInput.disabled = false;
+  editEmailInput.disabled = false;
+  editPasswordInput.disabled = false;
+  editPasswordInput.value = ""; // Limpa placeholder
 
-    editProfileBtn.textContent = "Salvar Alterações";
-    isEditing = true;
-  } else {
-    const newName = editNameInput.value.trim();
-    const newEmail = editEmailInput.value.trim();
-    const newPassword = editPasswordInput.value.trim();
+  editProfileBtn.style.display = "none"; // Esconde o botão de editar
+  saveProfileBtn.style.display = "inline-block"; // Mostra o botão de salvar
+  backProfileBtn.style.display = "inline-block"; // Mostra o botão de voltar
+  saveProfileBtn.classList.remove("hidden"); 
+  backProfileBtn.classList.remove("hidden");
+  isEditing = true;
+});
 
-    if (!newName || !newEmail) {
-      alert("Nome e e-mail são obrigatórios!");
-      return;
-    }
+// Função do botão Salvar
+saveProfileBtn.addEventListener("click", () => {
+  const newName = editNameInput.value.trim();
+  const newEmail = editEmailInput.value.trim();
+  const newPassword = editPasswordInput.value.trim();
 
-    // Atualiza a sessão
-    session.name = newName;
-    session.email = newEmail;
-    if (newPassword) session.password = newPassword;
-
-    localStorage.setItem("session", JSON.stringify(session));
-    alert("Perfil atualizado com sucesso!");
-
-    // Desabilitar campos
-    editNameInput.disabled = true;
-    editEmailInput.disabled = true;
-    editPasswordInput.disabled = true;
-    editPasswordInput.value = "*********"; // Restaura placeholder visual
-
-    editProfileBtn.textContent = "Editar Perfil";
-    isEditing = false;
-
-    // Atualiza exibição do nome
-    displayNameEl.textContent = newName;
+  if (!newName || !newEmail) {
+    alert("Nome e e-mail são obrigatórios!");
+    return;
   }
+
+  // Atualiza a sessão
+  session.name = newName;
+  session.email = newEmail;
+  if (newPassword) session.password = newPassword;
+
+  localStorage.setItem("session", JSON.stringify(session));
+  alert("Perfil atualizado com sucesso!");
+
+  // Desabilitar campos
+  editNameInput.disabled = true;
+  editEmailInput.disabled = true;
+  editPasswordInput.disabled = true;
+  editPasswordInput.value = "*********"; // Restaura placeholder visual
+
+  editProfileBtn.style.display = "inline-block"; // Mostra o botão de editar
+  saveProfileBtn.style.display = "none"; // Esconde o botão de salvar
+  backProfileBtn.style.display = "none"; // Esconde o botão de voltar
+  isEditing = false;
+
+  // Atualiza exibição do nome
+  displayNameEl.textContent = newName;
+});
+
+// Função do botão Voltar
+backProfileBtn.addEventListener("click", () => {
+  // Esconder o formulário
+  editModeForm.style.display = "none";
+
+  // Restaurar valores originais dos campos e desabilitá-los
+  editNameInput.value = session.name;
+  editEmailInput.value = session.email;
+  editPasswordInput.value = "*********"; // Placeholder visual
+
+  editNameInput.disabled = true;
+  editEmailInput.disabled = true;
+  editPasswordInput.disabled = true;
+
+  editProfileBtn.style.display = "inline-block"; // Mostra o botão de editar
+  saveProfileBtn.style.display = "none"; // Esconde o botão de salvar
+  backProfileBtn.style.display = "none"; // Esconde o botão de voltar
+  isEditing = false;
 });
 
 // ====== RESTANTE DO CÓDIGO ======
@@ -108,67 +145,105 @@ function getReviews() {
   return JSON.parse(localStorage.getItem("reviews")) || [];
 }
 
-function loadMyReviews() {
+async function loadMyReviews() { // Modificado para async
   const reviews = getReviews().filter((r) => r.userEmail === session.email);
   const list = document.getElementById("myReviews");
   list.innerHTML = "";
 
-  reviews.forEach((r, index) => {
+  const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984"; // Adicionado apiKey
+  const imageBase = "https://image.tmdb.org/t/p/w200"; // Adicionado imageBase, w200 é um bom tamanho aqui
+
+  for (const r of reviews) { // Modificado para for...of para usar await
+    let posterUrl = "https://via.placeholder.com/100x150?text=Sem+Imagem"; // Placeholder
+    try {
+      const movieDetailsUrl = `https://api.themoviedb.org/3/movie/${r.movieId}?api_key=${apiKey}&language=pt-BR`;
+      const res = await fetch(movieDetailsUrl);
+      const movieData = await res.json();
+      if (movieData.poster_path) {
+        posterUrl = `${imageBase}${movieData.poster_path}`;
+      }
+    } catch (e) {
+      console.error("Erro ao buscar poster para review:", e);
+    }
+
     const li = document.createElement("li");
     li.className = "review-item";
+    // Adicionado img para o poster
     li.innerHTML = `
-      <header>
-        <strong>${r.movieTitle}</strong>
-        <span class="meta"> • Nota: ${r.rating}⭐</span>
-        <button onclick="editReview(${index})">✏️ Editar</button>
-        <button onclick="deleteReview(${index})">❌ Excluir</button>
-      </header>
-      <p>${r.comment}</p>
+      <img src="${posterUrl}" alt="Pôster de ${r.movieTitle}" style="width: 80px; height: auto; margin-right: 15px; vertical-align: top;">
+      <div style="display: inline-block; vertical-align: top; width: calc(100% - 100px);">
+        <header>
+          <strong>${r.movieTitle}</strong>
+          <span class="meta"> • Nota: ${r.rating}/5 ⭐</span>
+          <button onclick="editReview(${reviews.indexOf(r)})">✏️ Editar</button>
+          <button onclick="deleteReview(${reviews.indexOf(r)})">❌ Excluir</button>
+        </header>
+        <p>${r.comment}</p>
+      </div>
     `;
     list.appendChild(li);
-  });
-}
-
-function editReview(index) {
-  const reviews = getReviews().filter((r) => r.userEmail === session.email);
-  const review = reviews[index];
-  const newComment = prompt("Edite seu comentário:", review.comment);
-  const newRating = prompt("Altere a nota (0 a 5):", review.rating);
-  if (newComment !== null && newRating !== null) {
-    review.comment = newComment;
-    review.rating = Math.min(5, Math.max(0, parseInt(newRating)));
-    const allReviews = getReviews();
-    const reviewIndex = allReviews.findIndex(
-      (r) =>
-        r.userEmail === session.email &&
-        r.movieId === review.movieId &&
-        r.comment === review.comment
-    );
-    if (reviewIndex !== -1) {
-      allReviews[reviewIndex] = review;
-      localStorage.setItem("reviews", JSON.stringify(allReviews));
-      loadMyReviews();
-      loadRecentActivities();
-    }
   }
 }
 
-function deleteReview(index) {
+function editReview(indexInFilteredArray) {
+  const allUserReviews = getReviews().filter((r) => r.userEmail === session.email);
+  const reviewToEdit = allUserReviews[indexInFilteredArray];
+
+  // Encontrar a review original no array completo de reviews para obter o índice global correto
+  const allReviewsOriginal = getReviews();
+  const globalReviewIndex = allReviewsOriginal.findIndex(
+    (r_global) =>
+      r_global.userEmail === reviewToEdit.userEmail &&
+      r_global.movieId === reviewToEdit.movieId &&
+      r_global.comment === reviewToEdit.comment && // Pode precisar de um ID único de review se comentários puderem ser iguais
+      r_global.rating === reviewToEdit.rating
+  );
+
+  if (globalReviewIndex === -1) {
+    alert("Erro ao encontrar a avaliação para editar.");
+    return;
+  }
+  
+  const review = allReviewsOriginal[globalReviewIndex]; // Usar a referência do array original
+
+  const newComment = prompt("Edite seu comentário:", review.comment);
+  const newRating = prompt("Altere a nota (0 a 5):", review.rating);
+
+  if (newComment !== null && newRating !== null) {
+    const parsedRating = parseInt(newRating);
+    if (isNaN(parsedRating) || parsedRating < 0 || parsedRating > 5) {
+      alert("Nota inválida. Por favor, insira um número entre 0 e 5.");
+      return;
+    }
+    allReviewsOriginal[globalReviewIndex].comment = newComment;
+    allReviewsOriginal[globalReviewIndex].rating = Math.min(5, Math.max(0, parsedRating));
+    
+    localStorage.setItem("reviews", JSON.stringify(allReviewsOriginal));
+    loadMyReviews();
+    loadRecentActivities(); // Recarrega atividades recentes também
+  }
+}
+
+function deleteReview(indexInFilteredArray) {
   if (!confirm("Tem certeza que deseja excluir esta avaliação?")) return;
-  const userReviews = getReviews().filter((r) => r.userEmail === session.email);
-  const review = userReviews[index];
 
-  const allReviews = getReviews().filter((r) => {
-    return !(
-      r.userEmail === session.email &&
-      r.movieId === review.movieId &&
-      r.comment === review.comment
-    );
-  });
+  const allUserReviews = getReviews().filter((r) => r.userEmail === session.email);
+  const reviewToDelete = allUserReviews[indexInFilteredArray];
 
-  localStorage.setItem("reviews", JSON.stringify(allReviews));
+  const allReviewsOriginal = getReviews();
+  const updatedReviews = allReviewsOriginal.filter(
+    (r_global) =>
+      !(
+        r_global.userEmail === reviewToDelete.userEmail &&
+        r_global.movieId === reviewToDelete.movieId &&
+        r_global.comment === reviewToDelete.comment && // Pode precisar de um ID único de review
+        r_global.rating === reviewToDelete.rating
+      )
+  );
+
+  localStorage.setItem("reviews", JSON.stringify(updatedReviews));
   loadMyReviews();
-  loadRecentActivities();
+  loadRecentActivities(); // Recarrega atividades recentes também
 }
 
 // Carrega atividades recentes (últimas 6 avaliações)
