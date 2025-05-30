@@ -2,12 +2,12 @@
 const editProfileBtn = document.getElementById("editProfileBtn");
 const displayNameEl = document.getElementById("displayName");
 
-const editModeForm = document.getElementById("editMode"); // ✅ Agora controlamos o form todo
+const editModeForm = document.getElementById("editMode");
 const editNameInput = document.getElementById("editName");
 const editEmailInput = document.getElementById("editEmail");
 const editPasswordInput = document.getElementById("editPassword");
 const saveProfileBtn = document.getElementById("saveProfileBtn");
-const backProfileBtn = document.getElementById("backProfileBtn"); // Novo botão Voltar
+const backProfileBtn = document.getElementById("backProfileBtn"); 
 
 // Elementos do avatar
 const avatarImg = document.querySelector(".user-info .avatar img");
@@ -33,7 +33,7 @@ avatarInput.addEventListener("change", (event) => {
     reader.onload = function (e) {
       const newAvatarURL = e.target.result;
       avatarImg.src = newAvatarURL;
-      localStorage.setItem("userAvatar", newAvatarURL); // Salva no localStorage
+      localStorage.setItem("userAvatar", newAvatarURL); 
     };
     reader.readAsDataURL(file);
   } else {
@@ -52,7 +52,7 @@ if (!session) {
 // Preenche os campos com os dados da sessão
 editNameInput.value = session.name;
 editEmailInput.value = session.email;
-editPasswordInput.value = "*********"; // Placeholder visual
+editPasswordInput.value = "*********";
 displayNameEl.textContent = session.name;
 
 // Garante que os campos comecem desabilitados
@@ -62,7 +62,7 @@ editPasswordInput.disabled = true;
 
 // Garante que os botões Salvar e Voltar comecem escondidos
 saveProfileBtn.style.display = "none";
-backProfileBtn.style.display = "none"; // Esconde o botão Voltar inicialmente
+backProfileBtn.style.display = "none"; 
 
 // Estado de edição
 let isEditing = false;
@@ -76,11 +76,11 @@ editProfileBtn.addEventListener("click", () => {
   editNameInput.disabled = false;
   editEmailInput.disabled = false;
   editPasswordInput.disabled = false;
-  editPasswordInput.value = ""; // Limpa placeholder
+  editPasswordInput.value = ""; 
 
-  editProfileBtn.style.display = "none"; // Esconde o botão de editar
-  saveProfileBtn.style.display = "inline-block"; // Mostra o botão de salvar
-  backProfileBtn.style.display = "inline-block"; // Mostra o botão de voltar
+  editProfileBtn.style.display = "none"; 
+  saveProfileBtn.style.display = "inline-block"; 
+  backProfileBtn.style.display = "inline-block"; 
   saveProfileBtn.classList.remove("hidden"); 
   backProfileBtn.classList.remove("hidden");
   isEditing = true;
@@ -109,11 +109,11 @@ saveProfileBtn.addEventListener("click", () => {
   editNameInput.disabled = true;
   editEmailInput.disabled = true;
   editPasswordInput.disabled = true;
-  editPasswordInput.value = "*********"; // Restaura placeholder visual
+  editPasswordInput.value = "*********"; 
 
-  editProfileBtn.style.display = "inline-block"; // Mostra o botão de editar
-  saveProfileBtn.style.display = "none"; // Esconde o botão de salvar
-  backProfileBtn.style.display = "none"; // Esconde o botão de voltar
+  editProfileBtn.style.display = "inline-block"; 
+  saveProfileBtn.style.display = "none"; 
+  backProfileBtn.style.display = "none"; 
   isEditing = false;
 
   // Atualiza exibição do nome
@@ -128,15 +128,15 @@ backProfileBtn.addEventListener("click", () => {
   // Restaurar valores originais dos campos e desabilitá-los
   editNameInput.value = session.name;
   editEmailInput.value = session.email;
-  editPasswordInput.value = "*********"; // Placeholder visual
+  editPasswordInput.value = "*********"; 
 
   editNameInput.disabled = true;
   editEmailInput.disabled = true;
   editPasswordInput.disabled = true;
 
-  editProfileBtn.style.display = "inline-block"; // Mostra o botão de editar
-  saveProfileBtn.style.display = "none"; // Esconde o botão de salvar
-  backProfileBtn.style.display = "none"; // Esconde o botão de voltar
+  editProfileBtn.style.display = "inline-block"; 
+  saveProfileBtn.style.display = "none"; 
+  backProfileBtn.style.display = "none"; 
   isEditing = false;
 });
 
@@ -145,16 +145,16 @@ function getReviews() {
   return JSON.parse(localStorage.getItem("reviews")) || [];
 }
 
-async function loadMyReviews() { // Modificado para async
+async function loadMyReviews() {
   const reviews = getReviews().filter((r) => r.userEmail === session.email);
   const list = document.getElementById("myReviews");
   list.innerHTML = "";
 
-  const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984"; // Adicionado apiKey
-  const imageBase = "https://image.tmdb.org/t/p/w200"; // Adicionado imageBase, w200 é um bom tamanho aqui
+  const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984"; 
+  const imageBase = "https://image.tmdb.org/t/p/w200"; 
 
-  for (const r of reviews) { // Modificado para for...of para usar await
-    let posterUrl = "https://via.placeholder.com/100x150?text=Sem+Imagem"; // Placeholder
+  for (const r of reviews) { 
+    let posterUrl = "https://via.placeholder.com/100x150?text=Sem+Imagem"; 
     try {
       const movieDetailsUrl = `https://api.themoviedb.org/3/movie/${r.movieId}?api_key=${apiKey}&language=pt-BR`;
       const res = await fetch(movieDetailsUrl);
@@ -195,7 +195,7 @@ function editReview(indexInFilteredArray) {
     (r_global) =>
       r_global.userEmail === reviewToEdit.userEmail &&
       r_global.movieId === reviewToEdit.movieId &&
-      r_global.comment === reviewToEdit.comment && // Pode precisar de um ID único de review se comentários puderem ser iguais
+      r_global.comment === reviewToEdit.comment && 
       r_global.rating === reviewToEdit.rating
   );
 
@@ -204,7 +204,7 @@ function editReview(indexInFilteredArray) {
     return;
   }
   
-  const review = allReviewsOriginal[globalReviewIndex]; // Usar a referência do array original
+  const review = allReviewsOriginal[globalReviewIndex]; 
 
   const newComment = prompt("Edite seu comentário:", review.comment);
   const newRating = prompt("Altere a nota (0 a 5):", review.rating);
@@ -220,7 +220,7 @@ function editReview(indexInFilteredArray) {
     
     localStorage.setItem("reviews", JSON.stringify(allReviewsOriginal));
     loadMyReviews();
-    loadRecentActivities(); // Recarrega atividades recentes também
+    loadRecentActivities(); 
   }
 }
 
@@ -236,14 +236,14 @@ function deleteReview(indexInFilteredArray) {
       !(
         r_global.userEmail === reviewToDelete.userEmail &&
         r_global.movieId === reviewToDelete.movieId &&
-        r_global.comment === reviewToDelete.comment && // Pode precisar de um ID único de review
+        r_global.comment === reviewToDelete.comment && 
         r_global.rating === reviewToDelete.rating
       )
   );
 
   localStorage.setItem("reviews", JSON.stringify(updatedReviews));
   loadMyReviews();
-  loadRecentActivities(); // Recarrega atividades recentes também
+  loadRecentActivities(); 
 }
 
 // Carrega atividades recentes (últimas 6 avaliações)

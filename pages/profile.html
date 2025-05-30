@@ -4,9 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Meu Perfil | FrameCode</title>
-  <!-- trouxe o mesmo CSS da home -->
   <link rel="stylesheet" href="../css/index.css">
-  <!-- CSS específico de perfil -->
   <link rel="stylesheet" href="../css/profile.css">
 </head>
 <body>
@@ -35,7 +33,7 @@
       <div class="user-data">
         <!-- Modo Visualização -->
         <div id="viewMode">
-          <h2 id="displayName"></h2>
+          <h3 id="displayName"></h3>
           <button id="editProfileBtn"> Editar</button>
           <button id="backProfileBtn" class="btn hidden">Voltar</button>
         </div>
@@ -76,9 +74,8 @@
     </section>
   </main>
 
-  <!-- Dentro do body, antes dos scripts -->
 <input type="file" id="avatarInput" accept="image/*" style="display: none;">
-  <!-- Scripts -->
+
   <script src="../js/utils.js"></script>
   <script src="../js/auth.js"></script>
   <script src="../js/profile.js"></script>

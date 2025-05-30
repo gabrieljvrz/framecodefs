@@ -135,6 +135,43 @@
   background-color: #b30000;
 }
 
+@media (max-width: 450px) {
+  #editProfileBtn{
+    margin-left: -0.8rem;
+  }
+
+  .header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: nowrap;
+  padding: 0 12px;
+  box-shadow: none;
+  height: 60px;
+}
+
+  .profile-icon img {
+    width: 42px;
+    height: 42px;
+    margin-right: 0;
+  }
+
+  .logo {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  width: 120px;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+} 
+
 /* === ATIVIDADES RECENTES === */
 .recent-activities h3 {
   font-size: 1.5rem;

@@ -2,7 +2,7 @@ const apiKey    = "3b08d5dfa29024b5dcb74e8bff23f984";
 const apiBase   = "https://api.themoviedb.org/3";
 const imageBase = "https://image.tmdb.org/t/p/w500";
 
-// DOM
+//DOM
 const movieTitle       = document.getElementById("movieTitle");
 const movieOverview    = document.getElementById("movieOverview");
 const movieReleaseDate = document.getElementById("movieReleaseDate");

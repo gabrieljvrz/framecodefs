@@ -1,4 +1,3 @@
-// Seleção de elementos
 const loginForm = document.getElementById('loginForm');
 const registerForm = document.getElementById('registerForm');
 const emailInput = document.getElementById('email');
@@ -27,7 +26,7 @@ function clearMessage() {
   messageArea.style.display = 'none';
 }
 
-// Login
+//Login
 if (loginForm) {
   loginForm.addEventListener('submit', function(e) {
     e.preventDefault();
