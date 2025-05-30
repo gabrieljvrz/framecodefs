@@ -21,36 +21,38 @@ Este é um projeto WEB simples e funcional que permite aos usuários registrar-s
 - **TMDb API** para dados dos filmes  
 
 ## 📁 Estrutura de Arquivos
+```
 📁.vscode/                                          
-└── launch.json                                     
+      └── launch.json                                     
                                                     
 📁 assets/                                         
-├── framecodeLogo.png                              
-├── hero-bg.png
-└── user icon.png
+      ├── framecodeLogo.png                              
+      ├── hero-bg.png
+      └── user icon.png
 
-📁 css/ 
-├── auth.css
-├── index.css
-├── movie.css
-├── profile.css
-├── stars.css
-└── styles.css
+📁 css/
+      ├── auth.css
+      ├── index.css
+      ├── movie.css
+      ├── profile.css
+      ├── stars.css
+      └── styles.css
 
-📁 js/  
-├── auth.js 
-├── index.js 
-├── movie-details.js
-├── movie.js
-├── profile.js 
-└── utils.js
+📁 js/
+      ├── auth.js
+      ├── index.js 
+      ├── movie-details.js
+      ├── movie.js
+      ├── profile.js 
+      └── utils.js
 
 📁 pages/
-├── index.html
-├── login.html
-├── movie.html
-├── profile.html
-└── register.html 
+      ├── index.html
+      ├── login.html
+      ├── movie.html
+      ├── profile.html
+      └── register.html 
 
 📄 LICENSE
 📄 README.md
+```
