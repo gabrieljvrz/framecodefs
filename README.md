@@ -66,7 +66,7 @@ Este é um projeto WEB simples e funcional que permite aos usuários registrar-s
 
 **Maverick Martins**
 
-Desenvolvedores em formação, apaixonados por dados, infraestrutura e integração de sistemas.
+Desenvolvedores em formação, apaixonados por desenvolvimento WEB.
 
 [GitHub: M4vericksm](https://github.com/M4vericksm)
 
