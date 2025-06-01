@@ -56,3 +56,20 @@ Este é um projeto WEB simples e funcional que permite aos usuários registrar-s
 📄 LICENSE
 📄 README.md
 ```
+---
+
+## 👨‍💻 Autores
+
+**Gabriel Jerônimo**
+
+**Hian VInicius**
+
+**Maverick Martins**
+
+Desenvolvedores em formação, apaixonados por dados, infraestrutura e integração de sistemas.
+
+[GitHub: M4vericksm](https://github.com/M4vericksm)
+
+[GitHub: HIANV](https://github.com/HIANV)
+
+[GitHub: gabrieljvrz](https://github.com/gabrieljvrz)
