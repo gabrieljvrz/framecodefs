@@ -62,7 +62,7 @@ Este é um projeto WEB simples e funcional que permite aos usuários registrar-s
 
 **Gabriel Jerônimo**
 
-**Hian VInicius**
+**Hian Vinicius**
 
 **Maverick Martins**
 
