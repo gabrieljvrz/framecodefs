@@ -2,7 +2,7 @@ const apiKey    = "3b08d5dfa29024b5dcb74e8bff23f984";
 const apiBase   = "https://api.themoviedb.org/3";
 const imageBase = "https://image.tmdb.org/t/p/w500";
 
-// DOM
+//DOM
 const movieTitle       = document.getElementById("movieTitle");
 const movieOverview    = document.getElementById("movieOverview");
 const movieReleaseDate = document.getElementById("movieReleaseDate");
@@ -60,26 +60,46 @@ function getAllReviews() { return JSON.parse(localStorage.getItem('reviews') || 
 function saveAllReviews(a) { return localStorage.setItem('reviews', JSON.stringify(a)); }
 
 function renderReviews() {
-  const all  = getAllReviews();
-  const mine = all.filter(r => String(r.movieId) === movieId);
+  const allReviews = getAllReviews();
+  const reviewsForThisMovie = allReviews.filter(r => String(r.movieId) === movieId);
   reviewsList.innerHTML = "";
-  let sum = 0;
-  mine.forEach(r => {
-    sum += r.rating;
+  let sumOfRatings = 0;
+
+  const loggedInUserSession = JSON.parse(localStorage.getItem('session'));
+  const loggedInUserEmail = loggedInUserSession?.email;
+  // Assumindo que o avatar do usuário logado está em 'userAvatar'
+  const loggedInUserAvatar = localStorage.getItem('userAvatar'); 
+
+  reviewsForThisMovie.forEach(review => {
+    sumOfRatings += review.rating;
+
+    let avatarSrc = 'assets/user icon.png'; // Placeholder padrão
+    // Verifica se a review é do usuário logado e se ele tem avatar
+    if (review.userEmail === loggedInUserEmail && loggedInUserAvatar) {
+      avatarSrc = loggedInUserAvatar;
+    } 
+    // Se não for o usuário logado, ou se ele não tiver avatar, usa o placeholder.
+    // No futuro, você poderia adicionar uma lógica para buscar avatares de outros usuários se eles forem armazenados de forma diferente.
+    // Exemplo: const specificUserAvatar = localStorage.getItem(`userAvatar_${review.userEmail}`);
+    // if (specificUserAvatar) avatarSrc = specificUserAvatar;
+
     const li = document.createElement('li');
     li.className = "review-item";
+    // Adiciona a tag <img> para o avatar
     li.innerHTML = `
       <header>
-        <strong>${r.userName||r.userEmail||'Anônimo'}</strong>
-        <span class="meta"> • Nota: ${r.rating}⭐</span>
+        <img src="${avatarSrc}" alt="Avatar de ${review.userName || review.userEmail || 'Anônimo'}" class="review-avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px; vertical-align: middle;">
+        <strong>${review.userName || review.userEmail || 'Anônimo'}</strong>
+        <span class="meta"> • Nota: ${review.rating}/5⭐</span>
       </header>
-      <p>${r.comment}</p>
+      <p>${review.comment}</p>
     `;
     reviewsList.appendChild(li);
   });
-  if (mine.length) {
-    const avg = Math.round(sum / mine.length);
-    avgRatingEl.textContent = '★'.repeat(avg) + '☆'.repeat(5-avg);
+
+  if (reviewsForThisMovie.length) {
+    const avg = Math.round(sumOfRatings / reviewsForThisMovie.length);
+    avgRatingEl.textContent = '★'.repeat(avg) + '☆'.repeat(5 - avg);
   } else {
     avgRatingEl.textContent = '—';
   }

@@ -34,7 +34,6 @@ body {
 /* Detalhes do Filme */
 .movie-details {
   display: flex;
-  /* width: 1000px; */
   gap: 2rem;
   padding: 2rem;
   background-color: #1f1f1f;
@@ -190,8 +189,80 @@ body {
   text-decoration: underline;
 }
 
+/* HEADER */
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: nowrap;
+  padding: 0 12px;
+  box-shadow: none;
+  background-color: #121212;
+  height: 60px;
+}
+
+.logo {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  width: 180px;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
+.profile-icon {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  margin-right: 0;
+}
+
+.profile-icon img {
+  width: 45px;
+  height: 45px;
+  margin-right: 0;
+}
+
 /* Responsividade */
-@media (max-width: 768px) {
+@media (max-width: 450px) {
+
+  .header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: nowrap;
+  padding: 0 12px;
+  box-shadow: none;
+  height: 60px;
+}
+
+  .profile-icon img {
+    width: 42px;
+    height: 42px;
+    margin-right: 0;
+  }
+
+  .logo {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.logo img {
+  width: 120px;
+  height: auto;
+  max-width: 100%;
+  display: block;
+}
+
   .movie-details {
     flex-direction: column;
     align-items: center;
@@ -210,30 +281,16 @@ body {
   .rating-box {
     font-size: 2rem;
   }
-}
 
-/* HEADER */
-.header {
-  position: relative;
-  height: 70px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 20px;
-  top: 0;
-  /* border-radius: 0; */
-  /* background-color: none; */
-  box-shadow: none;
-  background-color: #121212;
-  padding-top: 0;
-}
+  #movieTitle {
+    font-size: 30px;
+  }
 
-.logo img{
-  width: 200px;
-  height: 45px;
-}
+  #movieOverview {
+    font-size: 20px;
+  }
 
-.profile-icon img {
-  width: 40px;
-  height: 40px;
+  #lancamento, #genero, #elenco{
+    font-size: 18px;
+  }
 }

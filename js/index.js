@@ -45,7 +45,7 @@ async function fetchPopularMovies() {
     const limitedResults = combinedResults.slice(0, 24); 
 
     moviesGrid.innerHTML = "";
-    moviesTitle.textContent = "Lançamentos";
+    moviesTitle.textContent = "Populares";
 
     limitedResults.forEach((movie) => {
       const card = createMovieCard(movie);
