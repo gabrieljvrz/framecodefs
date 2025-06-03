@@ -47,6 +47,32 @@ if (loginForm) {
   senhaInput.addEventListener('input', clearMessage);
 }
 
+function validarCPF(cpf) {
+    cpf = cpf.replace(/[^\d]+/g, ''); // remove tudo que não for número
+
+    if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+
+    let soma = 0;
+    for (let i = 0; i < 9; i++) {
+        soma += parseInt(cpf.charAt(i)) * (10 - i);
+    }
+    let dig1 = 11 - (soma % 11);
+    if (dig1 >= 10) dig1 = 0;
+
+    if (dig1 !== parseInt(cpf.charAt(9))) return false;
+
+    soma = 0;
+    for (let i = 0; i < 10; i++) {
+        soma += parseInt(cpf.charAt(i)) * (11 - i);
+    }
+    let dig2 = 11 - (soma % 11);
+    if (dig2 >= 10) dig2 = 0;
+
+    if (dig2 !== parseInt(cpf.charAt(10))) return false;
+
+    return true;
+}
+
 // Registro
 if (registerForm) {
   registerForm.addEventListener('submit', function(e) {
@@ -59,7 +85,6 @@ if (registerForm) {
     const pw = this.password.value;
     const cpw = this.confirmPassword.value;
     if (!name || !email || !pw || !cpw || !cpf || !data_nascimento) return showMessage('Preencha todos os campos.', 'error');
-    if (cpf.length !== 11) return showMessage('CPF inválido. Deve ter 11 dígitos.', 'error');
     if (pw.length < 6) return showMessage('A senha deve ter pelo menos 6 caracteres.', 'error');
     if (!isValidEmail(email)) return showMessage('E‑mail inválido.', 'error');
     if (pw !== cpw) return showMessage('Senhas não conferem.', 'error');
