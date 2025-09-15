@@ -28,19 +28,38 @@ function clearMessage() {
 
 //Login
 if (loginForm) {
-  loginForm.addEventListener('submit', function(e) {
+  loginForm.addEventListener('submit', async function(e) { // Adicionamos 'async'
     e.preventDefault();
     clearMessage();
     const email = emailInput.value.trim();
-    const senha = senhaInput.value;
-    if (!email || !senha) return showMessage('Por favor, preencha todos os campos.', 'error');
+    const password = senhaInput.value;
+
+    if (!email || !password) return showMessage('Por favor, preencha todos os campos.', 'error');
     if (!isValidEmail(email)) return showMessage('E‑mail inválido.', 'error');
+
     try {
-      loginUser(email, senha);
+      const response = await fetch('http://localhost:3000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Ocorreu um erro no login.');
+      }
+      
+      // token guardado no localStorage
+      localStorage.setItem('framecode_token', data.token);
+
       showMessage('Login realizado com sucesso!', 'success');
       setTimeout(() => location.href = 'index.html', 1000);
+
     } catch (err) {
-      showMessage(err, 'error');
+      showMessage(err.message, 'error');
     }
   });
   emailInput.addEventListener('input', clearMessage);
@@ -75,25 +94,48 @@ function validarCPF(cpf) {
 
 // Registro
 if (registerForm) {
-  registerForm.addEventListener('submit', function(e) {
+  registerForm.addEventListener('submit', async function(e) { // Adicionamos 'async'
     e.preventDefault();
     clearMessage();
+    
+    // 1. coletar dados do formulário
     const name = this.name.value.trim();
     const email = this.email.value.trim();
     const cpf = this.cpf.value.trim();
     const data_nascimento = this.data_nascimento.value.trim();
-    const pw = this.password.value;
-    const cpw = this.confirmPassword.value;
-    if (!name || !email || !pw || !cpw || !cpf || !data_nascimento) return showMessage('Preencha todos os campos.', 'error');
-    if (pw.length < 6) return showMessage('A senha deve ter pelo menos 6 caracteres.', 'error');
+    const password = this.password.value;
+    const confirmPassword = this.confirmPassword.value;
+
+    // 2. validações no frontend
+    if (!name || !email || !password || !confirmPassword || !cpf || !data_nascimento) return showMessage('Preencha todos os campos.', 'error');
+    if (password.length < 6) return showMessage('A senha deve ter pelo menos 6 caracteres.', 'error');
     if (!isValidEmail(email)) return showMessage('E‑mail inválido.', 'error');
-    if (pw !== cpw) return showMessage('Senhas não conferem.', 'error');
-    const users = getUsers();
-    if (users.find(u => u.email === email)) return showMessage('E‑mail já cadastrado.', 'error');
-    if (users.find(u => u.cpf === cpf)) return showMessage('CPF já cadastrado.', 'error');
-    users.push({ name, email, cpf, data_nascimento, password: pw });
-    saveUsers(users);
-    showMessage('Conta criada com sucesso!', 'success');
-    setTimeout(() => location.href = 'login.html', 1500);
+    if (password !== confirmPassword) return showMessage('Senhas não conferem.', 'error');
+
+    // 3. enviar dados para a API
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, cpf, data_nascimento, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // se a API retornar um erro (ex: e-mail já existe), mostramos a mensagem dela
+        throw new Error(data.message || 'Ocorreu um erro.');
+      }
+
+      // 4. sucesso!
+      showMessage('Conta criada com sucesso!', 'success');
+      setTimeout(() => location.href = 'login.html', 1500);
+
+    } catch (error) {
+      // captura erros da API ou de conexão
+      showMessage(error.message, 'error');
+    }
   });
 }

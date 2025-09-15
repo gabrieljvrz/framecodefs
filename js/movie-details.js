@@ -59,75 +59,97 @@ async function loadMovieCredits(id) {
 function getAllReviews() { return JSON.parse(localStorage.getItem('reviews') || '[]'); }
 function saveAllReviews(a) { return localStorage.setItem('reviews', JSON.stringify(a)); }
 
-function renderReviews() {
-  const allReviews = getAllReviews();
-  const reviewsForThisMovie = allReviews.filter(r => String(r.movieId) === movieId);
-  reviewsList.innerHTML = "";
-  let sumOfRatings = 0;
+async function renderReviews() {
+  reviewsList.innerHTML = ""; 
+  try {
+    const response = await fetch(`http://localhost:3000/api/reviews/${movieId}`);
+    const reviewsForThisMovie = await response.json();
 
-  const loggedInUserSession = JSON.parse(localStorage.getItem('session'));
-  const loggedInUserEmail = loggedInUserSession?.email;
-  // Assumindo que o avatar do usuário logado está em 'userAvatar'
-  const loggedInUserAvatar = localStorage.getItem('userAvatar'); 
+    if (!response.ok) {
+        throw new Error('Não foi possível carregar as avaliações.');
+    }
+    
+    let sumOfRatings = 0;
 
-  reviewsForThisMovie.forEach(review => {
-    sumOfRatings += review.rating;
+    if (reviewsForThisMovie.length === 0) {
+        reviewsList.innerHTML = "<li>Nenhuma avaliação ainda. Seja o primeiro!</li>";
+    }
 
-    let avatarSrc = 'assets/user icon.png'; // Placeholder padrão
-    // Verifica se a review é do usuário logado e se ele tem avatar
-    if (review.userEmail === loggedInUserEmail && loggedInUserAvatar) {
-      avatarSrc = loggedInUserAvatar;
-    } 
-    // Se não for o usuário logado, ou se ele não tiver avatar, usa o placeholder.
-    // No futuro, você poderia adicionar uma lógica para buscar avatares de outros usuários se eles forem armazenados de forma diferente.
-    // Exemplo: const specificUserAvatar = localStorage.getItem(`userAvatar_${review.userEmail}`);
-    // if (specificUserAvatar) avatarSrc = specificUserAvatar;
+    reviewsForThisMovie.forEach(review => {
+        sumOfRatings += review.rating;
 
-    const li = document.createElement('li');
-    li.className = "review-item";
-    // Adiciona a tag <img> para o avatar
-    li.innerHTML = `
-      <header>
-        <img src="${avatarSrc}" alt="Avatar de ${review.userName || review.userEmail || 'Anônimo'}" class="review-avatar" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px; vertical-align: middle;">
-        <strong>${review.userName || review.userEmail || 'Anônimo'}</strong>
-        <span class="meta"> • Nota: ${review.rating}/5⭐</span>
-      </header>
-      <p>${review.comment}</p>
-    `;
-    reviewsList.appendChild(li);
-  });
+        const li = document.createElement('li');
+        li.className = "review-item";
+        li.innerHTML = `
+        <header>
+            <strong>${review.userName || 'Anônimo'}</strong>
+            <span class="meta"> • Nota: ${review.rating}/5⭐</span>
+        </header>
+        <p>${review.comment}</p>
+        `;
+        reviewsList.appendChild(li);
+    });
 
-  if (reviewsForThisMovie.length) {
-    const avg = Math.round(sumOfRatings / reviewsForThisMovie.length);
-    avgRatingEl.textContent = '★'.repeat(avg) + '☆'.repeat(5 - avg);
-  } else {
+    if (reviewsForThisMovie.length > 0) {
+        const avg = Math.round(sumOfRatings / reviewsForThisMovie.length);
+        avgRatingEl.textContent = '★'.repeat(avg) + '☆'.repeat(5 - avg);
+    } else {
+        avgRatingEl.textContent = '—';
+    }
+
+  } catch (error) {
+    reviewsList.innerHTML = `<li>Erro ao carregar avaliações: ${error.message}</li>`;
     avgRatingEl.textContent = '—';
   }
 }
 
+
 // intercepta submit
-reviewForm.addEventListener('submit', e => {
+reviewForm.addEventListener('submit', async e => {
   e.preventDefault();
-  const sel     = document.querySelector('input[name="star"]:checked');
-  const rating  = sel ? +sel.value : 0;
+
+  const token = localStorage.getItem('framecode_token');
+  if (!token) {
+    alert('Você precisa estar logado para fazer uma avaliação.');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const sel = document.querySelector('input[name="star"]:checked');
+  const rating = sel ? +sel.value : 0;
   const comment = document.getElementById('text').value.trim();
-  if (!rating||!comment) {
+  
+  if (!rating || !comment) {
     return alert('Selecione uma nota e escreva sua resenha.');
   }
-  const session = JSON.parse(localStorage.getItem('session') || 'null');
-  const review  = {
-    movieId,
-    movieTitle: currentMovieData?.title||'',
-    rating,
-    comment,
-    userEmail: session?.email,
-    userName:  session?.name
-  };
-  const all = getAllReviews();
-  all.push(review);
-  saveAllReviews(all);
-  reviewForm.reset();
-  renderReviews();
+
+  try {
+    const response = await fetch('http://localhost:3000/api/reviews', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'x-auth-token': token // Enviamos o token para o middleware de autenticação!
+        },
+        body: JSON.stringify({
+            rating,
+            comment,
+            movieId: movieId, // Variável global que já tem o ID do filme
+            movieTitle: currentMovieData?.title || 'Título desconhecido'
+        })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        throw new Error(data.message || 'Erro ao publicar avaliação.');
+    }
+
+    reviewForm.reset();
+    renderReviews(); // Recarrega as avaliações da API para mostrar a nova
+
+  } catch (error) {
+    alert(`Erro: ${error.message}`);
+  }
 });
 
 // quando o DOM estiver pronto
