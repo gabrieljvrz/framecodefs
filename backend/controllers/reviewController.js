@@ -5,7 +5,7 @@ exports.getReviewsByMovie = async (req, res) => {
   try {
     const { movieId } = req.params;
     const [reviews] = await db.query(
-      `SELECT r.id, r.rating, r.comment, r.created_at, u.name as userName 
+      `SELECT r.id, r.user_id, r.rating, r.comment, r.created_at, u.name as userName 
        FROM reviews r 
        JOIN users u ON r.user_id = u.id 
        WHERE r.movie_id = ? 
@@ -58,6 +58,64 @@ exports.deleteReview = async (req, res) => {
     const { id } = req.params; // ID da avaliação a ser deletada
     await db.query('DELETE FROM reviews WHERE id = ?', [id]);
     res.json({ message: 'Avaliação deletada com sucesso.' });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro no servidor.' });
+  }
+};
+
+// atualizar uma avaliação que pertence ao usuário logado
+exports.updateMyReview = async (req, res) => {
+  try {
+    const { id } = req.params; // ID da review
+    const { rating, comment } = req.body;
+    const userId = req.user.id; // ID do usuário logado
+
+    if (!rating || !comment) {
+      return res.status(400).json({ message: 'Nota e comentário são obrigatórios.' });
+    }
+
+    // primeiro, verifica se a avaliação pertence mesmo ao usuário
+    const [reviewRows] = await db.query('SELECT * FROM reviews WHERE id = ?', [id]);
+    if (reviewRows.length === 0) {
+      return res.status(404).json({ message: 'Avaliação não encontrada.' });
+    }
+
+    if (reviewRows[0].user_id !== userId) {
+      return res.status(403).json({ message: 'Acesso negado. Você não pode editar esta avaliação.' });
+    }
+
+    // se tudo estiver certo, atualiza
+    await db.query(
+      'UPDATE reviews SET rating = ?, comment = ? WHERE id = ?',
+      [rating, comment, id]
+    );
+    
+    res.json({ message: 'Avaliação atualizada com sucesso!' });
+  } catch (error) {
+    res.status(500).json({ message: 'Erro no servidor.' });
+  }
+};
+
+// deletar uma avaliação que pertence ao usuário logado
+exports.deleteMyReview = async (req, res) => {
+  try {
+    const { id } = req.params; // ID da review
+    const userId = req.user.id; // ID do usuário logado
+
+    // verifica se a avaliação pertence ao usuário
+    const [reviewRows] = await db.query('SELECT * FROM reviews WHERE id = ?', [id]);
+    if (reviewRows.length === 0) {
+      return res.status(404).json({ message: 'Avaliação não encontrada.' });
+    }
+
+    if (reviewRows[0].user_id !== userId) {
+      return res.status(403).json({ message: 'Acesso negado. Você não pode excluir esta avaliação.' });
+    }
+
+    // se pertencer, deleta
+    await db.query('DELETE FROM reviews WHERE id = ?', [id]);
+    
+    res.json({ message: 'Avaliação excluída com sucesso.' });
   } catch (error) {
     res.status(500).json({ message: 'Erro no servidor.' });
   }

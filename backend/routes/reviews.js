@@ -15,6 +15,12 @@ router.post('/', authMiddleware, reviewController.createReview);
 // rota para buscar as avaliações do usuário logado (protegida)
 router.get('/user/me', authMiddleware, reviewController.getMyReviews);
 
+// rota para o USUÁRIO ATUALIZAR sua própria avaliação (protegida)
+router.put('/me/:id', authMiddleware, reviewController.updateMyReview);
+
+// rota para o USUÁRIO DELETAR sua própria avaliação (protegida)
+router.delete('/me/:id', authMiddleware, reviewController.deleteMyReview);
+
 // [ADMIN] rota para deletar qualquer avaliação (protegida por auth e admin)
 router.delete('/:id', [authMiddleware, adminMiddleware], reviewController.deleteReview);
 
