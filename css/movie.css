@@ -165,28 +165,52 @@ body {
 .review-item:hover {
   background-color: #333333;
 }
+
+/* Regra principal para o cabeçalho da avaliação */
 .review-item header {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* Empurra o nome para a esquerda e o resto para a direita */
   align-items: center;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem; /* Adiciona um espaço antes do texto do comentário */
 }
+
+/* Estiliza o contentor que agrupa a nota e os botões */
+.meta-and-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* Controla o espaço entre a nota e os botões */
+}
+
+/* Estiliza a nota (mantém o estilo anterior) */
 .review-item .meta {
   color: #e5e5e5;
   font-weight: 600;
   font-size: 0.95rem;
 }
-.review-item button {
-  background: transparent;
+
+/* Estilo final para os botões de ação */
+.review-actions button {
+  background: none;
   border: none;
-  color: #ef4444;
-  font-size: 0.9rem;
+  padding: 0;
+  margin: 0;
   cursor: pointer;
-  transition: color 0.2s ease;
+  font-size: 0.9rem;
+  font-family: 'Segoe UI', sans-serif; /* Garante que a fonte é a mesma do resto do site */
+  color: #e5e5e5;
+
+  transition: text-decoration 0.2s ease;
 }
-.review-item button:hover {
-  color: #dc2626;
+
+.review-actions button:hover {
+  color: #e50914;
   text-decoration: underline;
+  transition: 0.35s;
+}
+
+.review-actions {
+  display: flex;
+  gap: 1rem;
 }
 
 /* HEADER */
@@ -294,3 +318,4 @@ body {
     font-size: 18px;
   }
 }
+

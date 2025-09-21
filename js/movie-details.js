@@ -102,24 +102,28 @@ async function renderReviews() {
       
       let buttons = '';
       if (loggedInUser) {
+        // Usamos texto simples nos botões
         if (loggedInUser.id == review.user_id) {
             buttons = `
-              <button onclick="editReview(${review.id}, '${review.comment.replace(/'/g, "\\'")}', ${review.rating})">✏️ Editar</button>
-              <button onclick="deleteMyReview(${review.id})">❌ Excluir</button>
+              <button onclick="editReview(${review.id}, '${review.comment.replace(/'/g, "\\'")}', ${review.rating})"><img src="assets/edit.png"> Editar</button>
+              <button onclick="deleteMyReview(${review.id})"><img src="assets/delete.png"> Excluir</button>
             `;
         } 
         else if (loggedInUser.role === 'admin') {
-            buttons = `<button onclick="deleteAnyReview(${review.id})">❌ Excluir (Admin)</button>`;
+            buttons = `<button onclick="deleteAnyReview(${review.id})"><img src="assets/delete.png"> Excluir (Admin)</button>`;
         }
       }
 
+      // Nova estrutura HTML para agrupar a nota e as ações
       li.innerHTML = `
         <header>
           <strong>${review.userName || 'Anônimo'}</strong>
-          <span class="meta"> • Nota: ${review.rating}/5⭐</span>
+          <div class="meta-and-actions">
+            <div class="review-actions">${buttons}</div>
+            <span class="meta"> Nota: ${review.rating}/5⭐</span>
+          </div>
         </header>
         <p>${review.comment}</p>
-        <div class="review-actions">${buttons}</div>
       `;
       reviewsList.appendChild(li);
     });
