@@ -242,3 +242,8 @@
 .review-item img {
   border-radius: 5px;
 }
+
+.reviews-list {
+  list-style-type: none; 
+  padding: 0;            
+}

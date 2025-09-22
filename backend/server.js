@@ -22,7 +22,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/reviews', reviewRoutes); 
 app.use('/api/users', userRoutes);
 
-// Inicia o servidor
+// inicia o servidor
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });

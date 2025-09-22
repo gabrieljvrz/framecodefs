@@ -9,14 +9,32 @@
 </head>
 <body>
   <div class="container">
+
     <img src="assets/framecodeLogo.png" alt="Logo do FrameCode">
+
     <form id="loginForm">
+
       <div id="messageArea" class="message-area" style="display:none"></div>
-      <input type="email" name="email" id="email" placeholder="E‑mail" required>
-      <input type="password" name="senha" id="senha" placeholder="Senha" required>
-      <button type="submit">Entrar</button>
+      
+      <div id="emailArea">
+        <input type="email" name="email" id="email" placeholder="E‑mail" required>
+      </div>
+
+      <div class="password-container">
+        <input type="password" name="senha" id="senha" placeholder="Senha" required>
+        <button type="button" class="toggle-password-btn" data-target="senha">
+          <img src="assets/show.png" alt="Mostrar senha" class="toggle-icon">
+        </button>
+      </div>
+
+      <div id="loginButton">
+        <button type="submit" id="loginBtn">Entrar</button>
+      </div>
+
     </form>
-    <p>Não tem conta? <a href="register.html">Cadastre-se</a></p>
+
+    <p>Ainda não tem conta? <a href="register.html">Cadastre-se</a></p>
+
   </div>
   <script src="js/utils.js"></script>
   <script src="js/auth.js"></script>

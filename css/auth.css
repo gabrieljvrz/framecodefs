@@ -19,6 +19,15 @@ body {
   width: 300px;
 }
 
+.container a {
+  text-decoration: underline;
+  color: #e50914
+}
+
+.container p {
+  color: #fff
+}
+
 /* Logo */
 .container img {
   width: 250px;
@@ -42,12 +51,13 @@ body {
   background-color: #2a2a2a;
   color: #fff;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
-/* Botão */
-.container button {
+/* Botão Entrar */
+#loginBtn {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   background-color: #e50914;
   color: #fff;
   border: none;
@@ -55,16 +65,62 @@ body {
   font-size: 16px;
   cursor: pointer;
   margin-top: 10px;
+  height: 46px;
 }
 
-/* Texto de cadastro */
-.container p {
-  color: #ccc;
-  margin-top: 15px;
+#registerBtn {
+  width: 100%;
+  padding: 12px;
+  background-color: #e50914;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 10px;
+  height: 46px;
+}
+
+/* Container da senha */
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-container input {
+  padding-right: 40px;
+  border-radius: 8px;
+  background-color: #2a2a2a;
+  color: #fff;
   font-size: 14px;
+  border: none;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.container a {
-  color: #e50914;
-  text-decoration: none;
+/* Botão de toggle */
+.toggle-password-btn {
+  position: absolute;
+  right: 10px;
+  top: 40%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  width: 20px;
+  height: 20px;
+  outline: none;
+  transition: filter 0.2s ease;
+}
+
+.toggle-password-btn:hover {
+  filter: brightness(1.2);
+}
+
+.toggle-password-btn img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }

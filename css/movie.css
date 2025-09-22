@@ -202,6 +202,20 @@ body {
   transition: text-decoration 0.2s ease;
 }
 
+.search {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 300px;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+  top: 15px;
+}
+
 .review-actions button:hover {
   color: #e50914;
   text-decoration: underline;
@@ -319,3 +333,58 @@ body {
   }
 }
 
+/* css/movie.css -> Adicione no final */
+
+/* Estilos para a Grelha de Resultados da Pesquisa (copiado do index.css) */
+.movies-section {
+  padding: 20px;
+  text-align: center;
+}
+
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 16px;
+  padding: 20px 0;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.movie-card {
+  text-align: center;
+  cursor: pointer;
+}
+
+.movie-card img {
+  width: 100%;
+  height: auto;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 8px;
+  transition: transform 0.3s ease;
+}
+
+.movie-card img:hover {
+  transform: scale(1.05);
+}
+
+.movie-card h3 {
+  display: block;
+  margin-top: 8px;
+  font-weight: bold;
+  font-size: 14px;
+  color: #fff;
+}
+
+.header #searchForm {
+  background: none;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
+  margin: 0; 
+}
+
+.movies-section .movie-card {
+  background: none;
+  box-shadow: none;
+}

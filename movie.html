@@ -11,20 +11,20 @@
 <body>
   <header class="header">
     <div class="logo">
-      <a href="index.html">
-        <img src="assets/framecodeLogo.png" alt="FrameCode Logo">
-      </a>
+      <a href="index.html"><img src="assets/framecodeLogo.png" alt="FrameCode Logo"></a>
     </div>
+    
+    <form id="searchForm">
+      <input type="text" id="searchInput" class="search" placeholder="Buscar filmes..." />
+    </form>
+    
     <div class="profile-icon">
-      <a href="profile.html">
-        <img src="assets/user icon.png" alt="Perfil">
-      </a>
+      <a href="profile.html"><img src="assets/user icon.png" alt="Perfil do usuário"></a>
     </div>
   </header>
 
   <div class="container">
 
-    <!-- Detalhes do Filme -->
     <section id="movieDetails" class="movie-details">
       <div class="movie-poster-container">
         <img src="" alt="Poster do Filme" class="movie-poster" />
@@ -38,13 +38,11 @@
       </div>
     </section>
 
-    <!-- Média do Site -->
     <div class="rating-section">
       <h2>Média dos usuários</h2>
       <div class="avg-stars" id="avgRating">—</div>
     </div>
 
-    <!-- Formulário de Resenha -->
     <div class="review-section">
       <h2>Deixe sua Avaliação:</h2>
       <form id="reviewForm" class="review-form">
@@ -59,14 +57,16 @@
         <button type="submit">Publicar</button>
       </form>
 
-      <!-- Lista de Resenhas -->
       <h2>Resenhas</h2>
       <ul class="reviews-list" id="reviewsList">
-        <!-- Resenhas dinâmicas aparecerão aqui -->
-      </ul>
+        </ul>
     </div>
   </div>
 
+  <section id="searchResultsSection" class="movies-section" style="display: none;">
+    <h2 id="searchResultsTitle">Resultados da Pesquisa</h2>
+    <div id="searchResultsGrid" class="movies-grid"></div>
+  </section>
   
   <script src="js/utils.js"></script>
   <script src="js/auth.js"></script>

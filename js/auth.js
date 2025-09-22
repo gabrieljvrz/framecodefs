@@ -17,6 +17,8 @@ function showMessage(message, type) {
   messageArea.className = 'message-area';
   messageArea.classList.add(type);
   messageArea.style.display = 'block';
+  messageArea.style.color = '#e5e5e5';
+  messageArea.style.marginBottom = '0.8rem';
 }
 
 function clearMessage() {
@@ -139,3 +141,28 @@ if (registerForm) {
     }
   });
 }
+
+// Função genérica para toggle de senha
+function togglePasswordVisibility(inputId) {
+  const input = document.getElementById(inputId);
+  const button = input.parentElement.querySelector('.toggle-password-btn');
+  const icon = button.querySelector('img');
+
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.src = 'assets/hidden.png';
+    icon.alt = 'Ocultar senha';
+  } else {
+    input.type = 'password';
+    icon.src = 'assets/show.png';
+    icon.alt = 'Mostrar senha';
+  }
+}
+
+// Aplicar evento aos botões de toggle no registro
+document.querySelectorAll('.toggle-password-btn').forEach(button => {
+  button.addEventListener('click', function() {
+    const targetId = this.getAttribute('data-target');
+    togglePasswordVisibility(targetId);
+  });
+});
