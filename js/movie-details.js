@@ -15,6 +15,7 @@ const moviePoster      = document.querySelector(".movie-poster");
 const reviewForm       = document.getElementById('reviewForm');
 const reviewsList      = document.getElementById('reviewsList');
 const avgRatingEl      = document.getElementById('avgRating');
+const reviewSectionTitle = document.querySelector('.review-section h2');
 
 const searchResultsSection = document.getElementById('searchResultsSection');
 const searchResultsGrid = document.getElementById('searchResultsGrid');
@@ -23,15 +24,12 @@ const searchResultsTitle = document.getElementById('searchResultsTitle');
 let currentMovieData = null;
 
 // --- LÓGICA DE PESQUISA ---
-
-// CORREÇÃO 2: A tag <h3> foi movida para fora do <a> para ser exibida corretamente.
 function createMovieCard(movie) {
   const card = document.createElement("div");
   card.classList.add("movie-card");
   const title = movie.title || movie.name || "Título Desconhecido";
   const posterPath = movie.poster_path ? `${imageBase}${movie.poster_path}` : "https://via.placeholder.com/500x750?text=Sem+Imagem";
 
-  // A CORREÇÃO ESTÁ AQUI: A tag <h3> foi movida para FORA da tag <a>.
   card.innerHTML = `
     <a href="movie.html?id=${movie.id}">
       <img src="${posterPath}" alt="${title}">
@@ -60,7 +58,6 @@ async function searchMovies(query) {
   }
 }
 
-// CORREÇÃO 1: A lógica de pesquisa agora usa o evento 'input' para ser em tempo real.
 const searchForm = document.getElementById('searchForm');
 const searchInput = document.getElementById('searchInput');
 
@@ -73,22 +70,23 @@ if (searchInput) {
       searchResultsTitle.textContent = `Resultados da busca para: "${searchTerm}"`;
       searchMovies(searchTerm);
     } else {
-      // Se o campo de busca for limpo, volta a mostrar os detalhes do filme
       searchResultsSection.style.display = 'none';
       detailsContainer.style.display = 'block';
     }
   });
 
-  // Mantemos o evento de submit para o caso de o utilizador premir Enter, para garantir o comportamento
   if (searchForm) {
       searchForm.addEventListener('submit', (e) => e.preventDefault());
   }
 }
 
-
-// --- LÓGICA ORIGINAL DA PÁGINA DE DETALHES ---
+// --- LÓGICA DA PÁGINA DE DETALHES ---
 const urlParams = new URLSearchParams(window.location.search);
 const movieId   = urlParams.get("id");
+
+// CORREÇÃO: Lemos o token de ambos os locais de armazenamento.
+const token = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
+let loggedInUser = null;
 
 function parseJwt(token) {
   try {
@@ -104,8 +102,7 @@ function parseJwt(token) {
   }
 }
 
-const token = localStorage.getItem('framecode_token');
-let loggedInUser = null;
+// Preenche a variável loggedInUser se o token existir
 if (token) {
   const decodedToken = parseJwt(token);
   if (decodedToken && decodedToken.user) {
@@ -150,32 +147,77 @@ async function renderReviews() {
     if (!response.ok) throw new Error('Não foi possível carregar as avaliações.');
     reviewsList.innerHTML = "";
     let sumOfRatings = 0;
+
+    let userHasAlreadyReviewed = false;
+
     if (reviewsForThisMovie.length === 0) {
-      reviewsList.innerHTML = "<h3 id='noReviewsH3'>Nenhuma avaliação ainda. Seja o primeiro!</h3>";
+      reviewsList.innerHTML = "<h4 id='no-reviews-h4'>Nenhuma avaliação ainda. Seja o primeiro!</h4>";
     }
     reviewsForThisMovie.forEach(review => {
       sumOfRatings += review.rating;
+
+      const avatarSrc = review.avatar_url 
+        ? `http://localhost:3000${review.avatar_url}` 
+        : 'assets/user icon.png';
+
+      if (loggedInUser && loggedInUser.id == review.user_id) {
+        userHasAlreadyReviewed = true;
+      }
+
       const li = document.createElement('li');
       li.className = "review-item";
       li.id = `review-${review.id}`;
       let buttons = '';
       if (loggedInUser) {
         if (loggedInUser.id == review.user_id) {
-            buttons = `<button onclick="editReview(${review.id}, '${review.comment.replace(/'/g, "\\'")}', ${review.rating})">Editar</button><button onclick="deleteMyReview(${review.id})">Excluir</button>`;
+            buttons = `<button onclick="editReview(${review.id}, '${review.comment.replace(/'/g, "\\'")}', ${review.rating})"><img src="assets/edit.png"> Editar</button><button onclick="deleteMyReview(${review.id})"><img src="assets/delete.png"> Excluir</button>`;
         } 
         else if (loggedInUser.role === 'admin') {
-            buttons = `<button onclick="deleteAnyReview(${review.id})">Excluir (Admin)</button>`;
+            buttons = `<button onclick="deleteAnyReview(${review.id})"><img src="assets/delete.png"> Excluir (Admin)</button>`;
         }
       }
-      li.innerHTML = `<header><strong>${review.userName||'Anônimo'}</strong><div class="meta-and-actions"><span class="meta"> • Nota: ${review.rating}/5⭐</span><div class="review-actions">${buttons}</div></div></header><p>${review.comment}</p>`;
+      li.innerHTML = `
+      <header>
+        <div class="review-author-info">
+          <img src ="${avatarSrc}" alt="Avatar de ${review.usarName}" class="review-avatar">
+          <strong>${review.userName||'Anônimo'}</strong>
+        </div>
+        <div class="meta-and-actions">
+          <div class="review-actions">${buttons}</div>
+          <span class="meta"> • Nota: ${review.rating}/5⭐</span>
+        </div>
+      </header>
+      <p>${review.comment}</p>`;
+
       reviewsList.appendChild(li);
     });
+
     if (reviewsForThisMovie.length > 0) {
       const avg = Math.round(sumOfRatings / reviewsForThisMovie.length);
       avgRatingEl.textContent = '★'.repeat(avg) + '☆'.repeat(5 - avg);
     } else {
       avgRatingEl.textContent = '—';
     }
+
+    if (userHasAlreadyReviewed) {
+      reviewForm.style.display = 'none';
+      // Verifica se o título da secção existe antes de o alterar
+      if (reviewSectionTitle) {
+        reviewSectionTitle.textContent = 'Você já avaliou esse filme.';
+      }
+    } else if (loggedInUser) {
+      reviewForm.style.display = 'flex';
+      // Garante que o texto original volta a aparecer se necessário
+      if (reviewSectionTitle) {
+        reviewSectionTitle.textContent = 'Deixe sua Avaliação:';
+      }
+    } else {
+      reviewForm.style.display = 'none';
+      if (reviewSectionTitle) {
+        reviewSectionTitle.textContent = 'Faça login para deixar sua avaliação';
+      }
+    }
+
   } catch (error) {
     reviewsList.innerHTML = `<li>Erro ao carregar avaliações: ${error.message}</li>`;
     avgRatingEl.textContent = '—';
@@ -184,7 +226,8 @@ async function renderReviews() {
 
 reviewForm.addEventListener('submit', async e => {
     e.preventDefault();
-    if (!token) {
+    const currentToken = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
+    if (!currentToken) {
         alert('Você precisa estar logado para fazer uma avaliação.');
         return (window.location.href = 'login.html');
     }
@@ -195,7 +238,7 @@ reviewForm.addEventListener('submit', async e => {
     try {
         const response = await fetch('http://localhost:3000/api/reviews', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
+            headers: { 'Content-Type': 'application/json', 'x-auth-token': currentToken },
             body: JSON.stringify({ rating, comment, movieId: movieId, movieTitle: currentMovieData?.title || 'Título desconhecido' })
         });
         const data = await response.json();
@@ -208,6 +251,7 @@ reviewForm.addEventListener('submit', async e => {
 });
 
 async function editReview(reviewId, oldComment, oldRating) {
+  const currentToken = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
   const newComment = prompt("Edite seu comentário:", oldComment);
   if (newComment === null || newComment.trim() === '') return;
   const newRatingStr = prompt("Altere a nota (1 a 5):", oldRating);
@@ -217,7 +261,7 @@ async function editReview(reviewId, oldComment, oldRating) {
   try {
     const response = await fetch(`http://localhost:3000/api/reviews/me/${reviewId}`, {
       method: 'PUT',
-      headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
+      headers: { 'Content-Type': 'application/json', 'x-auth-token': currentToken },
       body: JSON.stringify({ comment: newComment, rating: newRating })
     });
     const data = await response.json();
@@ -230,11 +274,12 @@ async function editReview(reviewId, oldComment, oldRating) {
 }
 
 async function deleteMyReview(reviewId) {
+  const currentToken = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
   if (!confirm("Tem certeza que deseja excluir sua avaliação?")) return;
   try {
     const response = await fetch(`http://localhost:3000/api/reviews/me/${reviewId}`, {
       method: 'DELETE',
-      headers: { 'x-auth-token': token }
+      headers: { 'x-auth-token': currentToken }
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.message);
@@ -246,11 +291,12 @@ async function deleteMyReview(reviewId) {
 }
 
 async function deleteAnyReview(reviewId) {
+  const currentToken = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
   if (!confirm("ADMIN: Tem certeza que deseja excluir esta avaliação?")) return;
   try {
     const response = await fetch(`http://localhost:3000/api/reviews/${reviewId}`, {
       method: 'DELETE',
-      headers: { 'x-auth-token': token }
+      headers: { 'x-auth-token': currentToken }
     });
     const data = await response.json();
     if (!response.ok) throw new Error(data.message);

@@ -55,3 +55,37 @@ exports.getAllUsers = async (req, res) => {
         res.status(500).json({ message: 'Erro no servidor.' });
     }
 };
+
+// Upload de avatar
+exports.uploadAvatar = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: 'Nenhum ficheiro enviado.' });
+    }
+
+    // O caminho do ficheiro guardado pelo multer
+    const avatarUrl = `/uploads/${req.file.filename}`;
+
+    // Atualiza o utilizador no banco de dados com o novo URL do avatar
+    await db.query('UPDATE users SET avatar_url = ? WHERE id = ?', [avatarUrl, req.user.id]);
+
+    res.json({ message: 'Avatar atualizado com sucesso!', avatarUrl: avatarUrl });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Erro no servidor ao fazer upload do avatar.' });
+  }
+};
+
+// Também precisamos de atualizar a função getMyProfile para retornar o avatar_url
+exports.getMyProfile = async (req, res) => {
+  try {
+    // ATUALIZADO: Adicionado avatar_url ao SELECT
+    const [userRows] = await db.query('SELECT id, name, email, role, avatar_url FROM users WHERE id = ?', [req.user.id]);
+    if (userRows.length === 0) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+    res.json(userRows[0]);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro no servidor.' });
+  }
+};

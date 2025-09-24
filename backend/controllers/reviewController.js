@@ -5,7 +5,7 @@ exports.getReviewsByMovie = async (req, res) => {
   try {
     const { movieId } = req.params;
     const [reviews] = await db.query(
-      `SELECT r.id, r.user_id, r.rating, r.comment, r.created_at, u.name as userName 
+      `SELECT r.id, r.user_id, r.rating, r.comment, r.created_at, u.name as userName, u.avatar_url
        FROM reviews r 
        JOIN users u ON r.user_id = u.id 
        WHERE r.movie_id = ? 
@@ -22,12 +22,26 @@ exports.getReviewsByMovie = async (req, res) => {
 exports.createReview = async (req, res) => {
   try {
     const { rating, comment, movieId, movieTitle } = req.body;
-    const userId = req.user.id; // pegamos o ID do usuário do token (via middleware)
+    const userId = req.user.id; // Pegamos o ID do usuário do token
 
     if (!rating || !comment || !movieId || !movieTitle) {
       return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
     }
 
+    // ================== NOVA VERIFICAÇÃO ==================
+    // 1. Verifica se já existe uma avaliação para este utilizador e este filme
+    const [existingReview] = await db.query(
+      'SELECT id FROM reviews WHERE user_id = ? AND movie_id = ?',
+      [userId, movieId]
+    );
+
+    // 2. Se a avaliação já existir, retorna um erro de conflito
+    if (existingReview.length > 0) {
+      return res.status(409).json({ message: 'Você já avaliou este filme.' }); // 409: Conflito
+    }
+    // =======================================================
+
+    // 3. Se não existir, insere a nova avaliação (lógica original)
     const [result] = await db.query(
       'INSERT INTO reviews (rating, comment, movie_id, movie_title, user_id) VALUES (?, ?, ?, ?, ?)',
       [rating, comment, movieId, movieTitle, userId]
@@ -35,6 +49,7 @@ exports.createReview = async (req, res) => {
 
     res.status(201).json({ message: 'Avaliação criada com sucesso!', reviewId: result.insertId });
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Erro no servidor.' });
   }
 };

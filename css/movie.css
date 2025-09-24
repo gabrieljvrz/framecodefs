@@ -183,9 +183,24 @@ body {
 
 /* Estiliza a nota (mantém o estilo anterior) */
 .review-item .meta {
-  color: #e5e5e5;
+  color: #e50914;
   font-weight: 600;
   font-size: 0.95rem;
+}
+
+/* css/movie.css -> Adicione junto aos estilos de .review-item */
+
+.review-author-info {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espaço entre a foto e o nome */
+}
+
+.review-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%; /* Deixa a imagem redonda */
+  object-fit: cover;    /* Garante que a imagem preenche o círculo sem distorcer */
 }
 
 /* Estilo final para os botões de ação */
@@ -389,7 +404,7 @@ body {
   box-shadow: none;
 }
 
-#noReviewsH3{
+#no-reviews-h4{
   display: flex;
   justify-content: center;
   text-align: center;

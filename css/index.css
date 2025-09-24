@@ -152,12 +152,26 @@ body {
   transform: scale(1.05);
 }
 
-.movie-card span {
-  display: block;
-  margin-top: 8px;
+.movie-card .movie-info {
+  padding: 0 8px; /* Adiciona um pequeno espaçamento lateral ao texto */
+}
+
+.movie-card .movie-info h3 {
+  color: #fff;
   font-weight: bold;
   font-size: 14px;
-  color: #fff;
+  margin-top: 8px;
+
+  /* 1. Define uma altura mínima para alinhar todos os cards */
+  /* A altura de 42px é suficiente para duas linhas de texto com este tamanho de fonte. */
+  min-height: 42px; 
+
+  /* 2. Lógica para cortar o texto após 2 linhas e adicionar "..." */
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* Número máximo de linhas a serem exibidas */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 

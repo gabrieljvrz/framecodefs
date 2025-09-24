@@ -6,55 +6,67 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // elementos do DOM
+  // --- ELEMENTOS DO DOM ---
   const displayNameEl = document.getElementById("displayName");
   const editModeForm = document.getElementById("editMode");
   const editNameInput = document.getElementById("editName");
   const editEmailInput = document.getElementById("editEmail");
   const editPasswordInput = document.getElementById("editPassword");
-  
   const editProfileBtn = document.getElementById("editProfileBtn");
   const saveProfileBtn = document.getElementById("saveProfileBtn");
   const backProfileBtn = document.getElementById("backProfileBtn");
-
   const avatarImg = document.querySelector(".user-info .avatar img");
   const changeAvatarBtn = document.getElementById("changeAvatarBtn");
   const avatarInput = document.getElementById("avatarInput");
-  
+  const myReviewsList = document.getElementById("myReviews");
+  const recentActivitiesEl = document.getElementById("recentActivities");
+  const logoutBtn = document.getElementById('logoutBtn');
+  const noRecentActivities = document.getElementById('no-recent-activities')
   let currentUserData = null;
+  
+  // --- FUNÇÕES DE LÓGICA ---
 
-  const headers = {
-    'Content-Type': 'application/json',
-    'x-auth-token': token
-  };
-
-  // lógica da foto de perfil
-  const savedAvatar = localStorage.getItem("userAvatar");
-  if (savedAvatar) {
-    avatarImg.src = savedAvatar;
-  }
+  // Lógica da foto de perfil (Atualizada para usar a API)
   changeAvatarBtn.addEventListener("click", () => {
     avatarInput.click();
   });
-  avatarInput.addEventListener("change", (event) => {
+
+  avatarInput.addEventListener("change", async (event) => {
     const file = event.target.files[0];
-    if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        const newAvatarURL = e.target.result;
-        avatarImg.src = newAvatarURL;
-        localStorage.setItem("userAvatar", newAvatarURL); 
-      };
-      reader.readAsDataURL(file);
-    } else {
-      alert("Por favor, selecione uma imagem válida (jpg, png, etc).");
+    if (!file || !file.type.startsWith("image/")) {
+      return alert("Por favor, selecione um ficheiro de imagem válido.");
+    }
+    
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    try {
+      // O cabeçalho 'Content-Type' não é definido aqui, o navegador faz isso automaticamente
+      const response = await fetch('http://localhost:3000/api/users/me/avatar', {
+        method: 'POST',
+        headers: {
+          'x-auth-token': token // Enviamos apenas o token de autenticação
+        },
+        body: formData,
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+
+      // Atualiza a imagem na página com a nova URL retornada pelo servidor
+      avatarImg.src = `http://localhost:3000${data.avatarUrl}`;
+      alert('Foto de perfil atualizada com sucesso!');
+    } catch (error) {
+      alert(`Erro ao atualizar a foto: ${error.message}`);
     }
   });
 
-  // função para buscar e preencher os dados do perfil via API
+  // Função para buscar e preencher os dados do perfil via API (Atualizada para carregar avatar)
   async function loadProfile() {
     try {
-      const response = await fetch('http://localhost:3000/api/users/me', { headers });
+      const response = await fetch('http://localhost:3000/api/users/me', { 
+        headers: { 'x-auth-token': token } 
+      });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Falha ao carregar perfil.');
@@ -67,40 +79,48 @@ document.addEventListener('DOMContentLoaded', () => {
       editNameInput.value = user.name;
       editEmailInput.value = user.email;
 
+      // Carrega o avatar do banco de dados
+      if (user.avatar_url) {
+        avatarImg.src = `http://localhost:3000${user.avatar_url}`;
+      } else {
+        avatarImg.src = 'assets/user icon.png'; // Imagem padrão
+      }
+
     } catch (error) {
       alert(error.message);
-      // se o token for inválido, desloga o usuário
       if (error.message.includes('inválido') || error.message.includes('negado')) {
         localStorage.removeItem('framecode_token');
-        localStorage.removeItem('userAvatar'); // limpa também o avatar
+        sessionStorage.removeItem('framecode_token');
         window.location.href = 'login.html';
       }
     }
   }
 
-  // função para buscar e renderizar as avaliações do usuário via API
+  // Função para buscar e renderizar as avaliações do usuário via API
   async function loadMyReviews() {
-    const list = document.getElementById("myReviews");
-    const activitiesEl = document.getElementById("recentActivities");
-    list.innerHTML = "<li>Carregando avaliações...</li>";
-    activitiesEl.innerHTML = "";
+    myReviewsList.innerHTML = "<li>Carregando avaliações...</li>";
+    recentActivitiesEl.innerHTML = "";
 
     try {
-      const response = await fetch('http://localhost:3000/api/reviews/user/me', { headers });
+      const response = await fetch('http://localhost:3000/api/reviews/user/me', { 
+        headers: { 'x-auth-token': token } 
+      });
       if (!response.ok) throw new Error('Falha ao carregar avaliações.');
 
       const reviews = await response.json();
-      list.innerHTML = ""; // limpa a mensagem de "carregando"
+      myReviewsList.innerHTML = "";
       
       if(reviews.length === 0) {
-        list.innerHTML = "<h4 id='noReviewsH4'>Você ainda não fez nenhuma avaliação.</h4>";
+        noRecentActivities.style.display = "flex"
+      }
+
+      if(reviews.length === 0) {
+        myReviewsList.innerHTML = "<h4 id='no-reviews-h4'>Você ainda não fez nenhuma avaliação.</h4>";
         return;
       }
       
       const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984"; 
       const imageBase = "https://image.tmdb.org/t/p/w200";
-
-      // para as atividades recentes, pegamos as 6 últimas
       const recentReviews = reviews.slice(0, 6);
 
       for (const r of reviews) {
@@ -111,23 +131,31 @@ document.addEventListener('DOMContentLoaded', () => {
             if(movieData.poster_path) posterUrl = `${imageBase}${movieData.poster_path}`;
         } catch(e) { console.error("Erro ao buscar poster"); }
 
-        // adiciona à lista principal de "Minhas Avaliações"
         const li = document.createElement("li");
         li.className = "review-item";
+        li.id = `my-review-${r.id}`;
+
+        const buttons = `
+          <button class="edit-review-btn" data-review-id="${r.id}" data-comment="${r.comment.replace(/"/g, '&quot;')}" data-rating="${r.rating}"><img src="assets/edit.png"> Editar</button>
+          <button class="delete-review-btn" data-review-id="${r.id}"><img src="assets/delete.png"> Excluir</button>
+        `;
+
         li.innerHTML = `
-          <img src="${posterUrl}" alt="Pôster de ${r.movie_title}" style="width: 80px; height: auto; margin-right: 15px; vertical-align: top;">
-          <div style="display: inline-block; vertical-align: top; width: calc(100% - 100px);">
+          <img src="${posterUrl}" alt="Pôster de ${r.movie_title}" class="review-poster">
+          <div class="review-content">
             <header>
               <strong>${r.movie_title}</strong>
-              <span class="meta"> • Nota: ${r.rating}/5 ⭐</span>
+              <div class="meta-and-actions">
+                <div class="review-actions">${buttons}</div>
+                <span class="meta"> • Nota: ${r.rating}/5 ⭐</span>
+              </div>
             </header>
             <p>${r.comment}</p>
           </div>
         `;
-        list.appendChild(li);
+        myReviewsList.appendChild(li);
 
-        // se a avaliação estiver entre as 6 recentes, adiciona também na outra seção
-        if(recentReviews.includes(r)) {
+        if(recentReviews.find(rev => rev.id === r.id)) {
             const card = document.createElement("div");
             card.className = "activity-card";
             card.innerHTML = `
@@ -136,15 +164,77 @@ document.addEventListener('DOMContentLoaded', () => {
               </a>
               <div class="stars">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</div>
             `;
-            activitiesEl.appendChild(card);
+            recentActivitiesEl.appendChild(card);
         }
       }
+      addEventListenersToReviewButtons();
     } catch (error) {
-      list.innerHTML = `<li>${error.message}</li>`;
+      myReviewsList.innerHTML = `<li>${error.message}</li>`;
+    }
+  }
+  
+  function addEventListenersToReviewButtons() {
+    document.querySelectorAll('.edit-review-btn').forEach(button => {
+      button.replaceWith(button.cloneNode(true));
+    });
+    document.querySelectorAll('.edit-review-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const { reviewId, comment, rating } = e.currentTarget.dataset;
+            editReviewOnProfile(reviewId, comment, rating);
+        });
+    });
+    document.querySelectorAll('.delete-review-btn').forEach(button => {
+      button.replaceWith(button.cloneNode(true));
+    });
+    document.querySelectorAll('.delete-review-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const { reviewId } = e.currentTarget.dataset;
+            deleteReviewOnProfile(reviewId);
+        });
+    });
+  }
+
+  async function editReviewOnProfile(reviewId, oldComment, oldRating) {
+    const newComment = prompt("Edite seu comentário:", oldComment);
+    if (newComment === null || newComment.trim() === '') return;
+    const newRatingStr = prompt("Altere a nota (1 a 5):", oldRating);
+    if (newRatingStr === null) return;
+    const newRating = parseInt(newRatingStr);
+    if (isNaN(newRating) || newRating < 1 || newRating > 5) {
+      return alert("Nota inválida. Por favor, insira um número entre 1 e 5.");
+    }
+    
+    try {
+      const response = await fetch(`http://localhost:3000/api/reviews/me/${reviewId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
+        body: JSON.stringify({ comment: newComment, rating: newRating })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      alert('Avaliação atualizada!');
+      loadMyReviews();
+    } catch (error) {
+      alert(`Erro: ${error.message}`);
     }
   }
 
-  // lógica dos botões de edição do formulário
+  async function deleteReviewOnProfile(reviewId) {
+    if (!confirm("Tem certeza que deseja excluir sua avaliação?")) return;
+    try {
+      const response = await fetch(`http://localhost:3000/api/reviews/me/${reviewId}`, {
+        method: 'DELETE',
+        headers: { 'x-auth-token': token }
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message);
+      alert('Avaliação excluída!');
+      loadMyReviews();
+    } catch (error) {
+      alert(`Erro: ${error.message}`);
+    }
+  }
+
   editProfileBtn.addEventListener("click", () => {
     editModeForm.style.display = "block";
     editNameInput.disabled = false;
@@ -152,7 +242,6 @@ document.addEventListener('DOMContentLoaded', () => {
     editPasswordInput.disabled = false;
     editPasswordInput.value = "";
     editPasswordInput.placeholder = "Nova senha (deixe em branco para não alterar)";
-    
     editProfileBtn.style.display = "none";
     saveProfileBtn.style.display = "inline-block";
     backProfileBtn.style.display = "inline-block";
@@ -163,33 +252,26 @@ document.addEventListener('DOMContentLoaded', () => {
     editNameInput.disabled = true;
     editEmailInput.disabled = true;
     editPasswordInput.disabled = true;
-    
-    // restaura valores originais
     if(currentUserData) {
         editNameInput.value = currentUserData.name;
         editEmailInput.value = currentUserData.email;
         editPasswordInput.value = "";
         editPasswordInput.placeholder = "Nova senha (opcional)";
     }
-    
     editProfileBtn.style.display = "inline-block";
     saveProfileBtn.style.display = "none";
     backProfileBtn.style.display = "none";
   });
 
-  // evento para o botão Salvar
   editModeForm.addEventListener('submit', async (e) => {
-    e.preventDefault(); // evita o recarregamento da página
-
+    e.preventDefault();
     const newName = editNameInput.value.trim();
     const newEmail = editEmailInput.value.trim();
     const newPassword = editPasswordInput.value.trim();
-
     if (!newName || !newEmail) {
       alert("Nome e e-mail são obrigatórios!");
       return;
     }
-
     const body = { name: newName, email: newEmail };
     if (newPassword && newPassword.length > 0) {
       if (newPassword.length < 6) {
@@ -198,48 +280,33 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       body.password = newPassword;
     }
-
     try {
         const response = await fetch('http://localhost:3000/api/users/me', {
             method: 'PUT',
-            headers,
+            headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
             body: JSON.stringify(body)
         });
-
         const data = await response.json();
         if(!response.ok) throw new Error(data.message || "Erro desconhecido.");
-
         alert('Perfil atualizado com sucesso!');
-        await loadProfile(); // recarrega os dados do perfil
-        backProfileBtn.click(); // simula o clique no botão voltar para fechar o formulário
-
+        await loadProfile();
+        backProfileBtn.click();
     } catch(error) {
         alert(`Erro ao atualizar: ${error.message}`);
     }
   });
 
-
-  // carrega os dados iniciais da página
+  // --- INICIALIZAÇÃO E BOTÃO DE SAIR ---
   loadProfile();
   loadMyReviews();
+  
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('framecode_token');
+      sessionStorage.removeItem('framecode_token');
+      localStorage.removeItem('userAvatar'); // Remove o avatar do localStorage também
+      alert('Você saiu da sua conta.');
+      window.location.href = 'login.html';
+    });
+  }
 });
-
-// js/profile.js -> Adicione no final do ficheiro
-
-// Lógica para o botão de Sair
-const logoutBtn = document.getElementById('logoutBtn');
-
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', () => {
-    // Apaga o token de ambos os locais de armazenamento
-    localStorage.removeItem('framecode_token');
-    sessionStorage.removeItem('framecode_token');
-
-    // Apaga também o avatar guardado
-    localStorage.removeItem('userAvatar');
-    
-    // Mostra um alerta e redireciona para a página de login
-    alert('Você saiu da sua conta.');
-    window.location.href = 'login.html';
-  });
-}

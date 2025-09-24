@@ -235,12 +235,58 @@
   margin-left: 0.5rem;
 }
 
-.review-item {
+/* css/profile.css */
+
+.reviews-list .review-item {
+  background-color: #1a1a1a;
+  color: #e5e5e5;
+  border-radius: 8px;
+  padding: 1rem;
+  display: flex; /* Ativa o flexbox para alinhar a imagem e o conteúdo */
+  gap: 1rem;      /* Espaço entre a imagem e o conteúdo */
   margin-bottom: 1rem;
 }
 
-.review-item img {
+.review-item .review-poster {
+  width: 80px;
+  height: auto;
   border-radius: 5px;
+  align-self: flex-start; /* Alinha a imagem ao topo */
+}
+
+.review-item .review-content {
+  flex: 1; /* Faz esta div ocupar todo o espaço restante */
+}
+
+.review-item header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+/* Agrupa a nota e os botões */
+.meta-and-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Estilo para os botões */
+.review-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.review-actions button {
+  font-weight: bold;
+  background: none;
+  border: none;
+  color: #e5e5e5;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 0;
+  transition: text-decoration 0.2s;
 }
 
 .reviews-list {
@@ -248,8 +294,14 @@
   padding: 0;            
 }
 
-#noReviewsH4{
+#no-reviews-h4 {
   display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+#no-recent-activities {
+  display: none;
   justify-content: center;
   text-align: center;
 }
@@ -259,6 +311,12 @@
 /* Estilos para o contentor das ações no cabeçalho */
 .header-actions {
   margin-right: 1rem; /* Adiciona um espaço à direita */
+}
+
+.review-actions button:hover {
+  color: #e50914;
+  text-decoration: underline;
+  transition: 0.35s;
 }
 
 /* Estilo para o botão de Sair */
