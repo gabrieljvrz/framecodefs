@@ -388,3 +388,9 @@ body {
   background: none;
   box-shadow: none;
 }
+
+#noReviewsH3{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}

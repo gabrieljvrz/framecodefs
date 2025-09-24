@@ -247,3 +247,33 @@
   list-style-type: none; 
   padding: 0;            
 }
+
+#noReviewsH4{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+/* css/profile.css -> Adicione no final do ficheiro */
+
+/* Estilos para o contentor das ações no cabeçalho */
+.header-actions {
+  margin-right: 1rem; /* Adiciona um espaço à direita */
+}
+
+/* Estilo para o botão de Sair */
+.logout-btn {
+  background-color: #e50914; /* Cor vermelha do FrameCode */
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #b30000; /* Um vermelho mais escuro ao passar o rato */
+}

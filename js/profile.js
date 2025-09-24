@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('framecode_token');
+  const token = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
   if (!token) {
     alert("Você precisa estar logado para acessar o perfil.");
     window.location.href = "login.html";
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
       list.innerHTML = ""; // limpa a mensagem de "carregando"
       
       if(reviews.length === 0) {
-        list.innerHTML = "<li>Você ainda não fez nenhuma avaliação.</li>";
+        list.innerHTML = "<h4 id='noReviewsH4'>Você ainda não fez nenhuma avaliação.</h4>";
         return;
       }
       
@@ -223,3 +223,23 @@ document.addEventListener('DOMContentLoaded', () => {
   loadProfile();
   loadMyReviews();
 });
+
+// js/profile.js -> Adicione no final do ficheiro
+
+// Lógica para o botão de Sair
+const logoutBtn = document.getElementById('logoutBtn');
+
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    // Apaga o token de ambos os locais de armazenamento
+    localStorage.removeItem('framecode_token');
+    sessionStorage.removeItem('framecode_token');
+
+    // Apaga também o avatar guardado
+    localStorage.removeItem('userAvatar');
+    
+    // Mostra um alerta e redireciona para a página de login
+    alert('Você saiu da sua conta.');
+    window.location.href = 'login.html';
+  });
+}

@@ -30,11 +30,15 @@ function clearMessage() {
 
 //Login
 if (loginForm) {
-  loginForm.addEventListener('submit', async function(e) { // Adicionamos 'async'
+  loginForm.addEventListener('submit', async function(e) {
     e.preventDefault();
     clearMessage();
     const email = emailInput.value.trim();
     const password = senhaInput.value;
+    
+    // 1. Capturamos o estado do checkbox
+    const rememberMeCheckbox = document.getElementById('remember-me-checkbox');
+    const rememberMe = rememberMeCheckbox.checked;
 
     if (!email || !password) return showMessage('Por favor, preencha todos os campos.', 'error');
     if (!isValidEmail(email)) return showMessage('E‑mail inválido.', 'error');
@@ -45,17 +49,26 @@ if (loginForm) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        // 2. Enviamos o estado do 'rememberMe' para o backend
+        body: JSON.stringify({ email, password, rememberMe }),
       });
 
       const data = await response.json();
-
       if (!response.ok) {
         throw new Error(data.message || 'Ocorreu um erro no login.');
       }
       
-      // token guardado no localStorage
-      localStorage.setItem('framecode_token', data.token);
+      localStorage.removeItem('framecode_token');
+      sessionStorage.removeItem('framecode_token');
+
+      // 3. Guardamos o token no local correto
+      if (rememberMe) {
+        // Se "Lembrar de mim" estiver marcado, guarda de forma persistente
+        localStorage.setItem('framecode_token', data.token);
+      } else {
+        // Se não, guarda apenas para a sessão atual (fecha o browser, o token desaparece)
+        sessionStorage.setItem('framecode_token', data.token);
+      }
 
       showMessage('Login realizado com sucesso!', 'success');
       setTimeout(() => location.href = 'index.html', 1000);

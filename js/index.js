@@ -1,3 +1,8 @@
+const token = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
+if (window.location.pathname.includes('login.html') && token) {
+  window.location.href = 'index.html';
+}
+
 const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984";
 const apiBase = "https://api.themoviedb.org/3";
 const imageBase = "https://image.tmdb.org/t/p/w500";

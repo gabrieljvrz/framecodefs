@@ -151,7 +151,7 @@ async function renderReviews() {
     reviewsList.innerHTML = "";
     let sumOfRatings = 0;
     if (reviewsForThisMovie.length === 0) {
-      reviewsList.innerHTML = "<li>Nenhuma avaliação ainda. Seja o primeiro!</li>";
+      reviewsList.innerHTML = "<h3 id='noReviewsH3'>Nenhuma avaliação ainda. Seja o primeiro!</h3>";
     }
     reviewsForThisMovie.forEach(review => {
       sumOfRatings += review.rating;

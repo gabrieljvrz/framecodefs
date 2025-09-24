@@ -124,3 +124,31 @@ body {
   height: 100%;
   object-fit: contain;
 }
+
+/* Coloque isto no seu ficheiro auth.css */
+
+.remember-me-checkbox {
+  display: flex;
+  justify-content: center; /* Adicionado para centralizar o conjunto */
+  gap: 6px;
+  cursor: pointer;
+  margin: 15px 0; /* Adiciona um espaçamento acima e abaixo */
+  margin-bottom: 0px;
+}
+
+/* Estilo para o texto "Lembrar de mim" */
+.remember-me-checkbox label {
+  color: #fff;
+  font-size: 14px;
+}
+
+/* Estilo para o checkbox */
+.remember-me-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #e50914; /* Deixa o checkbox vermelho quando marcado */
+}
+
+#registerParagraph {
+  margin: 5px;
+}

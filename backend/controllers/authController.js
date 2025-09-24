@@ -2,6 +2,7 @@ const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+// Esta função de registo permanece exatamente a mesma, não precisa de ser alterada.
 exports.register = async (req, res) => {
   // 1. extrair os dados do corpo da requisição
   const { name, email, cpf, data_nascimento, password } = req.body;
@@ -41,31 +42,36 @@ exports.register = async (req, res) => {
   }
 };
 
+
+// ================== ESTA É A FUNÇÃO ATUALIZADA ==================
+// Substitua a sua função exports.login por esta versão completa.
+
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
+  // Adicionamos 'rememberMe' para ser lido do corpo da requisição
+  const { email, password, rememberMe } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ message: 'Por favor, forneça e-mail e senha.' });
   }
 
   try {
-    // 1. encontrar o usuário pelo e-mail
+    // 1. encontrar o usuário pelo e-mail (lógica mantida)
     const [userRows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
     
     if (userRows.length === 0) {
-      return res.status(401).json({ message: 'Credenciais inválidas.' }); // 401: Não autorizado
+      return res.status(401).json({ message: 'Credenciais inválidas.' });
     }
 
     const user = userRows[0];
 
-    // 2. comparar a senha enviada com a senha criptografada no banco
+    // 2. comparar a senha (lógica mantida)
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(401).json({ message: 'Credenciais inválidas.' });
     }
 
-    // 3. se as senhas correspondem, criar o token JWT
+    // 3. criar o payload do token (lógica mantida)
     const payload = {
       user: {
         id: user.id,
@@ -74,14 +80,18 @@ exports.login = async (req, res) => {
         role: user.role
       }
     };
+    
+    // 4. NOVA LÓGICA: Definir a duração do token
+    const expiresIn = rememberMe ? '30d' : '1d'; // 30 dias se marcado, 1 dia se não
 
+    // 5. criar e enviar o token com a duração correta
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: '7d' }, // o token expira em 7 dias
+      { expiresIn: expiresIn }, // Usamos a nova duração variável
       (err, token) => {
         if (err) throw err;
-        res.json({ token }); // 4. enviar o token de volta para o cliente
+        res.json({ token });
       }
     );
 
