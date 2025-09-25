@@ -1,30 +1,28 @@
-.star-rating {
-  direction: rtl;
-  display: inline-flex;
+/* css/stars.css */
+
+/* Estilos para o SELETOR de estrelas INTERATIVO (no formulário de avaliação) */
+.new-star-rating {
+  display: flex;
   justify-content: center;
-  gap: 4px;
+  gap: 5px;
   margin-bottom: 1rem;
 }
 
-.star-rating input {
-  display: none;
-  justify-content: center;
-}
-
-.star-rating label {
-  font-size: 2rem;
-  color: #ccc;
+.new-star-rating img {
+  width: 32px; /* Tamanho maior para as estrelas que são clicáveis */
+  height: 32px;
   cursor: pointer;
-  transition: color 0.2s;
 }
 
-.star-rating input:checked ~ label,
-.star-rating label:hover,
-.star-rating label:hover ~ label {
-  color: gold;
+/* Estilos para a EXIBIÇÃO de estrelas ESTÁTICA (Média e Atividades Recentes) */
+.static-stars {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
 }
 
-.avg-stars {
-  font-size: 2rem;
-  color: gold;
+.static-stars img {
+  width: 24px; /* Tamanho menor e controlado para as estrelas de exibição */
+  height: 24px;
 }

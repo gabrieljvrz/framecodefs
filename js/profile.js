@@ -26,6 +26,26 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // --- FUNÇÕES DE LÓGICA ---
 
+  // Adicione esta função a ambos os ficheiros JS
+
+function generateStarsHTML(rating) {
+  let starsHTML = '';
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 !== 0;
+
+  for (let i = 0; i < fullStars; i++) {
+    starsHTML += `<img src="assets/star.png" alt="Estrela cheia">`;
+  }
+  if (hasHalfStar) {
+    starsHTML += `<img src="assets/half-star.png" alt="Meia estrela">`;
+  }
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+  for (let i = 0; i < emptyStars; i++) {
+    starsHTML += `<img src="assets/empty-star.png" alt="Estrela vazia">`;
+  }
+  return starsHTML;
+}
+
   // Lógica da foto de perfil (Atualizada para usar a API)
   changeAvatarBtn.addEventListener("click", () => {
     avatarInput.click();
@@ -97,81 +117,90 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Função para buscar e renderizar as avaliações do usuário via API
-  async function loadMyReviews() {
-    myReviewsList.innerHTML = "<li>Carregando avaliações...</li>";
-    recentActivitiesEl.innerHTML = "";
+  // js/profile.js
 
-    try {
-      const response = await fetch('http://localhost:3000/api/reviews/user/me', { 
-        headers: { 'x-auth-token': token } 
-      });
-      if (!response.ok) throw new Error('Falha ao carregar avaliações.');
+// SUBSTITUA A SUA FUNÇÃO loadMyReviews INTEIRA POR ESTA:
+// js/profile.js -> Substitua a sua função loadMyReviews por esta
 
-      const reviews = await response.json();
-      myReviewsList.innerHTML = "";
-      
-      if(reviews.length === 0) {
-        noRecentActivities.style.display = "flex"
+async function loadMyReviews() {
+  myReviewsList.innerHTML = "<li>Carregando avaliações...</li>";
+  recentActivitiesEl.innerHTML = "";
+
+  // CORREÇÃO: Definimos a variável 'headers' aqui dentro para garantir que ela exista.
+  const headers = { 'Content-Type': 'application/json', 'x-auth-token': token };
+
+  try {
+    const response = await fetch('http://localhost:3000/api/reviews/user/me', { headers });
+    if (!response.ok) throw new Error('Falha ao carregar avaliações.');
+
+    const reviews = await response.json();
+    myReviewsList.innerHTML = "";
+    
+    if (reviews.length === 0) {
+      if(document.getElementById('no-recent-activities')) {
+        document.getElementById('no-recent-activities').style.display = "flex";
       }
-
-      if(reviews.length === 0) {
-        myReviewsList.innerHTML = "<h4 id='no-reviews-h4'>Você ainda não fez nenhuma avaliação.</h4>";
-        return;
-      }
-      
-      const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984"; 
-      const imageBase = "https://image.tmdb.org/t/p/w200";
-      const recentReviews = reviews.slice(0, 6);
-
-      for (const r of reviews) {
-        let posterUrl = "https://via.placeholder.com/100x150?text=Sem+Imagem";
-        try {
-            const movieRes = await fetch(`https://api.themoviedb.org/3/movie/${r.movie_id}?api_key=${apiKey}&language=pt-BR`);
-            const movieData = await movieRes.json();
-            if(movieData.poster_path) posterUrl = `${imageBase}${movieData.poster_path}`;
-        } catch(e) { console.error("Erro ao buscar poster"); }
-
-        const li = document.createElement("li");
-        li.className = "review-item";
-        li.id = `my-review-${r.id}`;
-
-        const buttons = `
-          <button class="edit-review-btn" data-review-id="${r.id}" data-comment="${r.comment.replace(/"/g, '&quot;')}" data-rating="${r.rating}"><img src="assets/edit.png"> Editar</button>
-          <button class="delete-review-btn" data-review-id="${r.id}"><img src="assets/delete.png"> Excluir</button>
-        `;
-
-        li.innerHTML = `
-          <img src="${posterUrl}" alt="Pôster de ${r.movie_title}" class="review-poster">
-          <div class="review-content">
-            <header>
-              <strong>${r.movie_title}</strong>
-              <div class="meta-and-actions">
-                <div class="review-actions">${buttons}</div>
-                <span class="meta"> • Nota: ${r.rating}/5 ⭐</span>
-              </div>
-            </header>
-            <p>${r.comment}</p>
-          </div>
-        `;
-        myReviewsList.appendChild(li);
-
-        if(recentReviews.find(rev => rev.id === r.id)) {
-            const card = document.createElement("div");
-            card.className = "activity-card";
-            card.innerHTML = `
-              <a href="movie.html?id=${r.movie_id}">
-                <img src="${posterUrl}" alt="${r.movie_title}">
-              </a>
-              <div class="stars">${"★".repeat(r.rating)}${"☆".repeat(5 - r.rating)}</div>
-            `;
-            recentActivitiesEl.appendChild(card);
-        }
-      }
-      addEventListenersToReviewButtons();
-    } catch (error) {
-      myReviewsList.innerHTML = `<li>${error.message}</li>`;
+      myReviewsList.innerHTML = "<h4 id='no-reviews-h4'>Você ainda não fez nenhuma avaliação.</h4>";
+      return;
     }
+    
+    const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984"; 
+    const imageBase = "https://image.tmdb.org/t/p/w200";
+    const recentReviews = reviews.slice(0, 7);
+
+    for (const r of reviews) {
+      let posterUrl = "https://via.placeholder.com/100x150?text=Sem+Imagem";
+      try {
+          const movieRes = await fetch(`https://api.themoviedb.org/3/movie/${r.movie_id}?api_key=${apiKey}&language=pt-BR`);
+          const movieData = await movieRes.json();
+          if(movieData.poster_path) posterUrl = `${imageBase}${movieData.poster_path}`;
+      } catch(e) { console.error("Erro ao buscar poster"); }
+
+      const li = document.createElement("li");
+      li.className = "review-item";
+      li.id = `my-review-${r.id}`;
+
+      const buttons = `
+        <button class="edit-review-btn" data-review-id="${r.id}" data-comment="${r.comment.replace(/"/g, '&quot;')}" data-rating="${r.rating}"><img src="assets/edit.png"> Editar </button>
+        <button class="delete-review-btn" data-review-id="${r.id}"><img src="assets/delete.png"> Excluir</button>
+      `;
+      //<div class="static-stars">${generateStarsHTML(r.rating)}</div> <span class="meta"> • ${parseFloat(r.rating)}/5 </span>
+      li.innerHTML = `
+        <a href="movie.html?id=${r.movie_id}">
+          <img src="${posterUrl}" alt="Pôster de ${r.movie_title}" class="review-poster">
+        </a>
+        <div class="review-content">
+          <header>
+            <strong>
+              <a href="movie.html?id=${r.movie_id}" class="review-movie-title">${r.movie_title}</a>
+            </strong>
+            <div class="meta-and-actions">
+            <div class="review-actions">${buttons}</div>
+            <div class="static-stars"><span class="meta"> ${parseFloat(r.rating)}/5 </span> ${generateStarsHTML(r.rating)}</div>
+            </div>
+          </header>
+          <p>${r.comment}</p>
+        </div>
+      `;
+      myReviewsList.appendChild(li);
+
+      if(recentReviews.find(rev => rev.id === r.id)) {
+          const card = document.createElement("div");
+          card.className = "activity-card";
+          card.innerHTML = `
+            <a href="movie.html?id=${r.movie_id}">
+              <img src="${posterUrl}" alt="${r.movie_title}">
+            </a>
+            <div class="static-stars">${generateStarsHTML(r.rating)}</div>
+          `;
+          recentActivitiesEl.appendChild(card);
+      }
+    }
+    addEventListenersToReviewButtons();
+  } catch (error) {
+    myReviewsList.innerHTML = `<li>${error.message}</li>`;
   }
+}
   
   function addEventListenersToReviewButtons() {
     document.querySelectorAll('.edit-review-btn').forEach(button => {
@@ -199,7 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (newComment === null || newComment.trim() === '') return;
     const newRatingStr = prompt("Altere a nota (1 a 5):", oldRating);
     if (newRatingStr === null) return;
-    const newRating = parseInt(newRatingStr);
+    const newRating = parseFloat(newRatingStr.replace(',', '.'));
     if (isNaN(newRating) || newRating < 1 || newRating > 5) {
       return alert("Nota inválida. Por favor, insira um número entre 1 e 5.");
     }

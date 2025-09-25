@@ -46,18 +46,14 @@
     <div class="review-section">
       <h2>Deixe sua Avaliação:</h2>
       <form id="reviewForm" class="review-form">
-        <div class="star-rating">
-          <input type="radio" id="star5" name="star" value="5"><label for="star5">★</label>
-          <input type="radio" id="star4" name="star" value="4"><label for="star4">★</label>
-          <input type="radio" id="star3" name="star" value="3"><label for="star3">★</label>
-          <input type="radio" id="star2" name="star" value="2"><label for="star2">★</label>
-          <input type="radio" id="star1" name="star" value="1"><label for="star1">★</label>
-        </div>
+        <div class="new-star-rating">
+          </div>
+        <input type="hidden" id="ratingValue" name="rating" value="0">
         <textarea id="text" placeholder="Escreva sua resenha..." required></textarea>
         <button type="submit">Publicar</button>
       </form>
 
-      <h2>Resenhas</h2>
+      <h2>Avaliações:</h2>
       <ul class="reviews-list" id="reviewsList">
         </ul>
     </div>

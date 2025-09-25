@@ -16,6 +16,8 @@ const reviewForm       = document.getElementById('reviewForm');
 const reviewsList      = document.getElementById('reviewsList');
 const avgRatingEl      = document.getElementById('avgRating');
 const reviewSectionTitle = document.querySelector('.review-section h2');
+const starRatingContainer = document.querySelector('.new-star-rating');
+const ratingValueInput = document.getElementById('ratingValue');
 
 const searchResultsSection = document.getElementById('searchResultsSection');
 const searchResultsGrid = document.getElementById('searchResultsGrid');
@@ -37,6 +39,24 @@ function createMovieCard(movie) {
     <h3>${title}</h3>
   `;
   return card;
+}
+
+function generateStarsHTML(rating) {
+  let starsHTML = '';
+  const fullStars = Math.floor(rating);
+  const hasHalfStar = rating % 1 !== 0;
+
+  for (let i = 0; i < fullStars; i++) {
+    starsHTML += `<img src="assets/star.png" alt="Estrela cheia">`;
+  }
+  if (hasHalfStar) {
+    starsHTML += `<img src="assets/half-star.png" alt="Meia estrela">`;
+  }
+  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+  for (let i = 0; i < emptyStars; i++) {
+    starsHTML += `<img src="assets/empty-star.png" alt="Estrela vazia">`;
+  }
+  return starsHTML;
 }
 
 async function searchMovies(query) {
@@ -139,6 +159,59 @@ async function loadMovieCredits(id) {
   }
 }
 
+function setupStarRating() {
+  if (!starRatingContainer) return;
+
+  starRatingContainer.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const starImg = document.createElement('img');
+    starImg.src = 'assets/empty-star.png';
+    starImg.dataset.value = i;
+    starRatingContainer.appendChild(starImg);
+  }
+
+  const stars = Array.from(starRatingContainer.children);
+
+  const updateStars = (rating) => {
+    stars.forEach((star, index) => {
+      const starValue = index + 1;
+      if (rating >= starValue) {
+        star.src = 'assets/star.png';
+      } else if (rating >= starValue - 0.5) {
+        star.src = 'assets/half-star.png';
+      } else {
+        star.src = 'assets/empty-star.png';
+      }
+    });
+  };
+
+  stars.forEach((star, index) => {
+    star.addEventListener('mousemove', (e) => {
+      const rect = star.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const isHalf = mouseX < rect.width / 2;
+      const hoverValue = index + (isHalf ? 0.5 : 1);
+      updateStars(hoverValue);
+    });
+
+    star.addEventListener('click', (e) => {
+      const rect = star.getBoundingClientRect();
+      const mouseX = e.clientX - rect.left;
+      const isHalf = mouseX < rect.width / 2;
+      const finalRating = index + (isHalf ? 0.5 : 1);
+      ratingValueInput.value = finalRating;
+      updateStars(finalRating);
+    });
+  });
+
+  starRatingContainer.addEventListener('mouseleave', () => {
+    const selectedRating = parseFloat(ratingValueInput.value) || 0;
+    updateStars(selectedRating);
+  });
+  
+  updateStars(parseFloat(ratingValueInput.value) || 0);
+}
+
 async function renderReviews() {
   reviewsList.innerHTML = "<li>Carregando avaliações...</li>";
   try {
@@ -184,7 +257,7 @@ async function renderReviews() {
         </div>
         <div class="meta-and-actions">
           <div class="review-actions">${buttons}</div>
-          <span class="meta"> • Nota: ${review.rating}/5⭐</span>
+          <span class="meta"> • Nota: ${parseFloat(review.rating)}/5⭐</span>
         </div>
       </header>
       <p>${review.comment}</p>`;
@@ -193,8 +266,14 @@ async function renderReviews() {
     });
 
     if (reviewsForThisMovie.length > 0) {
-      const avg = Math.round(sumOfRatings / reviewsForThisMovie.length);
-      avgRatingEl.textContent = '★'.repeat(avg) + '☆'.repeat(5 - avg);
+      // CALCULA A MÉDIA COM UMA CASA DECIMAL
+      const avg = sumOfRatings / reviewsForThisMovie.length;
+      const formattedAvg = parseFloat(avg.toFixed(1));
+      // GERA O NOVO HTML DA MÉDIA
+      avgRatingEl.innerHTML = `
+        <div style="font-size: 1.5rem; font-weight: bold;">${formattedAvg}</div>
+        <div class="static-stars">${generateStarsHTML(formattedAvg)}</div>
+      `;
     } else {
       avgRatingEl.textContent = '—';
     }
@@ -232,9 +311,9 @@ reviewForm.addEventListener('submit', async e => {
         return (window.location.href = 'login.html');
     }
     const sel = document.querySelector('input[name="star"]:checked');
-    const rating = sel ? +sel.value : 0;
+    const rating = parseFloat(document.getElementById('ratingValue').value);
     const comment = document.getElementById('text').value.trim();
-    if (!rating || !comment) return alert('Selecione uma nota e escreva sua resenha.');
+    if (rating === 0 || !comment) return alert('Selecione uma nota e escreva sua resenha.');
     try {
         const response = await fetch('http://localhost:3000/api/reviews', {
             method: 'POST',
@@ -256,7 +335,7 @@ async function editReview(reviewId, oldComment, oldRating) {
   if (newComment === null || newComment.trim() === '') return;
   const newRatingStr = prompt("Altere a nota (1 a 5):", oldRating);
   if (newRatingStr === null) return;
-  const newRating = parseInt(newRatingStr);
+  const newRating = parseFloat(newRatingStr.replace(',', '.'));
   if (isNaN(newRating) || newRating < 1 || newRating > 5) return alert("Nota inválida. Por favor, insira um número entre 1 e 5.");
   try {
     const response = await fetch(`http://localhost:3000/api/reviews/me/${reviewId}`, {
@@ -315,4 +394,5 @@ window.addEventListener('DOMContentLoaded', () => {
   loadMovieDetails(movieId);
   loadMovieCredits(movieId);
   renderReviews();
+  setupStarRating();
 });
