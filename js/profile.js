@@ -21,30 +21,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const myReviewsList = document.getElementById("myReviews");
   const recentActivitiesEl = document.getElementById("recentActivities");
   const logoutBtn = document.getElementById('logoutBtn');
-  const noRecentActivities = document.getElementById('no-recent-activities')
+  const noRecentActivities = document.getElementById('no-recent-activities');
   let currentUserData = null;
-  
+
   // --- FUNÇÕES DE LÓGICA ---
 
-  // Adicione esta função a ambos os ficheiros JS
-
-function generateStarsHTML(rating) {
-  let starsHTML = '';
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 !== 0;
-
-  for (let i = 0; i < fullStars; i++) {
-    starsHTML += `<img src="assets/star.png" alt="Estrela cheia">`;
+  function generateStarsHTML(rating) {
+    let starsHTML = '';
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    for (let i = 0; i < fullStars; i++) { starsHTML += `<img src="assets/star.png" alt="Estrela cheia">`; }
+    if (hasHalfStar) { starsHTML += `<img src="assets/half-star.png" alt="Meia estrela">`; }
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    for (let i = 0; i < emptyStars; i++) { starsHTML += `<img src="assets/empty-star.png" alt="Estrela vazia">`; }
+    return starsHTML;
   }
-  if (hasHalfStar) {
-    starsHTML += `<img src="assets/half-star.png" alt="Meia estrela">`;
-  }
-  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-  for (let i = 0; i < emptyStars; i++) {
-    starsHTML += `<img src="assets/empty-star.png" alt="Estrela vazia">`;
-  }
-  return starsHTML;
-}
 
   // Lógica da foto de perfil (Atualizada para usar a API)
   changeAvatarBtn.addEventListener("click", () => {
@@ -56,24 +47,16 @@ function generateStarsHTML(rating) {
     if (!file || !file.type.startsWith("image/")) {
       return alert("Por favor, selecione um ficheiro de imagem válido.");
     }
-    
     const formData = new FormData();
     formData.append('avatar', file);
-
     try {
-      // O cabeçalho 'Content-Type' não é definido aqui, o navegador faz isso automaticamente
       const response = await fetch('http://localhost:3000/api/users/me/avatar', {
         method: 'POST',
-        headers: {
-          'x-auth-token': token // Enviamos apenas o token de autenticação
-        },
+        headers: { 'x-auth-token': token },
         body: formData,
       });
-
       const data = await response.json();
       if (!response.ok) throw new Error(data.message);
-
-      // Atualiza a imagem na página com a nova URL retornada pelo servidor
       avatarImg.src = `http://localhost:3000${data.avatarUrl}`;
       alert('Foto de perfil atualizada com sucesso!');
     } catch (error) {
@@ -81,31 +64,24 @@ function generateStarsHTML(rating) {
     }
   });
 
-  // Função para buscar e preencher os dados do perfil via API (Atualizada para carregar avatar)
+  // Função para buscar e preencher os dados do perfil
   async function loadProfile() {
     try {
-      const response = await fetch('http://localhost:3000/api/users/me', { 
-        headers: { 'x-auth-token': token } 
-      });
+      const response = await fetch('http://localhost:3000/api/users/me', { headers: { 'x-auth-token': token } });
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Falha ao carregar perfil.');
       }
-      
       const user = await response.json();
       currentUserData = user;
-
       displayNameEl.textContent = user.name;
       editNameInput.value = user.name;
       editEmailInput.value = user.email;
-
-      // Carrega o avatar do banco de dados
       if (user.avatar_url) {
         avatarImg.src = `http://localhost:3000${user.avatar_url}`;
       } else {
-        avatarImg.src = 'assets/user icon.png'; // Imagem padrão
+        avatarImg.src = 'assets/user icon.png';
       }
-
     } catch (error) {
       alert(error.message);
       if (error.message.includes('inválido') || error.message.includes('negado')) {
@@ -116,138 +92,67 @@ function generateStarsHTML(rating) {
     }
   }
 
-  // Função para buscar e renderizar as avaliações do usuário via API
-  // js/profile.js
-
-// SUBSTITUA A SUA FUNÇÃO loadMyReviews INTEIRA POR ESTA:
-// js/profile.js -> Substitua a sua função loadMyReviews por esta
-
-async function loadMyReviews() {
-  myReviewsList.innerHTML = "<li>Carregando avaliações...</li>";
-  recentActivitiesEl.innerHTML = "";
-
-  // CORREÇÃO: Definimos a variável 'headers' aqui dentro para garantir que ela exista.
-  const headers = { 'Content-Type': 'application/json', 'x-auth-token': token };
-
-  try {
-    const response = await fetch('http://localhost:3000/api/reviews/user/me', { headers });
-    if (!response.ok) throw new Error('Falha ao carregar avaliações.');
-
-    const reviews = await response.json();
-    myReviewsList.innerHTML = "";
-    
-    if (reviews.length === 0) {
-      if(document.getElementById('no-recent-activities')) {
-        document.getElementById('no-recent-activities').style.display = "flex";
-      }
-      myReviewsList.innerHTML = "<h4 id='no-reviews-h4'>Você ainda não fez nenhuma avaliação.</h4>";
-      return;
-    }
-    
-    const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984"; 
-    const imageBase = "https://image.tmdb.org/t/p/w200";
-    const recentReviews = reviews.slice(0, 7);
-
-    for (const r of reviews) {
-      let posterUrl = "https://via.placeholder.com/100x150?text=Sem+Imagem";
-      try {
-          const movieRes = await fetch(`https://api.themoviedb.org/3/movie/${r.movie_id}?api_key=${apiKey}&language=pt-BR`);
-          const movieData = await movieRes.json();
-          if(movieData.poster_path) posterUrl = `${imageBase}${movieData.poster_path}`;
-      } catch(e) { console.error("Erro ao buscar poster"); }
-
-      const li = document.createElement("li");
-      li.className = "review-item";
-      li.id = `my-review-${r.id}`;
-
-      const buttons = `
-        <button class="edit-review-btn" data-review-id="${r.id}" data-comment="${r.comment.replace(/"/g, '&quot;')}" data-rating="${r.rating}"><img src="assets/edit.png"> Editar </button>
-        <button class="delete-review-btn" data-review-id="${r.id}"><img src="assets/delete.png"> Excluir</button>
-      `;
-      //<div class="static-stars">${generateStarsHTML(r.rating)}</div> <span class="meta"> • ${parseFloat(r.rating)}/5 </span>
-      li.innerHTML = `
-        <a href="movie.html?id=${r.movie_id}">
-          <img src="${posterUrl}" alt="Pôster de ${r.movie_title}" class="review-poster">
-        </a>
-        <div class="review-content">
-          <header>
-            <strong>
-              <a href="movie.html?id=${r.movie_id}" class="review-movie-title">${r.movie_title}</a>
-            </strong>
-            <div class="meta-and-actions">
-            <div class="review-actions">${buttons}</div>
-            <div class="static-stars"><span class="meta"> ${parseFloat(r.rating)}/5 </span> ${generateStarsHTML(r.rating)}</div>
-            </div>
-          </header>
-          <p>${r.comment}</p>
-        </div>
-      `;
-      myReviewsList.appendChild(li);
-
-      if(recentReviews.find(rev => rev.id === r.id)) {
-          const card = document.createElement("div");
-          card.className = "activity-card";
-          card.innerHTML = `
-            <a href="movie.html?id=${r.movie_id}">
-              <img src="${posterUrl}" alt="${r.movie_title}">
-            </a>
-            <div class="static-stars">${generateStarsHTML(r.rating)}</div>
-          `;
-          recentActivitiesEl.appendChild(card);
-      }
-    }
-    addEventListenersToReviewButtons();
-  } catch (error) {
-    myReviewsList.innerHTML = `<li>${error.message}</li>`;
-  }
-}
-  
-  function addEventListenersToReviewButtons() {
-    document.querySelectorAll('.edit-review-btn').forEach(button => {
-      button.replaceWith(button.cloneNode(true));
-    });
-    document.querySelectorAll('.edit-review-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const { reviewId, comment, rating } = e.currentTarget.dataset;
-            editReviewOnProfile(reviewId, comment, rating);
-        });
-    });
-    document.querySelectorAll('.delete-review-btn').forEach(button => {
-      button.replaceWith(button.cloneNode(true));
-    });
-    document.querySelectorAll('.delete-review-btn').forEach(button => {
-        button.addEventListener('click', (e) => {
-            const { reviewId } = e.currentTarget.dataset;
-            deleteReviewOnProfile(reviewId);
-        });
-    });
-  }
-
-  async function editReviewOnProfile(reviewId, oldComment, oldRating) {
-    const newComment = prompt("Edite seu comentário:", oldComment);
-    if (newComment === null || newComment.trim() === '') return;
-    const newRatingStr = prompt("Altere a nota (1 a 5):", oldRating);
-    if (newRatingStr === null) return;
-    const newRating = parseFloat(newRatingStr.replace(',', '.'));
-    if (isNaN(newRating) || newRating < 1 || newRating > 5) {
-      return alert("Nota inválida. Por favor, insira um número entre 1 e 5.");
-    }
-    
+  // Função para buscar e renderizar as avaliações
+  async function loadMyReviews() {
+    myReviewsList.innerHTML = "<li>Carregando avaliações...</li>";
+    recentActivitiesEl.innerHTML = "";
     try {
-      const response = await fetch(`http://localhost:3000/api/reviews/me/${reviewId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
-        body: JSON.stringify({ comment: newComment, rating: newRating })
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message);
-      alert('Avaliação atualizada!');
-      loadMyReviews();
+      const response = await fetch('http://localhost:3000/api/reviews/user/me', { headers: { 'x-auth-token': token } });
+      if (!response.ok) throw new Error('Falha ao carregar avaliações.');
+      const reviews = await response.json();
+      myReviewsList.innerHTML = "";
+      if (reviews.length === 0) {
+        if (noRecentActivities) noRecentActivities.style.display = "flex";
+        myReviewsList.innerHTML = "<h4 id='no-reviews-h4'>Você ainda não fez nenhuma avaliação.</h4>";
+        return;
+      }
+      const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984"; 
+      const imageBase = "https://image.tmdb.org/t/p/w200";
+      const recentReviews = reviews.slice(0, 7);
+      for (const r of reviews) {
+        let posterUrl = "https://via.placeholder.com/100x150?text=Sem+Imagem";
+        try {
+            const movieRes = await fetch(`https://api.themoviedb.org/3/movie/${r.movie_id}?api_key=${apiKey}&language=pt-BR`);
+            const movieData = await movieRes.json();
+            if(movieData.poster_path) posterUrl = `${imageBase}${movieData.poster_path}`;
+        } catch(e) { console.error("Erro ao buscar poster"); }
+        const li = document.createElement("li");
+        li.className = "review-item";
+        li.id = `my-review-${r.id}`;
+        const buttons = `
+          <button class="edit-review-btn" data-review-id="${r.id}" data-comment="${r.comment.replace(/"/g, '&quot;')}" data-rating="${r.rating}"><img src="assets/edit.png"> Editar</button> 
+          <button class="delete-review-btn" data-review-id="${r.id}"><img src="assets/delete.png"> Excluir</button>
+        `;
+        li.innerHTML = `
+          <a href="movie.html?id=${r.movie_id}"><img src="${posterUrl}" alt="Pôster de ${r.movie_title}" class="review-poster"></a>
+          <div class="review-content">
+            <header>
+              <strong><a href="movie.html?id=${r.movie_id}" class="review-movie-title">${r.movie_title}</a></strong>
+              <div class="meta-and-actions">
+                <div class="review-actions">${buttons}</div>
+                <span class="meta"> • Nota: ${parseFloat(r.rating)}/5 ⭐</span>
+              </div>
+            </header>
+            <p>${r.comment}</p>
+          </div>
+        `;
+        myReviewsList.appendChild(li);
+        if(recentReviews.find(rev => rev.id === r.id)) {
+            const card = document.createElement("div");
+            card.className = "activity-card";
+            card.innerHTML = `
+              <a href="movie.html?id=${r.movie_id}"><img src="${posterUrl}" alt="${r.movie_title}"></a>
+              <div class="static-stars">${generateStarsHTML(r.rating)}</div>
+            `;
+            recentActivitiesEl.appendChild(card);
+        }
+      }
     } catch (error) {
-      alert(`Erro: ${error.message}`);
+      myReviewsList.innerHTML = `<li>${error.message}</li>`;
     }
   }
 
+  // Função para excluir uma avaliação
   async function deleteReviewOnProfile(reviewId) {
     if (!confirm("Tem certeza que deseja excluir sua avaliação?")) return;
     try {
@@ -264,6 +169,21 @@ async function loadMyReviews() {
     }
   }
 
+  // --- LÓGICA DE EVENTOS ---
+  
+  // Escuta pelo evento do modal para atualizar a lista
+  document.addEventListener('reviewsUpdated', loadMyReviews);
+
+  // Escuta por cliques nos botões de apagar na lista de avaliações
+  myReviewsList.addEventListener('click', (e) => {
+    const deleteButton = e.target.closest('.delete-review-btn');
+    if (deleteButton) {
+        const { reviewId } = deleteButton.dataset;
+        deleteReviewOnProfile(reviewId);
+    }
+  });
+
+  // Lógica dos botões de edição do formulário do perfil
   editProfileBtn.addEventListener("click", () => {
     editModeForm.style.display = "block";
     editNameInput.disabled = false;
@@ -294,6 +214,7 @@ async function loadMyReviews() {
 
   editModeForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    const headers = { 'Content-Type': 'application/json', 'x-auth-token': token };
     const newName = editNameInput.value.trim();
     const newEmail = editEmailInput.value.trim();
     const newPassword = editPasswordInput.value.trim();
@@ -312,7 +233,7 @@ async function loadMyReviews() {
     try {
         const response = await fetch('http://localhost:3000/api/users/me', {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'x-auth-token': token },
+            headers,
             body: JSON.stringify(body)
         });
         const data = await response.json();
@@ -325,17 +246,18 @@ async function loadMyReviews() {
     }
   });
 
-  // --- INICIALIZAÇÃO E BOTÃO DE SAIR ---
-  loadProfile();
-  loadMyReviews();
-  
+  // Lógica do botão de Sair
   if (logoutBtn) {
     logoutBtn.addEventListener('click', () => {
       localStorage.removeItem('framecode_token');
       sessionStorage.removeItem('framecode_token');
-      localStorage.removeItem('userAvatar'); // Remove o avatar do localStorage também
+      localStorage.removeItem('userAvatar');
       alert('Você saiu da sua conta.');
       window.location.href = 'login.html';
     });
   }
+
+  // --- INICIALIZAÇÃO DA PÁGINA ---
+  loadProfile();
+  loadMyReviews();
 });

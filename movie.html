@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/styles.css">
   <link rel="stylesheet" href="css/movie.css">
   <link rel="stylesheet" href="css/stars.css"> 
+  <link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
   <header class="header">
@@ -64,6 +65,23 @@
     <div id="searchResultsGrid" class="movies-grid"></div>
   </section>
   
+  <div id="editReviewModal" class="modal-overlay">
+    <div class="modal-content">
+      <header class="modal-header">
+        <h2>Editar Avaliação</h2>
+        <button id="closeModalBtn" class="close-modal-btn">&times;</button>
+      </header>
+      <div class="modal-body">
+        <div id="modalStarRater" class="new-star-rating">
+          </div>
+        <input type="hidden" id="modalRatingValue" value="0">
+        <textarea id="modalCommentText" placeholder="Edite a sua resenha..."></textarea>
+        <button id="modalSaveBtn" class="modal-save-button">Salvar Alterações</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/modal.js"></script>
   <script src="js/utils.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/movie-details.js"></script>
