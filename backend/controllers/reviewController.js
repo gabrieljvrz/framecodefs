@@ -136,15 +136,40 @@ exports.deleteMyReview = async (req, res) => {
   }
 };
 
+// [ADMIN] Listar TODAS as avaliações com paginação e pesquisa
 exports.getAllReviews = async (req, res) => {
     try {
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const searchTerm = req.query.search || '';
+        const offset = (page - 1) * limit;
+
+        let whereClause = '';
+        const params = [];
+
+        if (searchTerm) {
+            whereClause = 'WHERE r.movie_title LIKE ?';
+            params.push(`%${searchTerm}%`);
+        }
+
+        const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM reviews r ${whereClause}`, params);
+        
         const [reviews] = await db.query(
           `SELECT r.id, r.comment, r.rating, r.movie_title, r.created_at, u.name as userName
            FROM reviews r
            JOIN users u ON r.user_id = u.id
-           ORDER BY r.created_at DESC`
+           ${whereClause}
+           ORDER BY r.created_at DESC
+           LIMIT ? OFFSET ?`,
+          [...params, limit, offset]
         );
-        res.json(reviews);
+        
+        res.json({
+            total,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page,
+            reviews
+        });
     } catch (error) {
         res.status(500).json({ message: 'Erro no servidor.' });
     }

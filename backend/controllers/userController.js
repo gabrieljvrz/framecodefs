@@ -46,11 +46,34 @@ exports.updateMyProfile = async (req, res) => {
     }
 };
 
-// [ADMIN] listar todos os usuários
+// [ADMIN] Listar todos os utilizadores com paginação e pesquisa
 exports.getAllUsers = async (req, res) => {
     try {
-        const [users] = await db.query('SELECT id, name, email, role, created_at FROM users');
-        res.json(users);
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 10;
+        const searchTerm = req.query.search || '';
+        const offset = (page - 1) * limit;
+
+        let whereClause = '';
+        const params = [];
+
+        if (searchTerm) {
+            whereClause = 'WHERE name LIKE ? OR email LIKE ?';
+            params.push(`%${searchTerm}%`, `%${searchTerm}%`);
+        }
+
+        // Query para obter o total de utilizadores (para a paginação)
+        const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM users ${whereClause}`, params);
+        
+        // Query para obter os utilizadores da página atual
+        const [users] = await db.query(`SELECT id, name, email, role, created_at FROM users ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`, [...params, limit, offset]);
+
+        res.json({
+            total,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page,
+            users
+        });
     } catch (error) {
         res.status(500).json({ message: 'Erro no servidor.' });
     }

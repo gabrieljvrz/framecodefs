@@ -1,4 +1,11 @@
 /* container mais estreito */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI' , sans-serif;
+}
+
 .profile-page {
   padding: 2rem 1rem;
   max-width: 1000px;

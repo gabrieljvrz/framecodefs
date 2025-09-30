@@ -1,4 +1,11 @@
 /* css/admin.css */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI' , sans-serif;
+}
+
 body {
     background-color: #000; 
     color: #e5e5e5;
@@ -112,4 +119,77 @@ th {
     /* background-color: #e50914; */
     transform:scale(1.05);
     transition: 0.25s;
+}
+
+/* css/admin.css */
+
+/* Garante que o formulário de pesquisa ocupe toda a largura */
+.search-form {
+  display: flex;
+  background-color: #000;
+  margin-bottom: 1rem;
+  width: 100%; /* Adicionado para ocupar a largura total */
+}
+
+/* Estiliza o campo de input */
+.search-form input {
+  flex-grow: 1;
+  padding: 12px; /* Aumenta o padding para mais altura */
+  background-color: #333;
+  border: 1px solid #555;
+  color: #fff;
+  border-radius: 4px 0 0 4px;
+  font-family: inherit; /* Herda a fonte do site ('Segoe UI') */
+  font-size: 1rem;      /* Define um tamanho de fonte consistente */
+  border-right: none;   /* Remove a borda direita para uma junção perfeita com o botão */
+}
+
+/* Remove o anel de foco padrão do navegador */
+.search-form input:focus {
+  outline: none;
+}
+
+/* Estiliza o botão de pesquisa */
+.search-form button {
+  padding: 12px 20px; /* Aumenta o padding para mais altura */
+  border: none;
+  background-color: #e50914;
+  color: #fff;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0;
+  font-family: inherit; /* Herda a fonte do site ('Segoe UI') */
+  font-size: 1rem;      /* Define um tamanho de fonte consistente */
+  font-weight: bold;
+}
+
+.pagination-controls { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    gap: 1rem; 
+    margin-top: 1.5rem; 
+}
+
+.pagination-controls button { 
+    background-color: #333; 
+    color: #fff; 
+    border: 1px 
+    solid #555; 
+    padding: 8px 12px; 
+    border-radius: 4px; 
+    cursor: pointer; 
+}
+
+.pagination-controls button:disabled { 
+    background-color: #1f1f1f; 
+    color: #555; 
+    cursor: not-allowed; 
+}
+
+.pagination-controls span { 
+    font-weight: bold; 
+}
+
+input #reviewSearchInput {
+    width: 773.5px;
 }

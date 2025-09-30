@@ -3,19 +3,14 @@
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
     
-    // 1. Proteção da Página
+    function parseJwt(token) {
+        try { return JSON.parse(atob(token.split('.')[1])); } catch (e) { return null; }
+    }
+
     if (!token) {
         alert('Acesso negado.');
         window.location.href = 'login.html';
         return;
-    }
-
-    function parseJwt(token) {
-        try {
-            return JSON.parse(atob(token.split('.')[1]));
-        } catch (e) {
-            return null;
-        }
     }
 
     const decodedToken = parseJwt(token);
@@ -27,23 +22,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const headers = { 'x-auth-token': token };
 
-    // 2. Funções para Carregar os Dados
-    async function loadDashboardData() {
-        await fetchUsers();
-        await fetchAllReviews();
-    }
+    let currentUserPage = 1;
+    let currentReviewPage = 1;
+    let userSearchTerm = '';
+    let reviewSearchTerm = '';
 
-    async function fetchUsers() {
+    const totalUsersStat = document.getElementById('totalUsersStat');
+    const totalReviewsStat = document.getElementById('totalReviewsStat');
+    const usersTableBody = document.getElementById('usersTableBody');
+    const reviewsList = document.getElementById('reviewsList');
+    const userSearchForm = document.getElementById('userSearchForm');
+    const userSearchInput = document.getElementById('userSearchInput');
+    const reviewSearchForm = document.getElementById('reviewSearchForm');
+    const reviewSearchInput = document.getElementById('reviewSearchInput');
+
+    async function fetchUsers(page = 1, search = '') {
         try {
-            const response = await fetch('http://localhost:3000/api/users', { headers });
-            const users = await response.json();
+            // URL CORRIGIDA
+            const response = await fetch(`http://localhost:3000/api/users?page=${page}&limit=10&search=${search}`, { headers });
+            const data = await response.json();
 
-            document.getElementById('totalUsersStat').textContent = users.length;
-
-            const tableBody = document.getElementById('usersTableBody');
-            tableBody.innerHTML = '';
-            users.forEach(user => {
-                const row = tableBody.insertRow();
+            totalUsersStat.textContent = data.total;
+            
+            usersTableBody.innerHTML = '';
+            data.users.forEach(user => {
+                const row = usersTableBody.insertRow();
                 row.innerHTML = `
                     <td>${user.id}</td>
                     <td>${user.name}</td>
@@ -52,21 +55,21 @@ document.addEventListener('DOMContentLoaded', () => {
                     <td>${new Date(user.created_at).toLocaleDateString()}</td>
                 `;
             });
-        } catch (error) {
-            console.error('Erro ao buscar utilizadores:', error);
-        }
+            
+            updatePagination('users', data.currentPage, data.totalPages);
+        } catch (error) { console.error('Erro ao buscar utilizadores:', error); }
     }
 
-    async function fetchAllReviews() {
+    async function fetchAllReviews(page = 1, search = '') {
         try {
-            const response = await fetch('http://localhost:3000/api/reviews/all/reviews', { headers });
-            const reviews = await response.json();
+            // URL CORRIGIDA
+            const response = await fetch(`http://localhost:3000/api/reviews/all/reviews?page=${page}&limit=10&search=${search}`, { headers });
+            const data = await response.json();
 
-            document.getElementById('totalReviewsStat').textContent = reviews.length;
+            totalReviewsStat.textContent = data.total;
 
-            const reviewsList = document.getElementById('reviewsList');
             reviewsList.innerHTML = '';
-            reviews.forEach(review => {
+            data.reviews.forEach(review => {
                 const item = document.createElement('li');
                 item.className = 'admin-review-item';
                 item.id = `review-item-${review.id}`;
@@ -75,35 +78,76 @@ document.addEventListener('DOMContentLoaded', () => {
                         <div>
                             <strong>${review.movie_title}</strong> por <em>${review.userName}</em>
                         </div>
-                        <button class="delete-review-btn" data-id="${review.id}"><img src="assets/delete.png"> Excluir</button>
+                        <button class="delete-review-btn" data-id="${review.id}">Excluir</button>
                     </header>
                     <p>"${review.comment}"</p>
                     <div class="meta">Nota: ${review.rating}/5 - ${new Date(review.created_at).toLocaleString()}</div>
                 `;
                 reviewsList.appendChild(item);
             });
-        } catch (error) {
-            console.error('Erro ao buscar avaliações:', error);
-        }
+
+            updatePagination('reviews', data.currentPage, data.totalPages);
+        } catch (error) { console.error('Erro ao buscar avaliações:', error); }
     }
 
-    // 3. Lógica para Apagar Avaliações
-    document.getElementById('reviewsList').addEventListener('click', async (e) => {
+    function updatePagination(type, currentPage, totalPages) {
+        const paginationContainer = document.getElementById(`${type}Pagination`);
+        if (!paginationContainer) return;
+        paginationContainer.innerHTML = `
+            <button id="${type}PrevBtn" ${currentPage <= 1 ? 'disabled' : ''}>Anterior</button>
+            <span>Página ${currentPage} de ${totalPages}</span>
+            <button id="${type}NextBtn" ${currentPage >= totalPages ? 'disabled' : ''}>Próxima</button>
+        `;
+
+        document.getElementById(`${type}PrevBtn`)?.addEventListener('click', () => {
+            if (type === 'users') {
+                currentUserPage--;
+                fetchUsers(currentUserPage, userSearchTerm);
+            } else {
+                currentReviewPage--;
+                fetchAllReviews(currentReviewPage, reviewSearchTerm);
+            }
+        });
+        document.getElementById(`${type}NextBtn`)?.addEventListener('click', () => {
+            if (type === 'users') {
+                currentUserPage++;
+                fetchUsers(currentUserPage, userSearchTerm);
+            } else {
+                currentReviewPage++;
+                fetchAllReviews(currentReviewPage, reviewSearchTerm);
+            }
+        });
+    }
+    
+    userSearchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        currentUserPage = 1;
+        userSearchTerm = userSearchInput.value;
+        fetchUsers(currentUserPage, userSearchTerm);
+    });
+
+    reviewSearchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        currentReviewPage = 1;
+        reviewSearchTerm = reviewSearchInput.value;
+        fetchAllReviews(currentReviewPage, reviewSearchTerm);
+    });
+
+    reviewsList.addEventListener('click', async (e) => {
         if (e.target.classList.contains('delete-review-btn')) {
             const reviewId = e.target.dataset.id;
             if (confirm(`ADMIN: Tem certeza que deseja excluir a avaliação #${reviewId}?`)) {
                 try {
+                    // URL CORRIGIDA
                     const response = await fetch(`http://localhost:3000/api/reviews/${reviewId}`, {
                         method: 'DELETE',
                         headers: headers
                     });
-                    if (!response.ok) throw new Error('Falha ao apagar a avaliação.');
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message || 'Falha ao apagar a avaliação.');
                     
-                    document.getElementById(`review-item-${reviewId}`).remove();
-                    // Atualiza a estatística
-                    const totalReviewsEl = document.getElementById('totalReviewsStat');
-                    totalReviewsEl.textContent = parseInt(totalReviewsEl.textContent) - 1;
-
+                    alert('Avaliação excluída com sucesso!');
+                    fetchAllReviews(currentReviewPage, reviewSearchTerm); // Recarrega a lista
                 } catch (error) {
                     alert(error.message);
                 }
@@ -111,6 +155,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Carrega tudo ao iniciar
-    loadDashboardData();
+    fetchUsers();
+    fetchAllReviews();
 });

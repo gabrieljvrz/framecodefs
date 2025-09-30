@@ -33,27 +33,31 @@
 
         <section class="management-section">
             <h2>Gerir Utilizadores</h2>
+            <form id="userSearchForm" class="search-form">
+                <input type="text" id="userSearchInput" placeholder="Pesquisar por nome ou e-mail...">
+                <button type="submit">Pesquisar</button>
+            </form>
             <div class="table-container">
                 <table id="usersTable">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Nome</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Registado em</th>
+                            <th>ID</th><th>Nome</th><th>Email</th><th>Role</th><th>Registado em</th>
                         </tr>
                     </thead>
-                    <tbody id="usersTableBody">
-                        </tbody>
+                    <tbody id="usersTableBody"></tbody>
                 </table>
             </div>
+            <div id="usersPagination" class="pagination-controls"></div>
         </section>
 
         <section class="management-section">
             <h2>Gerir Avaliações</h2>
-            <ul id="reviewsList" class="reviews-list">
-                </ul>
+            <form id="reviewSearchForm" class="search-form">
+                <input type="text" id="reviewSearchInput" placeholder="Pesquisar por título do filme...">
+                <button type="submit">Pesquisar</button>
+            </form>
+            <ul id="reviewsList" class="reviews-list"></ul>
+            <div id="reviewsPagination" class="pagination-controls"></div>
         </section>
     </main>
 
