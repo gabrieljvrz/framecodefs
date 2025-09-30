@@ -24,4 +24,7 @@ router.delete('/me/:id', authMiddleware, reviewController.deleteMyReview);
 // [ADMIN] rota para deletar qualquer avaliação (protegida por auth e admin)
 router.delete('/:id', [authMiddleware, adminMiddleware], reviewController.deleteReview);
 
+// [ADMIN] Rota para buscar TODAS as avaliações
+router.get('/all/reviews', [authMiddleware, adminMiddleware], reviewController.getAllReviews);
+
 module.exports = router;

@@ -82,6 +82,10 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         avatarImg.src = 'assets/user icon.png';
       }
+      const adminBtn = document.getElementById('adminBtn');
+      if (adminBtn && user.role === 'admin') {
+        adminBtn.style.display = 'inline-block';
+      }
     } catch (error) {
       alert(error.message);
       if (error.message.includes('inválido') || error.message.includes('negado')) {

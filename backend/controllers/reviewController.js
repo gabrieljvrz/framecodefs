@@ -135,3 +135,17 @@ exports.deleteMyReview = async (req, res) => {
     res.status(500).json({ message: 'Erro no servidor.' });
   }
 };
+
+exports.getAllReviews = async (req, res) => {
+    try {
+        const [reviews] = await db.query(
+          `SELECT r.id, r.comment, r.rating, r.movie_title, r.created_at, u.name as userName
+           FROM reviews r
+           JOIN users u ON r.user_id = u.id
+           ORDER BY r.created_at DESC`
+        );
+        res.json(reviews);
+    } catch (error) {
+        res.status(500).json({ message: 'Erro no servidor.' });
+    }
+};

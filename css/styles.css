@@ -249,3 +249,9 @@ button:hover {
     font-size: 1.25rem;
   }
 }
+
+.header .logo img {
+  width: 180px;  /* Define a largura da logo */
+  height: auto;    /* Mantém a proporção da imagem */
+  display: block;  /* Ajuda no alinhamento e previne espaços extra */
+}

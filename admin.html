@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin | FrameCode</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+    <header class="header">
+        <div class="logo">
+            <a href="index.html"><img src="assets/framecodeLogo.png" alt="FrameCode Logo"></a>
+        </div>
+        <div class="header-actions">
+            <a href="profile.html" class="admin-btn"><img src="assets/user icon.png" alt="Meu Perfil"></a>
+        </div>
+    </header>
+
+    <main class="container admin-page">
+        <h1>Painel de Administração</h1>
+
+        <section class="stats-section">
+            <div class="stat-card">
+                <h2>Total de Utilizadores</h2>
+                <p id="totalUsersStat">0</p>
+            </div>
+            <div class="stat-card">
+                <h2>Total de Avaliações</h2>
+                <p id="totalReviewsStat">0</p>
+            </div>
+        </section>
+
+        <section class="management-section">
+            <h2>Gerir Utilizadores</h2>
+            <div class="table-container">
+                <table id="usersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Registado em</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="management-section">
+            <h2>Gerir Avaliações</h2>
+            <ul id="reviewsList" class="reviews-list">
+                </ul>
+        </section>
+    </main>
+
+    <script src="js/admin.js"></script>
+</body>
+</html>

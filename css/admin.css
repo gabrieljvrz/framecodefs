@@ -1,0 +1,115 @@
+/* css/admin.css */
+body {
+    background-color: #000; 
+    color: #e5e5e5;
+}
+
+.header {
+    background-color: #000;
+}
+
+.header img {
+    width: 40px;
+    height: 40px;
+}
+
+.admin-page h1 { 
+    text-align: center; 
+    margin-bottom: 2rem; 
+}
+
+.stats-section { 
+    display: flex; 
+    gap: 1rem; 
+    justify-content: center; 
+    margin-bottom: 3rem; 
+}
+
+.stat-card { 
+    background-color: #1f1f1f; 
+    padding: 1.5rem; 
+    border-radius: 8px; 
+    text-align: center; 
+}
+
+.stat-card h2 { 
+    font-size: 1.2rem; 
+    margin-bottom: 0.5rem; 
+    color: #aaa; 
+}
+
+.stat-card p { 
+    font-size: 2rem; 
+    font-weight: bold; 
+    color: #e50914; 
+}
+
+.management-section { 
+    margin-bottom: 3rem; 
+}
+
+.management-section h2 { 
+    margin-bottom: 1rem; 
+    border-bottom: 1px solid #333; 
+    padding-bottom: 0.5rem; 
+}
+
+.table-container { 
+    overflow-x: auto; 
+}
+
+table { 
+    width: 100%; 
+    border-collapse: collapse; 
+}
+
+th, td { 
+    padding: 12px 15px; 
+    border-bottom: 1px solid #333; 
+    text-align: left; 
+}
+
+th { 
+    background-color: #1a1a1a; 
+}
+
+.reviews-list { 
+    list-style: none;
+    padding: 0; 
+}
+
+.admin-review-item { 
+    background-color: #1f1f1f; 
+    padding: 1rem; 
+    border-radius: 8px; 
+    margin-bottom: 1rem; 
+}
+
+.admin-review-item header { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.admin-review-item .meta { 
+    font-size: 0.9rem; 
+    color: #888; 
+}
+
+.admin-review-item button { 
+    background-color: #dc060d;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+    font-weight: normal;
+}
+
+.admin-review-item button:hover {
+    /* background-color: #e50914; */
+    transform:scale(1.05);
+    transition: 0.25s;
+}
