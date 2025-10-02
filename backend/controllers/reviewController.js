@@ -174,3 +174,17 @@ exports.getAllReviews = async (req, res) => {
         res.status(500).json({ message: 'Erro no servidor.' });
     }
 };
+
+// Buscar todas as avaliações de um usuário específico por ID
+exports.getReviewsByUserId = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const [reviews] = await db.query(
+      'SELECT * FROM reviews WHERE user_id = ? ORDER BY created_at DESC',
+      [userId]
+    );
+    res.json(reviews);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro no servidor.' });
+  }
+};

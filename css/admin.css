@@ -193,3 +193,35 @@ th {
 input #reviewSearchInput {
     width: 773.5px;
 }
+
+#userSearchForm button {
+    width: 200px;
+    border-radius: 4px;
+}
+
+#userSearchForm input {
+    width: 1173px;
+    border-radius: 4px;
+}
+
+#userSearchForm{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#reviewSearchForm button {
+    width: 200px;
+    border-radius: 4px;
+}
+
+#reviewSearchForm input {
+    width: 1173px;
+    border-radius: 4px;
+}
+
+#reviewSearchForm{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

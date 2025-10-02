@@ -27,4 +27,7 @@ router.delete('/:id', [authMiddleware, adminMiddleware], reviewController.delete
 // [ADMIN] Rota para buscar TODAS as avaliações
 router.get('/all/reviews', [authMiddleware, adminMiddleware], reviewController.getAllReviews);
 
+// Rota PÚBLICA para buscar avaliações de um usuário por ID
+router.get('/user/:userId', reviewController.getReviewsByUserId);
+
 module.exports = router;

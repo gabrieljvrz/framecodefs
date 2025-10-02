@@ -30,4 +30,7 @@ router.get('/', [authMiddleware, adminMiddleware], userController.getAllUsers);
 // O 'upload.single('avatar')' é o middleware que processa o ficheiro
 router.post('/me/avatar', [authMiddleware, upload.single('avatar')], userController.uploadAvatar);
 
+// Rota PÚBLICA para buscar um usuário por ID
+router.get('/:id', userController.getUserById);
+
 module.exports = router;

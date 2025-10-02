@@ -91,6 +91,10 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.review-section{
+  margin-top: 1 rem;
+}
+
 .review-section h2 {
   font-size: 1.5rem;
   font-weight: 600;
@@ -408,4 +412,32 @@ body {
   display: flex;
   justify-content: center;
   text-align: center;
+}
+
+/* css/movie.css -> Adicione no final */
+
+/*
+  Ajuste para a secção de avaliações quando o formulário está escondido.
+*/
+.review-section {
+  margin-top: 0.1rem; /* Define uma margem superior menor como padrão */
+}
+
+/*
+  Quando o formulário (#reviewForm) está visível, 
+  aumentamos a margem para manter o espaçamento original.
+*/
+.review-form:not([style*="display: none"]) + .review-section h2 {
+  margin-top: 3rem;
+}
+
+/* css/movie.css */
+.profile-link {
+    color: inherit; /* Herda a cor do elemento pai (branco) */
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+.profile-link:hover {
+    color: #e50914; /* Vermelho ao passar o mouse */
+    text-decoration: underline;
 }

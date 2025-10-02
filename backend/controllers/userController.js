@@ -112,3 +112,19 @@ exports.getMyProfile = async (req, res) => {
     res.status(500).json({ message: 'Erro no servidor.' });
   }
 };
+
+// Buscar perfil PÚBLICO de um usuário por ID
+exports.getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    // Selecionamos apenas os dados públicos. NUNCA inclua email ou senha.
+    const [userRows] = await db.query('SELECT id, name, avatar_url, created_at FROM users WHERE id = ?', [id]);
+
+    if (userRows.length === 0) {
+      return res.status(404).json({ message: 'Usuário não encontrado.' });
+    }
+    res.json(userRows[0]);
+  } catch (error) {
+    res.status(500).json({ message: 'Erro no servidor.' });
+  }
+};

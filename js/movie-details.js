@@ -180,19 +180,40 @@ document.addEventListener('DOMContentLoaded', () => {
                         buttons = `<button class="delete-review-btn admin-delete" data-review-id="${review.id}"><img src="assets/delete.png"> Excluir (Admin)</button>`;
                     }
                 }
-                li.innerHTML = `<header><div class="review-author-info"><img src="${avatarSrc}" alt="Avatar de ${review.userName}" class="review-avatar"><strong>${review.userName||'Anônimo'}</strong></div><div class="meta-and-actions"><div class="review-actions">${buttons}</div><span class="meta"> • Nota: ${parseFloat(review.rating)}/5⭐</span></div></header><p>${review.comment}</p>`;
+                let profileLinkHTML = '';
+                if (loggedInUser && loggedInUser.id == review.user_id) {
+                    // Se a avaliação for do usuário logado, o link não tem ID
+                    profileLinkHTML = `<strong><a href="profile.html" class="profile-link">${review.userName || 'Anônimo'}</a></strong>`;
+                } else {
+                    // Se for de outro usuário, o link tem o ID
+                    profileLinkHTML = `<strong><a href="profile.html?id=${review.user_id}" class="profile-link">${review.userName || 'Anônimo'}</a></strong>`;
+                }
+
+                li.innerHTML = `
+                    <header>
+                        <div class="review-author-info">
+                            <img src="${avatarSrc}" alt="Avatar de ${review.userName}" class="review-avatar">
+                            ${profileLinkHTML}
+                        </div>
+                        <div class="meta-and-actions">
+                            <div class="review-actions">${buttons}</div>
+                            <span class="meta"> • Nota: ${parseFloat(review.rating)}/5⭐</span>
+                        </div>
+                    </header>
+                    <p>${review.comment}</p>
+                `;
                 reviewsList.appendChild(li);
             });
             if (reviewsForThisMovie.length > 0) {
                 const avg = sumOfRatings / reviewsForThisMovie.length;
                 const formattedAvg = parseFloat(avg.toFixed(1));
-                avgRatingEl.innerHTML = `<div style="font-size: 1.5rem; font-weight: bold;">${formattedAvg} estrelas</div><div class="static-stars">${generateStarsHTML(formattedAvg)}</div>`;
+                avgRatingEl.innerHTML = `<div style="font-size: 1.5rem; font-weight: bold;">${formattedAvg}</div><div class="static-stars">${generateStarsHTML(formattedAvg)}</div>`;
             } else {
                 avgRatingEl.textContent = '—';
             }
             if (userHasAlreadyReviewed) {
                 reviewForm.style.display = 'none';
-                if (reviewSectionTitle) reviewSectionTitle.textContent = 'Você já avaliou esse filme.';
+                if (reviewSectionTitle) reviewSectionTitle.textContent = '';
             } else if (loggedInUser) {
                 reviewForm.style.display = 'flex';
                 if (reviewSectionTitle) reviewSectionTitle.textContent = 'Deixe sua Avaliação:';
