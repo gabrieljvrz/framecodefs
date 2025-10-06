@@ -25,7 +25,7 @@ router.get('/me', authMiddleware, userController.getMyProfile);
 router.put('/me', authMiddleware, userController.updateMyProfile);
 
 // [ADMIN] buscar todos os usuários (protegido por auth e admin)
-router.get('/', [authMiddleware, adminMiddleware], userController.getAllUsers);
+router.get('/', [authMiddleware], userController.getAllUsers);
 
 // O 'upload.single('avatar')' é o middleware que processa o ficheiro
 router.post('/me/avatar', [authMiddleware, upload.single('avatar')], userController.uploadAvatar);

@@ -19,13 +19,21 @@ const reviewSectionTitle = document.querySelector('.review-section h2');
 const starRatingContainer = document.querySelector('.new-star-rating');
 const ratingValueInput = document.getElementById('ratingValue');
 
+const searchForm = document.getElementById('searchForm');
+const searchInput = document.getElementById('searchInput');
+
 const searchResultsSection = document.getElementById('searchResultsSection');
 const searchResultsGrid = document.getElementById('searchResultsGrid');
 const searchResultsTitle = document.getElementById('searchResultsTitle');
 
+const usersGridSection = document.getElementById('usersGridSection');
+const usersTitle = document.getElementById("usersTitle");
+const usersGrid = document.getElementById("usersGrid");
+
 let currentMovieData = null;
 
-// --- FUNÇÕES AUXILIARES ---
+// --- FUNÇÕES AUXILIARES E DE CRIAÇÃO DE CARDS ---
+
 function createMovieCard(movie) {
   const card = document.createElement("div");
   card.classList.add("movie-card");
@@ -41,28 +49,43 @@ function createMovieCard(movie) {
   return card;
 }
 
+function createUserCard(user) {
+    const card = document.createElement('div');
+    card.className = 'user-card';
+    const avatarSrc = user.avatar_url ? `http://localhost:3000${user.avatar_url}` : 'assets/user icon.png';
+
+    card.innerHTML = `
+        <a href="profile.html?id=${user.id}">
+            <img src="${avatarSrc}" alt="Avatar de ${user.name}">
+            <h3>${user.name}</h3>
+        </a>
+    `;
+    return card;
+}
+
 function generateStarsHTML(rating) {
-  let starsHTML = '';
-  const fullStars = Math.floor(rating);
-  const hasHalfStar = rating % 1 !== 0;
-  for (let i = 0; i < fullStars; i++) { starsHTML += `<img src="assets/star.png" alt="Estrela cheia">`; }
-  if (hasHalfStar) { starsHTML += `<img src="assets/half-star.png" alt="Meia estrela">`; }
-  const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-  for (let i = 0; i < emptyStars; i++) { starsHTML += `<img src="assets/empty-star.png" alt="Estrela vazia">`; }
-  return starsHTML;
+    let starsHTML = '';
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    for (let i = 0; i < fullStars; i++) { starsHTML += `<img src="assets/star.png" alt="Estrela cheia">`; }
+    if (hasHalfStar) { starsHTML += `<img src="assets/half-star.png" alt="Meia estrela">`; }
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    for (let i = 0; i < emptyStars; i++) { starsHTML += `<img src="assets/empty-star.png" alt="Estrela vazia">`; }
+    return starsHTML;
 }
 
 function parseJwt(token) {
-  try {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-  } catch (e) {
-    return null;
-  }
+    if (!token) return null;
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    } catch (e) {
+        return null;
+    }
 }
 
 // --- LÓGICA PRINCIPAL DA PÁGINA ---
@@ -182,26 +205,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
                 let profileLinkHTML = '';
                 if (loggedInUser && loggedInUser.id == review.user_id) {
-                    // Se a avaliação for do usuário logado, o link não tem ID
                     profileLinkHTML = `<strong><a href="profile.html" class="profile-link">${review.userName || 'Anônimo'}</a></strong>`;
                 } else {
-                    // Se for de outro usuário, o link tem o ID
                     profileLinkHTML = `<strong><a href="profile.html?id=${review.user_id}" class="profile-link">${review.userName || 'Anônimo'}</a></strong>`;
                 }
-
-                li.innerHTML = `
-                    <header>
-                        <div class="review-author-info">
-                            <img src="${avatarSrc}" alt="Avatar de ${review.userName}" class="review-avatar">
-                            ${profileLinkHTML}
-                        </div>
-                        <div class="meta-and-actions">
-                            <div class="review-actions">${buttons}</div>
-                            <span class="meta"> • Nota: ${parseFloat(review.rating)}/5⭐</span>
-                        </div>
-                    </header>
-                    <p>${review.comment}</p>
-                `;
+                li.innerHTML = `<header><div class="review-author-info"><img src="${avatarSrc}" alt="Avatar de ${review.userName}" class="review-avatar">${profileLinkHTML}</div><div class="meta-and-actions"><div class="review-actions">${buttons}</div><span class="meta"> • Nota: ${parseFloat(review.rating)}/5⭐</span></div></header><p>${review.comment}</p>`;
                 reviewsList.appendChild(li);
             });
             if (reviewsForThisMovie.length > 0) {
@@ -213,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (userHasAlreadyReviewed) {
                 reviewForm.style.display = 'none';
-                if (reviewSectionTitle) reviewSectionTitle.textContent = '';
+                if (reviewSectionTitle) reviewSectionTitle.textContent = 'Você já avaliou esse filme.';
             } else if (loggedInUser) {
                 reviewForm.style.display = 'flex';
                 if (reviewSectionTitle) reviewSectionTitle.textContent = 'Deixe sua Avaliação:';
@@ -227,7 +235,75 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    reviewForm.addEventListener('submit', async e => {
+    async function searchMovies(query) {
+        const url = `${apiBase}/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=pt-BR`;
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            searchResultsGrid.innerHTML = "";
+            if (!data.results || data.results.length === 0) {
+                searchResultsGrid.innerHTML = "<p>Nenhum filme encontrado com este termo.</p>";
+                return;
+            }
+            data.results.forEach((movie) => {
+                const card = createMovieCard(movie);
+                searchResultsGrid.appendChild(card);
+            });
+        } catch (error) {
+            searchResultsGrid.innerHTML = "<p>Erro ao buscar filmes.</p>";
+        }
+    }
+
+    async function searchUsers(query) {
+        if (!token) {
+            usersGridSection.style.display = 'none';
+            return;
+        }
+        const url = `http://localhost:3000/api/users?search=${encodeURIComponent(query)}`;
+        try {
+            const response = await fetch(url, { headers: { 'x-auth-token': token } });
+            if (!response.ok) throw new Error('Falha na busca de usuários');
+            const data = await response.json();
+            usersGrid.innerHTML = '';
+            if (data.users.length > 0) {
+                usersGridSection.style.display = 'block';
+                usersTitle.textContent = "Usuários Encontrados";
+                data.users.forEach(user => {
+                    const card = createUserCard(user);
+                    usersGrid.appendChild(card);
+                });
+            } else {
+                usersGridSection.style.display = 'none';
+            }
+        } catch (error) {
+            console.error(error);
+            usersGridSection.style.display = 'none';
+        }
+    }
+    
+    // --- EVENT LISTENERS GLOBAIS DA PÁGINA ---
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.trim();
+            if (searchTerm) {
+                detailsContainer.style.display = 'none';
+                searchResultsSection.style.display = 'block';
+                usersGridSection.style.display = 'block';
+                searchResultsTitle.textContent = `Resultados da busca por Filmes: "${searchTerm}"`;
+                searchMovies(searchTerm);
+                searchUsers(searchTerm);
+            } else {
+                searchResultsSection.style.display = 'none';
+                usersGridSection.style.display = 'none';
+                detailsContainer.style.display = 'block';
+            }
+        });
+        if (searchForm) {
+            searchForm.addEventListener('submit', (e) => e.preventDefault());
+        }
+    }
+
+    reviewForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const rating = parseFloat(ratingValueInput.value);
         const comment = document.getElementById('text').value.trim();
@@ -267,9 +343,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // --- EVENT LISTENERS GLOBAIS DA PÁGINA ---
-    
-    // Escuta por cliques na lista de avaliações para apagar
     reviewsList.addEventListener('click', (e) => {
         const deleteButton = e.target.closest('.delete-review-btn');
         if (deleteButton) {
@@ -279,29 +352,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // Escuta pelo evento do modal para atualizar a lista
     document.addEventListener('reviewsUpdated', renderReviews);
     
-    const searchInput = document.getElementById('searchInput');
-    if (searchInput) {
-        searchInput.addEventListener('input', (e) => {
-            const searchTerm = e.target.value.trim();
-            if (searchTerm) {
-                detailsContainer.style.display = 'none';
-                searchResultsSection.style.display = 'block';
-                searchResultsTitle.textContent = `Resultados da busca para: "${searchTerm}"`;
-                searchMovies(searchTerm);
-            } else {
-                searchResultsSection.style.display = 'none';
-                detailsContainer.style.display = 'block';
-            }
-        });
-        const searchForm = document.getElementById('searchForm');
-        if (searchForm) {
-            searchForm.addEventListener('submit', (e) => e.preventDefault());
-        }
-    }
-
     // --- INICIALIZAÇÃO ---
     loadMovieDetails(movieId);
     loadMovieCredits(movieId);

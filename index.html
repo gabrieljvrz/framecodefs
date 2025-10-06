@@ -17,7 +17,7 @@
     
     <!-- Campo de busca centralizado -->
     <form id="searchForm">
-      <input type="text" id="searchInput" class="search" placeholder="Buscar filmes..." />
+      <input type="text" id="searchInput" class="search" placeholder="Buscar filmes ou usuários..." />
     </form>
     
     <div class="profile-icon">
@@ -38,6 +38,11 @@
   <section class="movies-section">
     <h2 id="moviesTitle">Populares</h2>
     <div id="moviesGrid" class="movies-grid"></div>
+  </section>
+
+  <section id="usersGridSection" class="users-section" style="display: none;">
+    <h2 id="usersTitle">Usuários</h2>
+    <div id="usersGrid" class="users-grid"></div>
   </section>
 
   <script src="js/index.js" defer></script>

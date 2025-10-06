@@ -66,7 +66,7 @@ exports.getAllUsers = async (req, res) => {
         const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM users ${whereClause}`, params);
         
         // Query para obter os utilizadores da página atual
-        const [users] = await db.query(`SELECT id, name, email, role, created_at FROM users ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`, [...params, limit, offset]);
+        const [users] = await db.query(`SELECT id, name, email, role, created_at, avatar_url FROM users ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`, [...params, limit, offset]);
 
         res.json({
             total,
