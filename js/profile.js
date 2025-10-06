@@ -59,6 +59,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const logoutBtn = document.getElementById('logoutBtn');
   const adminBtn = document.getElementById('adminBtn');
   const noRecentActivities = document.getElementById('no-recent-activities');
+  const myProfileIcon = document.getElementById('myProfileIcon');
+
   let currentUserData = null;
 
   // --- 3. FUNÇÕES DE LÓGICA ---
@@ -183,6 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
     changeAvatarBtn.style.display = 'block';
     editProfileBtn.style.display = 'inline-block';
     logoutBtn.style.display = 'inline-block';
+    
+    if (myProfileIcon) myProfileIcon.style.display = 'none';
 
     changeAvatarBtn.addEventListener("click", () => avatarInput.click());
     avatarInput.addEventListener("change", async (event) => {
@@ -306,6 +310,10 @@ document.addEventListener('DOMContentLoaded', () => {
     changeAvatarBtn.style.display = 'none';
     logoutBtn.style.display = 'none';
     if (adminBtn) adminBtn.style.display = 'none';
+
+    if (loggedInUser && myProfileIcon) {
+        myProfileIcon.style.display = 'block';
+    }
   }
 
   // --- 5. INICIALIZAÇÃO DA PÁGINA ---

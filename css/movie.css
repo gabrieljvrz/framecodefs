@@ -436,8 +436,12 @@ body {
     color: inherit; /* Herda a cor do elemento pai (branco) */
     text-decoration: none;
     transition: color 0.2s ease;
+    border: none;
+    padding-left: 4px;
 }
 .profile-link:hover {
     color: #e50914; /* Vermelho ao passar o mouse */
     text-decoration: underline;
+    border: none;
+    background: none;
 }
