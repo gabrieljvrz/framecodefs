@@ -60,9 +60,17 @@ exports.createReview = async (req, res) => {
 // buscar todas as avaliações do usuário logado
 exports.getMyReviews = async (req, res) => {
   try {
+    const loggedInUserId = req.user.id; // ID do usuário que está logado e pedindo os dados
+
+    // CORREÇÃO: A query agora é igual às outras, calculando likes e se o usuário curtiu
     const [myReviews] = await db.query(
-      'SELECT * FROM reviews WHERE user_id = ? ORDER BY created_at DESC',
-      [req.user.id]
+      `SELECT *,
+         (SELECT COUNT(*) FROM review_likes WHERE review_id = reviews.id) as like_count,
+         (SELECT COUNT(*) FROM review_likes WHERE review_id = reviews.id AND user_id = ?) as user_has_liked
+       FROM reviews 
+       WHERE user_id = ? 
+       ORDER BY created_at DESC`,
+      [loggedInUserId, loggedInUserId] // Passamos o ID do usuário logado duas vezes
     );
     res.json(myReviews);
   } catch (error) {

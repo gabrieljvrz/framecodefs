@@ -4,10 +4,11 @@ const reviewController = require('../controllers/reviewController');
 const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
 const likeController = require('../controllers/likeController');
+const authOptionalMiddleware = require('../middleware/authOptionalMiddleware');
 
 // rota para buscar avaliações de um filme (pública)
 // GET /api/reviews/:movieId
-router.get('/:movieId', reviewController.getReviewsByMovie);
+router.get('/:movieId', authOptionalMiddleware, reviewController.getReviewsByMovie);
 
 // rota para criar uma nova avaliação (protegida)
 // POST /api/reviews
@@ -29,7 +30,7 @@ router.delete('/:id', [authMiddleware, adminMiddleware], reviewController.delete
 router.get('/all/reviews', [authMiddleware, adminMiddleware], reviewController.getAllReviews);
 
 // Rota PÚBLICA para buscar avaliações de um usuário por ID
-router.get('/user/:userId', reviewController.getReviewsByUserId);
+router.get('/user/:userId', authOptionalMiddleware, reviewController.getReviewsByUserId);
 
 // Rota para curtir uma avaliação (protegida)
 router.post('/:reviewId/like', authMiddleware, likeController.likeReview);

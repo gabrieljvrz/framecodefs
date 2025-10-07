@@ -107,93 +107,101 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+// Substitua a sua função 'loadUserReviews' inteira por esta:
   async function loadUserReviews() {
-    const url = isMyProfile ? `http://localhost:3000/api/reviews/user/me` : `http://localhost:3000/api/reviews/user/${userIdToFetch}`;
-    const options = isMyProfile ? { headers: { 'x-auth-token': token } } : {};
-    
-    myReviewsList.innerHTML = "<li>Carregando avaliações...</li>";
-    recentActivitiesEl.innerHTML = "";
-    
-    try {
-      const response = await fetch(url, options);
-      if (!response.ok) throw new Error('Falha ao carregar avaliações.');
+      const url = isMyProfile ? `http://localhost:3000/api/reviews/user/me` : `http://localhost:3000/api/reviews/user/${userIdToFetch}`;
       
-      const reviews = await response.json();
-      myReviewsList.innerHTML = "";
-      
-      if (reviews.length === 0) {
-        if (noRecentActivities) noRecentActivities.style.display = "flex";
-        myReviewsList.innerHTML = `<h4 id='no-reviews-h4'>${isMyProfile ? 'Você' : 'Este usuário'} ainda não fez nenhuma avaliação.</h4>`;
-        return;
+      // --- CORREÇÃO AQUI ---
+      // Prepara as opções da requisição para SEMPRE enviar o token, se ele existir.
+      const options = { headers: {} };
+      if (token) {
+          options.headers['x-auth-token'] = token;
       }
+      // ---------------------
       
-      const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984"; 
-      const imageBase = "https://image.tmdb.org/t/p/w200";
-      const recentReviews = reviews.slice(0, 7);
+      myReviewsList.innerHTML = "<li>Carregando avaliações...</li>";
+      recentActivitiesEl.innerHTML = "";
+      
+      try {
+          // A requisição agora envia as 'options' com o token
+          const response = await fetch(url, options);
+          if (!response.ok) throw new Error('Falha ao carregar avaliações.');
+          
+          const reviews = await response.json();
+          myReviewsList.innerHTML = "";
+          
+          if (reviews.length === 0) {
+              if (noRecentActivities) noRecentActivities.style.display = "flex";
+              myReviewsList.innerHTML = `<h4 id='no-reviews-h4'>${isMyProfile ? 'Você' : 'Este usuário'} ainda não fez nenhuma avaliação.</h4>`;
+              return;
+          }
+          
+          const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984"; 
+          const imageBase = "https://image.tmdb.org/t/p/w200";
+          const recentReviews = reviews.slice(0, 7);
 
-      for (const r of reviews) {
-        let posterUrl = "https://via.placeholder.com/100x150?text=Sem+Imagem";
-        try {
-            const movieRes = await fetch(`https://api.themoviedb.org/3/movie/${r.movie_id}?api_key=${apiKey}&language=pt-BR`);
-            const movieData = await movieRes.json();
-            if(movieData.poster_path) posterUrl = `${imageBase}${movieData.poster_path}`;
-        } catch(e) { console.error("Erro ao buscar poster"); }
+          for (const r of reviews) {
+              let posterUrl = "https://via.placeholder.com/100x150?text=Sem+Imagem";
+              try {
+                  const movieRes = await fetch(`https://api.themoviedb.org/3/movie/${r.movie_id}?api_key=${apiKey}&language=pt-BR`);
+                  const movieData = await movieRes.json();
+                  if(movieData.poster_path) posterUrl = `${imageBase}${movieData.poster_path}`;
+              } catch(e) { console.error("Erro ao buscar poster"); }
 
-        const li = document.createElement("li");
-        li.className = "review-item";
-        li.id = `my-review-${r.id}`;
+              const li = document.createElement("li");
+              li.className = "review-item";
+              li.id = `my-review-${r.id}`;
 
-        let buttons = '';
-        // Se for o meu perfil, mostra botões de editar/excluir
-        if (isMyProfile) {
-            buttons = `
-              <button class="edit-review-btn" data-review-id="${r.id}" data-comment="${r.comment.replace(/"/g, '&quot;')}" data-rating="${r.rating}"><img src="assets/edit.png"> Editar</button> 
-              <button class="delete-review-btn" data-review-id="${r.id}"><img src="assets/delete.png"> Excluir</button>
-            `;
-        } 
-        // CORREÇÃO: Se eu for admin E não for o meu perfil, mostra o botão de excluir de admin
-        else if (loggedInUser && loggedInUser.role === 'admin' && !isMyProfile) {
-            buttons = `
-              <button class="delete-review-btn admin-delete" data-review-id="${r.id}"><img src="assets/delete.png"> Excluir (Admin)</button>
-            `;
-        }
+              let buttons = '';
+              if (isMyProfile) {
+                  buttons = ` 
+                    <button class="edit-review-btn" data-review-id="${r.id}" data-comment="${r.comment.replace(/"/g, '&quot;')}" data-rating="${r.rating}"><img src="assets/edit.png"> Editar</button> 
+                    <button class="delete-review-btn" data-review-id="${r.id}"><img src="assets/delete.png"> Excluir</button>
+                  `;
+              } 
+              else if (loggedInUser && loggedInUser.role === 'admin' && !isMyProfile) {
+                  buttons = ` 
+                    <button class="delete-review-btn admin-delete" data-review-id="${r.id}"><img src="assets/delete.png"> Excluir (Admin)</button>
+                  `;
+              }
 
-        const likeBtnClass = r.user_has_liked ? 'like-btn liked' : 'like-btn';
-        const likeBtnDisabled = !loggedInUser ? 'disabled' : ''; // Desativa o botão se não estiver logado
+              // Agora esta lógica funcionará em todos os perfis
+              const likeBtnClass = r.user_has_liked ? 'like-btn liked' : 'like-btn';
+              const likeBtnDisabled = !loggedInUser ? 'disabled' : '';
 
-        li.innerHTML = `
-          <a href="movie.html?id=${r.movie_id}"><img src="${posterUrl}" alt="Pôster de ${r.movie_title}" class="review-poster"></a>
-          <div class="review-content">
-            <header>
-              <strong><a href="movie.html?id=${r.movie_id}" class="review-movie-title">${r.movie_title}</a></strong>
-              <div class="meta-and-actions">
-              <div class="review-actions">${buttons}</div>
-                  <div class="like-section">
-                      <button class="${likeBtnClass}" data-review-id="${r.id}" ${likeBtnDisabled}>❤</button>
-                      <span id="like-count-${r.id}">${parseFloat(r.like_count) || 0}</span>
+              li.innerHTML = `
+                  <a href="movie.html?id=${r.movie_id}"><img src="${posterUrl}" alt="Pôster de ${r.movie_title}" class="review-poster"></a>
+                  <div class="review-content">
+                      <header>
+                          <strong><a href="movie.html?id=${r.movie_id}" class="review-movie-title">${r.movie_title}</a></strong>
+                          <div class="meta-and-actions">
+                              <div class="like-section">
+                                  <button class="${likeBtnClass}" data-review-id="${r.id}" ${likeBtnDisabled}>❤</button>
+                                  <span id="like-count-${r.id}">${r.like_count || 0}</span>
+                              </div>
+                              <span class="meta"> • Nota: ${parseFloat(r.rating)}/5 ⭐</span>
+                              <div class="review-actions">${buttons}</div>
+                          </div>
+                      </header>
+                      <p>${r.comment}</p>
                   </div>
-                  <span class="meta"> • Nota: ${parseFloat(r.rating)}/5 ⭐</span>
-              </div>
-            </header>
-            <p>${r.comment}</p>
-          </div>
-        `;
+              `;
 
-        myReviewsList.appendChild(li);
+              myReviewsList.appendChild(li);
 
-        if(recentReviews.find(rev => rev.id === r.id)) {
-            const card = document.createElement("div");
-            card.className = "activity-card";
-            card.innerHTML = `
-              <a href="movie.html?id=${r.movie_id}"><img src="${posterUrl}" alt="${r.movie_title}"></a>
-              <div class="static-stars">${generateStarsHTML(r.rating)}</div>
-            `;
-            recentActivitiesEl.appendChild(card);
-        }
+              if(recentReviews.find(rev => rev.id === r.id)) {
+                  const card = document.createElement("div");
+                  card.className = "activity-card";
+                  card.innerHTML = `
+                    <a href="movie.html?id=${r.movie_id}"><img src="${posterUrl}" alt="${r.movie_title}"></a>
+                    <div class="static-stars">${generateStarsHTML(r.rating)}</div>
+                  `;
+                  recentActivitiesEl.appendChild(card);
+              }
+          }
+      } catch (error) {
+          myReviewsList.innerHTML = `<li>${error.message}</li>`;
       }
-    } catch (error) {
-      myReviewsList.innerHTML = `<li>${error.message}</li>`;
-    }
   }
 
   // ================== LÓGICA DE FAVORITOS (COM PEQUENA ALTERAÇÃO) ==================
