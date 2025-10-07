@@ -2,20 +2,23 @@ const db = require('../config/db');
 
 // listar todas as avaliações de um filme
 exports.getReviewsByMovie = async (req, res) => {
-  try {
     const { movieId } = req.params;
-    const [reviews] = await db.query(
-      `SELECT r.id, r.user_id, r.rating, r.comment, r.created_at, u.name as userName, u.avatar_url
-       FROM reviews r 
-       JOIN users u ON r.user_id = u.id 
-       WHERE r.movie_id = ? 
-       ORDER BY r.created_at DESC`,
-      [movieId]
-    );
-    res.json(reviews);
-  } catch (error) {
-    res.status(500).json({ message: 'Erro no servidor.' });
-  }
+    const userId = req.user ? req.user.id : 0; // Pega o ID do usuário logado, ou 0 se for um visitante
+    try {
+        const [reviews] = await db.query(
+          `SELECT 
+             r.id, r.user_id, r.rating, r.comment, r.created_at, 
+             u.name as userName, u.avatar_url,
+             (SELECT COUNT(*) FROM review_likes WHERE review_id = r.id) as like_count,
+             (SELECT COUNT(*) FROM review_likes WHERE review_id = r.id AND user_id = ?) as user_has_liked
+           FROM reviews r 
+           JOIN users u ON r.user_id = u.id 
+           WHERE r.movie_id = ? 
+           ORDER BY r.created_at DESC`,
+          [userId, movieId]
+        );
+        res.json(reviews);
+    } catch (error) { res.status(500).json({ message: 'Erro no servidor.' }); }
 };
 
 // criar uma nova avaliação (requer autenticação)
@@ -177,14 +180,18 @@ exports.getAllReviews = async (req, res) => {
 
 // Buscar todas as avaliações de um usuário específico por ID
 exports.getReviewsByUserId = async (req, res) => {
-  try {
     const { userId } = req.params;
-    const [reviews] = await db.query(
-      'SELECT * FROM reviews WHERE user_id = ? ORDER BY created_at DESC',
-      [userId]
-    );
-    res.json(reviews);
-  } catch (error) {
-    res.status(500).json({ message: 'Erro no servidor.' });
-  }
+    const loggedInUserId = req.user ? req.user.id : 0;
+    try {
+        const [reviews] = await db.query(
+          `SELECT *,
+             (SELECT COUNT(*) FROM review_likes WHERE review_id = reviews.id) as like_count,
+             (SELECT COUNT(*) FROM review_likes WHERE review_id = reviews.id AND user_id = ?) as user_has_liked
+           FROM reviews 
+           WHERE user_id = ? 
+           ORDER BY created_at DESC`,
+          [loggedInUserId, userId]
+        );
+        res.json(reviews);
+    } catch (error) { res.status(500).json({ message: 'Erro no servidor.' }); }
 };

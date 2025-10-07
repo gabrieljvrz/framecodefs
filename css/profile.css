@@ -378,3 +378,118 @@
 .admin-btn:hover {
   background-color: #444;
 }
+
+/* css/profile.css -> Adicione no final */
+
+/* === SEÇÃO DE FAVORITOS === */
+.favorites-section {
+  margin-top: 3rem;
+}
+
+.favorites-section h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+/* Modifica o grid de atividades para funcionar como um carrossel */
+.activities-grid {
+  overflow-x: auto; /* Permite o scroll horizontal */
+  scroll-behavior: smooth; /* Animação de scroll */
+  -ms-overflow-style: none;  /* Esconde a barra de scroll no IE e Edge */
+  scrollbar-width: none;  /* Esconde a barra de scroll no Firefox */
+  display: grid;
+  /* Mostra 7 colunas (filmes) de uma vez */
+  grid-template-columns: repeat(7, 1fr); 
+}
+
+/* Esconde a barra de scroll no Chrome, Safari e Opera */
+.activities-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* css/profile.css */
+
+.carousel-btn {
+  background-color: rgba(26, 26, 26, 0.8);
+  border: 1px solid #444;
+  color: #fff;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+  
+  /* LINHAS PARA CENTRALIZAR O CONTEÚDO (A IMAGEM) */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0; /* Remove qualquer padding que possa interferir */
+}
+
+.carousel-btn:hover {
+  background-color: #e50914;
+  border-color: #e50914;
+}
+
+.carousel-btn.prev {
+  left: -20px;
+}
+
+.carousel-btn.next {
+  right: -20px;
+}
+
+.carousel-btn:disabled {
+  background-color: #1a1a1a;
+  color: #444;
+  cursor: not-allowed;
+  border-color: #333;
+}
+
+/* css/profile.css */
+
+.carousel-btn img {
+  width: 16px;  /* Ajuste o tamanho do ícone conforme necessário */
+  height: 16px; /* Ajuste o tamanho do ícone conforme necessário */
+}
+
+/* Adicione a ambos os ficheiros: movie.css e profile.css */
+
+.like-section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.like-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.5rem; /* Tamanho do coração */
+  color: #888; /* Cor do coração vazio */
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.like-btn.liked {
+  color: #e50914; /* Cor do coração curtido */
+  transform: scale(1.1);
+}
+
+.like-btn:disabled {
+    cursor: not-allowed;
+    color: #444;
+}

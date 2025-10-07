@@ -18,6 +18,7 @@ const avgRatingEl      = document.getElementById('avgRating');
 const reviewSectionTitle = document.querySelector('.review-section h2');
 const starRatingContainer = document.querySelector('.new-star-rating');
 const ratingValueInput = document.getElementById('ratingValue');
+const favoriteBtn = document.getElementById('favoriteBtn');
 
 const searchForm = document.getElementById('searchForm');
 const searchInput = document.getElementById('searchInput');
@@ -186,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 reviewsList.innerHTML = "<h4 id='no-reviews-h4'>Nenhuma avaliação ainda. Seja o primeiro!</h4>";
             }
             reviewsForThisMovie.forEach(review => {
-                sumOfRatings += review.rating;
+                sumOfRatings += parseFloat(review.rating);
                 const avatarSrc = review.avatar_url ? `http://localhost:3000${review.avatar_url}` : 'assets/user icon.png';
                 if (loggedInUser && loggedInUser.id == review.user_id) {
                     userHasAlreadyReviewed = true;
@@ -209,7 +210,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 } else {
                     profileLinkHTML = `<strong><a href="profile.html?id=${review.user_id}" class="profile-link">${review.userName || 'Anônimo'}</a></strong>`;
                 }
-                li.innerHTML = `<header><div class="review-author-info"><img src="${avatarSrc}" alt="Avatar de ${review.userName}" class="review-avatar">${profileLinkHTML}</div><div class="meta-and-actions"><div class="review-actions">${buttons}</div><span class="meta"> • Nota: ${parseFloat(review.rating)}/5⭐</span></div></header><p>${review.comment}</p>`;
+
+                const likeBtnClass = review.user_has_liked ? 'like-btn liked' : 'like-btn';
+                const likeBtnDisabled = !loggedInUser ? 'disabled' : ''; // Desativa o botão se não estiver logado
+
+                li.innerHTML = `
+                  <header>
+                      <div class="review-author-info">
+                          <img src="${avatarSrc}" alt="Avatar de ${review.userName}" class="review-avatar">
+                          ${profileLinkHTML}
+                      </div>
+                      <div class="meta-and-actions">
+                          <div class="like-section">
+                              <button class="${likeBtnClass}" data-review-id="${review.id}" ${likeBtnDisabled}>❤</button>
+                              <span id="like-count-${review.id}">${review.like_count}</span>
+                          </div>
+                          <span class="meta"> • Nota: ${parseFloat(review.rating)}/5⭐</span>
+                          <div class="review-actions">${buttons}</div>
+                      </div>
+                  </header>
+                  <p>${review.comment}</p>
+                `;
+
                 reviewsList.appendChild(li);
             });
             if (reviewsForThisMovie.length > 0) {
@@ -354,9 +376,110 @@ document.addEventListener('DOMContentLoaded', () => {
     
     document.addEventListener('reviewsUpdated', renderReviews);
     
-    // --- INICIALIZAÇÃO ---
-    loadMovieDetails(movieId);
-    loadMovieCredits(movieId);
-    renderReviews();
-    setupStarRating();
+    // ================== LÓGICA DE FAVORITOS CORRIGIDA ==================
+    let favoriteMovieIds = [];
+
+    async function checkFavoriteStatus() {
+        if (!token) {
+            favoriteBtn.style.display = 'none'; // Esconde o botão se o usuário não estiver logado
+            return;
+        }
+        try {
+            const res = await fetch('http://localhost:3000/api/favorites/ids', { headers: { 'x-auth-token': token } });
+            if (!res.ok) throw new Error('Não foi possível verificar os favoritos.');
+            
+            favoriteMovieIds = await res.json();
+            
+            if (favoriteMovieIds.includes(movieId)) {
+                favoriteBtn.classList.add('favorited');
+            } else {
+                favoriteBtn.classList.remove('favorited');
+            }
+        } catch (error) {
+            console.error("Erro ao verificar favoritos:", error);
+        }
+    }
+
+    favoriteBtn.addEventListener('click', async () => {
+        if (!token) {
+            return alert('Você precisa estar logado para favoritar filmes.');
+        }
+
+        const isFavorited = favoriteBtn.classList.contains('favorited');
+        const url = `http://localhost:3000/api/favorites/${isFavorited ? movieId : ''}`;
+        const method = isFavorited ? 'DELETE' : 'POST';
+        
+        try {
+            const response = await fetch(url, {
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-auth-token': token
+                },
+                body: isFavorited ? null : JSON.stringify({
+                    movieId: movieId,
+                    movieTitle: currentMovieData.title,
+                    moviePosterPath: currentMovieData.poster_path
+                })
+            });
+
+            const data = await response.json();
+            if (!response.ok) {
+                throw new Error(data.message);
+            }
+            
+            favoriteBtn.classList.toggle('favorited');
+
+        } catch (error) {
+            alert(`Erro: ${error.message}`);
+        }
+    });
+    // ===================================================================
+
+        document.addEventListener('click', async (e) => {
+        const likeButton = e.target.closest('.like-btn');
+        if (likeButton) {
+            if (!token) {
+                return alert('Você precisa estar logado para curtir uma avaliação.');
+            }
+            
+            const reviewId = likeButton.dataset.reviewId;
+            const isLiked = likeButton.classList.contains('liked');
+            const url = `http://localhost:3000/api/reviews/${reviewId}/like`;
+            const method = isLiked ? 'DELETE' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'x-auth-token': token }
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.message);
+                }
+
+                // Atualiza a UI otimisticamente
+                likeButton.classList.toggle('liked');
+                const likeCountSpan = document.getElementById(`like-count-${reviewId}`);
+                const currentCount = parseInt(likeCountSpan.textContent);
+                likeCountSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
+
+            } catch (error) {
+                alert(`Erro: ${error.message}`);
+            }
+        }
+    });
+
+// --- INICIALIZAÇÃO ---
+    // Agrupamos as chamadas assíncronas para carregar a página
+    async function initializePage() {
+        await loadMovieDetails(movieId); // Espera os detalhes do filme primeiro
+        await loadMovieCredits(movieId);
+        renderReviews();
+        checkFavoriteStatus(); // CORREÇÃO: Chama a verificação de favorito
+        setupStarRating();
+    }
+
+    initializePage();
 });

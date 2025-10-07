@@ -60,6 +60,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const adminBtn = document.getElementById('adminBtn');
   const noRecentActivities = document.getElementById('no-recent-activities');
   const myProfileIcon = document.getElementById('myProfileIcon');
+  const favoritesGrid = document.getElementById('favoritesGrid');
+  const favPrevBtn = document.getElementById('favPrevBtn');
+  const favNextBtn = document.getElementById('favNextBtn');
+  const noFavoritesMessage = document.getElementById('no-favorites');
 
   let currentUserData = null;
 
@@ -140,12 +144,22 @@ document.addEventListener('DOMContentLoaded', () => {
         li.id = `my-review-${r.id}`;
 
         let buttons = '';
+        // Se for o meu perfil, mostra botões de editar/excluir
         if (isMyProfile) {
             buttons = `
               <button class="edit-review-btn" data-review-id="${r.id}" data-comment="${r.comment.replace(/"/g, '&quot;')}" data-rating="${r.rating}"><img src="assets/edit.png"> Editar</button> 
               <button class="delete-review-btn" data-review-id="${r.id}"><img src="assets/delete.png"> Excluir</button>
             `;
+        } 
+        // CORREÇÃO: Se eu for admin E não for o meu perfil, mostra o botão de excluir de admin
+        else if (loggedInUser && loggedInUser.role === 'admin' && !isMyProfile) {
+            buttons = `
+              <button class="delete-review-btn admin-delete" data-review-id="${r.id}"><img src="assets/delete.png"> Excluir (Admin)</button>
+            `;
         }
+
+        const likeBtnClass = r.user_has_liked ? 'like-btn liked' : 'like-btn';
+        const likeBtnDisabled = !loggedInUser ? 'disabled' : ''; // Desativa o botão se não estiver logado
 
         li.innerHTML = `
           <a href="movie.html?id=${r.movie_id}"><img src="${posterUrl}" alt="Pôster de ${r.movie_title}" class="review-poster"></a>
@@ -153,13 +167,18 @@ document.addEventListener('DOMContentLoaded', () => {
             <header>
               <strong><a href="movie.html?id=${r.movie_id}" class="review-movie-title">${r.movie_title}</a></strong>
               <div class="meta-and-actions">
-                <div class="review-actions">${buttons}</div>
-                <span class="meta"> • Nota: ${parseFloat(r.rating)}/5 ⭐</span>
+              <div class="review-actions">${buttons}</div>
+                  <div class="like-section">
+                      <button class="${likeBtnClass}" data-review-id="${r.id}" ${likeBtnDisabled}>❤</button>
+                      <span id="like-count-${r.id}">${parseFloat(r.like_count) || 0}</span>
+                  </div>
+                  <span class="meta"> • Nota: ${parseFloat(r.rating)}/5 ⭐</span>
               </div>
             </header>
             <p>${r.comment}</p>
           </div>
         `;
+
         myReviewsList.appendChild(li);
 
         if(recentReviews.find(rev => rev.id === r.id)) {
@@ -177,7 +196,80 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- 4. LÓGICA DE EVENTOS (CONDICIONAL) ---
+  // ================== LÓGICA DE FAVORITOS (COM PEQUENA ALTERAÇÃO) ==================
+  let allFavorites = [];
+  let favoritesCurrentPage = 0;
+  const favoritesPerPage = 7;
+
+  async function loadFavorites() {
+      const url = isMyProfile 
+          ? `http://localhost:3000/api/favorites` 
+          : `http://localhost:3000/api/favorites/user/${userIdToFetch}`;
+      
+      const options = isMyProfile ? { headers: { 'x-auth-token': token } } : {};
+
+      try {
+          const response = await fetch(url, options);
+          if (!response.ok) throw new Error('Falha ao carregar favoritos.');
+          
+          allFavorites = await response.json();
+          
+          if (allFavorites.length > 0) {
+              document.querySelector('.favorites-section').style.display = 'block';
+              displayFavoritePage();
+          } else {
+              document.querySelector('.favorites-section').style.display = 'none';
+          }
+      } catch (error) {
+          console.error(error);
+          document.querySelector('.favorites-section').style.display = 'none';
+      }
+  }
+
+  function displayFavoritePage() {
+      if (!favoritesGrid) return;
+      
+      favoritesGrid.innerHTML = '';
+      const start = favoritesCurrentPage * favoritesPerPage;
+      const end = start + favoritesPerPage;
+      const pageFavorites = allFavorites.slice(start, end);
+
+      pageFavorites.forEach(fav => {
+          const posterPath = fav.movie_poster_path ? `https://image.tmdb.org/t/p/w200${fav.movie_poster_path}` : "https://via.placeholder.com/200x300?text=Sem+Imagem";
+          const card = document.createElement("div");
+          card.className = "activity-card";
+          card.innerHTML = `<a href="movie.html?id=${fav.movie_id}"><img src="${posterPath}" alt="${fav.movie_title}"></a>`;
+          favoritesGrid.appendChild(card);
+      });
+
+      favPrevBtn.style.display = favoritesCurrentPage === 0 ? 'none' : 'flex';
+      favNextBtn.style.display = end >= allFavorites.length ? 'none' : 'flex';
+  }
+  // =======================================================================
+
+  // --- 4. LÓGICA DE EVENTOS ---
+  
+  document.addEventListener('reviewsUpdated', loadUserReviews);
+
+  // CORREÇÃO: Eventos de paginação movidos para fora do 'if (isMyProfile)'
+  if (favPrevBtn) {
+      favPrevBtn.addEventListener('click', () => {
+          if (favoritesCurrentPage > 0) {
+              favoritesCurrentPage--;
+              displayFavoritePage();
+          }
+      });
+  }
+  
+  if (favNextBtn) {
+      favNextBtn.addEventListener('click', () => {
+          const maxPage = Math.ceil(allFavorites.length / favoritesPerPage) - 1;
+          if (favoritesCurrentPage < maxPage) {
+              favoritesCurrentPage++;
+              displayFavoritePage();
+          }
+      });
+  }
   
   document.addEventListener('reviewsUpdated', loadUserReviews);
 
@@ -187,6 +279,25 @@ document.addEventListener('DOMContentLoaded', () => {
     logoutBtn.style.display = 'inline-block';
     
     if (myProfileIcon) myProfileIcon.style.display = 'none';
+
+        // EVENTOS PARA PAGINAÇÃO DE FAVORITOS (CORRIGIDOS)
+    if (favPrevBtn) {
+      favPrevBtn.addEventListener('click', () => {
+        if (favoritesCurrentPage > 0) {
+          favoritesCurrentPage--;
+          displayFavoritePage();
+        }
+      });
+    }
+    if (favNextBtn) {
+      favNextBtn.addEventListener('click', () => {
+        const maxPage = Math.ceil(allFavorites.length / favoritesPerPage) - 1;
+        if (favoritesCurrentPage < maxPage) {
+          favoritesCurrentPage++;
+          displayFavoritePage();
+        }
+      });
+    }
 
     changeAvatarBtn.addEventListener("click", () => avatarInput.click());
     avatarInput.addEventListener("change", async (event) => {
@@ -213,20 +324,26 @@ document.addEventListener('DOMContentLoaded', () => {
       const deleteButton = e.target.closest('.delete-review-btn');
       if (deleteButton) {
           const { reviewId } = deleteButton.dataset;
-          deleteReviewOnProfile(reviewId);
+          deleteReview(reviewId);
       }
     });
 
-    async function deleteReviewOnProfile(reviewId) {
-      if (!confirm("Tem certeza que deseja excluir sua avaliação?")) return;
+    async function deleteReview(reviewId, isAdminDelete) {
+      const confirmationText = isAdminDelete ? "ADMIN: Tem certeza que deseja excluir esta avaliação?" : "Tem certeza que deseja excluir sua avaliação?";
+      if (!confirm(confirmationText)) return;
+
+      // Se for admin, usa a rota de admin. Se não, usa a rota do próprio usuário.
+      const url = isAdminDelete ? `http://localhost:3000/api/reviews/${reviewId}` : `http://localhost:3000/api/reviews/me/${reviewId}`;
+
       try {
-        const response = await fetch(`http://localhost:3000/api/reviews/me/${reviewId}`, {
-          method: 'DELETE', headers: { 'x-auth-token': token }
+        const response = await fetch(url, {
+          method: 'DELETE',
+          headers: { 'x-auth-token': token }
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.message);
         alert('Avaliação excluída!');
-        loadUserReviews();
+        loadUserReviews(); // Recarrega a lista de avaliações do usuário atual
       } catch (error) {
         alert(`Erro: ${error.message}`);
       }
@@ -316,7 +433,43 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+      document.addEventListener('click', async (e) => {
+        const likeButton = e.target.closest('.like-btn');
+        if (likeButton) {
+            if (!token) {
+                return alert('Você precisa estar logado para curtir uma avaliação.');
+            }
+            
+            const reviewId = likeButton.dataset.reviewId;
+            const isLiked = likeButton.classList.contains('liked');
+            const url = `http://localhost:3000/api/reviews/${reviewId}/like`;
+            const method = isLiked ? 'DELETE' : 'POST';
+
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: { 'x-auth-token': token }
+                });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    throw new Error(data.message);
+                }
+
+                // Atualiza a UI otimisticamente
+                likeButton.classList.toggle('liked');
+                const likeCountSpan = document.getElementById(`like-count-${reviewId}`);
+                const currentCount = parseInt(likeCountSpan.textContent);
+                likeCountSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
+
+            } catch (error) {
+                alert(`Erro: ${error.message}`);
+            }
+        }
+    });
+
   // --- 5. INICIALIZAÇÃO DA PÁGINA ---
   loadProfileData();
   loadUserReviews();
+  loadFavorites();
 });

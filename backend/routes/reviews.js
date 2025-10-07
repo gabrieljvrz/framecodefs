@@ -3,6 +3,7 @@ const router = express.Router();
 const reviewController = require('../controllers/reviewController');
 const authMiddleware = require('../middleware/authMiddleware');
 const adminMiddleware = require('../middleware/adminMiddleware');
+const likeController = require('../controllers/likeController');
 
 // rota para buscar avaliações de um filme (pública)
 // GET /api/reviews/:movieId
@@ -29,5 +30,11 @@ router.get('/all/reviews', [authMiddleware, adminMiddleware], reviewController.g
 
 // Rota PÚBLICA para buscar avaliações de um usuário por ID
 router.get('/user/:userId', reviewController.getReviewsByUserId);
+
+// Rota para curtir uma avaliação (protegida)
+router.post('/:reviewId/like', authMiddleware, likeController.likeReview);
+
+// Rota para descurtir uma avaliação (protegida)
+router.delete('/:reviewId/like', authMiddleware, likeController.unlikeReview);
 
 module.exports = router;

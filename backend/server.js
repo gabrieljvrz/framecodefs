@@ -14,6 +14,7 @@ app.use('/uploads', express.static('uploads'));
 const authRoutes = require('./routes/auth');
 const reviewRoutes = require('./routes/reviews'); 
 const userRoutes = require('./routes/users');
+const favoriteRoutes = require('./routes/favorites'); 
 
 app.get('/', (req, res) => {
   res.send('API do FrameCode está funcionando!');
@@ -22,6 +23,7 @@ app.get('/', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/reviews', reviewRoutes); 
 app.use('/api/users', userRoutes);
+app.use('/api/favorites', favoriteRoutes);
 
 // inicia o servidor
 app.listen(PORT, () => {

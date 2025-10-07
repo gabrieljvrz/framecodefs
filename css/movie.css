@@ -500,3 +500,68 @@ body {
   font-weight: 600;
   color: #fff;
 }
+
+/* css/movie.css */
+.title-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.favorite-btn {
+    background: none;
+    border: none;
+    font-size: 2rem;
+    color: #555; /* Cor do coração "não favoritado" */
+    cursor: pointer;
+    transition: color 0.2s ease, transform 0.2s ease;
+    padding-left: 2px;
+    padding-top: 2px;
+}
+
+.favorite-btn:hover {
+  background: none;
+  transform:scale(1.25);
+  transition: 0.25s;
+}
+
+.favorite-btn.favorited {
+    color: #e50914; /* Cor do coração "favoritado" */
+    transform: scale(1.25);
+}
+
+.favorite-btn.favorited:hover {
+    color: #e50914; /* Cor do coração "favoritado" */
+    transform: scale(1.25);
+    transition: 0.25s;
+}
+
+/* Adicione a ambos os ficheiros: movie.css e profile.css */
+
+.like-section {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: #ccc;
+}
+
+.like-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  font-size: 1.5rem; /* Tamanho do coração */
+  color: #888; /* Cor do coração vazio */
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.like-btn.liked {
+  color: #e50914; /* Cor do coração curtido */
+  transform: scale(1.1);
+}
+
+.like-btn:disabled {
+    cursor: not-allowed;
+    color: #444;
+}

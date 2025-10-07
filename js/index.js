@@ -55,17 +55,37 @@ function createUserCard(user) {
 // --- FUNÇÕES DE BUSCA NA API ---
 
 async function fetchPopularMovies() {
-  const url = `${apiBase}/movie/popular?api_key=${apiKey}&language=pt-BR&page=1`;
+  moviesTitle.textContent = "Carregando...";
+  let popularMovies = [];
+  let currentPage = 1;
+
   try {
-    const response = await fetch(url);
-    const data = await response.json();
-    moviesGrid.innerHTML = "";
+    // Continua a buscar filmes até ter pelo menos 24 com pôster
+    while (popularMovies.length < 24 && currentPage <= 5) { // Limita a 5 páginas para evitar loops infinitos
+      const url = `${apiBase}/movie/popular?api_key=${apiKey}&language=pt-BR&page=${currentPage}`;
+      const response = await fetch(url);
+      const data = await response.json();
+
+      // Filtra os filmes para incluir apenas aqueles que têm um pôster
+      const moviesWithPosters = data.results.filter(movie => movie.poster_path);
+      
+      popularMovies = [...popularMovies, ...moviesWithPosters];
+      currentPage++;
+    }
+
+    // Pega exatamente os primeiros 24 filmes da lista filtrada
+    const moviesToDisplay = popularMovies.slice(0, 24);
+
+    moviesGrid.innerHTML = ""; // Limpa a grelha
     moviesTitle.textContent = "Populares";
-    data.results.forEach((movie) => {
+
+    moviesToDisplay.forEach((movie) => {
       const card = createMovieCard(movie);
       moviesGrid.appendChild(card);
     });
+
   } catch (error) {
+    console.error("Erro ao carregar os filmes populares:", error);
     moviesGrid.innerHTML = "<p>Erro ao carregar os filmes populares.</p>";
   }
 }
