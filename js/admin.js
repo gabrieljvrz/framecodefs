@@ -8,14 +8,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (!token) {
-        alert('Acesso negado.');
+        showToast('Acesso negado.');
         window.location.href = 'login.html';
         return;
     }
 
     const decodedToken = parseJwt(token);
     if (!decodedToken || decodedToken.user.role !== 'admin') {
-        alert('Acesso negado. Esta página é apenas para administradores.');
+        showToast('Acesso negado. Esta página é apenas para administradores.');
         window.location.href = 'index.html';
         return;
     }
@@ -146,10 +146,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = await response.json();
                     if (!response.ok) throw new Error(data.message || 'Falha ao apagar a avaliação.');
                     
-                    alert('Avaliação excluída com sucesso!');
+                    showToast('Avaliação excluída com sucesso!');
                     fetchAllReviews(currentReviewPage, reviewSearchTerm); // Recarrega a lista
                 } catch (error) {
-                    alert(error.message);
+                    showToast(error.message);
                 }
             }
         }

@@ -38,4 +38,7 @@ router.post('/:reviewId/like', authMiddleware, likeController.likeReview);
 // Rota para descurtir uma avaliação (protegida)
 router.delete('/:reviewId/like', authMiddleware, likeController.unlikeReview);
 
+// NOVA ROTA: Rota para buscar as 7 avaliações mais recentes de um usuário
+router.get('/user/:userId/recent', reviewController.getRecentReviewsByUserId);
+
 module.exports = router;

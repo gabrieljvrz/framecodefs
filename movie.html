@@ -60,6 +60,11 @@
       <h2>Avaliações:</h2>
       <ul class="reviews-list" id="reviewsList">
         </ul>
+      <div id="reviewsPagination" class="pagination">
+        <button id="reviewsPrevBtn" style="display: none;">&laquo; Anterior</button>
+        <span id="reviewsPageInfo"></span>
+        <button id="reviewsNextBtn" style="display: none;">Próximo &raquo;</button>
+      </div>
     </div>
   </div>
 
@@ -88,9 +93,9 @@
       </div>
     </div>
   </div>
-
-  <script src="js/modal.js"></script>
+  <div id="toast-container"></div>
   <script src="js/utils.js"></script>
+  <script src="js/modal.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/movie-details.js"></script>
 </body>

@@ -65,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
   
   async function updateReview(reviewId, newComment, newRating) {
     if (newRating < 0.5 || newComment.trim() === '') {
-        return alert("Por favor, preencha todos os campos e selecione uma nota.");
+        return showToast("Por favor, preencha todos os campos e selecione uma nota.");
     }
     const token = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
     try {
@@ -76,11 +76,11 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.message);
-        alert('Avaliação atualizada com sucesso!');
+        showToast('Avaliação atualizada com sucesso!');
         closeEditModal();
         document.dispatchEvent(new CustomEvent('reviewsUpdated'));
     } catch (error) {
-        alert(`Erro: ${error.message}`);
+        showToast(`Erro: ${error.message}`);
     }
   }
 

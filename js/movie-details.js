@@ -31,7 +31,14 @@ const usersGridSection = document.getElementById('usersGridSection');
 const usersTitle = document.getElementById("usersTitle");
 const usersGrid = document.getElementById("usersGrid");
 
+const reviewsPagination = document.getElementById('reviewsPagination');
+const reviewsPrevBtn = document.getElementById('reviewsPrevBtn');
+const reviewsNextBtn = document.getElementById('reviewsNextBtn');
+const reviewsPageInfo = document.getElementById('reviewsPageInfo');
+
 let currentMovieData = null;
+let reviewsCurrentPage = 1;
+const reviewsPerPage = 10; // 10 avaliações por página
 
 // --- FUNÇÕES AUXILIARES E DE CRIAÇÃO DE CARDS ---
 
@@ -175,84 +182,89 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
-    async function renderReviews() {
-        reviewsList.innerHTML = "<li>Carregando avaliações...</li>";
+async function renderReviews(page = 1) {
+    reviewsCurrentPage = page;
+    reviewsList.innerHTML = "<li>Carregando avaliações...</li>";
+    
+    const token = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
+    const headers = {};
+    if (token) {
+        headers['x-auth-token'] = token;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/reviews/${movieId}?page=${page}&limit=${reviewsPerPage}`, { headers });
         
-        // Pega o token para enviar na requisição
-        const token = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
-        const headers = {};
-        if (token) {
-            headers['x-auth-token'] = token;
+        const data = await response.json();
+        if (!response.ok) throw new Error('Não foi possível carregar as avaliações.');
+        
+        const reviewsForThisMovie = data.reviews;
+        reviewsList.innerHTML = "";
+        let sumOfRatings = 0;
+        let userHasAlreadyReviewed = false;
+
+        if (reviewsForThisMovie.length === 0) {
+            reviewsList.innerHTML = "<h4 id='no-reviews-h4'>Nenhuma avaliação ainda. Seja o primeiro!</h4>";
+            reviewsPagination.style.display = 'none'; // Esconde a paginação se não houver reviews
+        } else {
+            reviewsPagination.style.display = 'flex'; // Mostra a paginação
         }
 
-        try {
-            // AQUI ESTÁ A CORREÇÃO: Adicionamos o objeto 'headers' à chamada fetch
-            const response = await fetch(`http://localhost:3000/api/reviews/${movieId}`, { headers });
+        reviewsForThisMovie.forEach(review => {
+            // ... (TODA a lógica que você já tinha dentro do forEach continua aqui, sem alterações)
+            sumOfRatings += parseFloat(review.rating);
+            const avatarSrc = review.avatar_url ? `http://localhost:3000${review.avatar_url}` : 'assets/user icon.png';
             
-            const reviewsForThisMovie = await response.json();
-            if (!response.ok) throw new Error('Não foi possível carregar as avaliações.');
-            
-            reviewsList.innerHTML = "";
-            let sumOfRatings = 0;
-            let userHasAlreadyReviewed = false;
-
-            if (reviewsForThisMovie.length === 0) {
-                reviewsList.innerHTML = "<h4 id='no-reviews-h4'>Nenhuma avaliação ainda. Seja o primeiro!</h4>";
+            if (loggedInUser && loggedInUser.id == review.user_id) {
+                userHasAlreadyReviewed = true;
             }
 
-            reviewsForThisMovie.forEach(review => {
-                sumOfRatings += parseFloat(review.rating);
-                const avatarSrc = review.avatar_url ? `http://localhost:3000${review.avatar_url}` : 'assets/user icon.png';
-                
-                if (loggedInUser && loggedInUser.id == review.user_id) {
-                    userHasAlreadyReviewed = true;
+            const li = document.createElement('li');
+            li.className = "review-item";
+            li.id = `review-${review.id}`;
+            let buttons = '';
+
+            if (loggedInUser) {
+                if (loggedInUser.id == review.user_id) {
+                    buttons = `<button class="edit-review-btn" data-review-id="${review.id}" data-comment="${review.comment.replace(/"/g, '&quot;')}" data-rating="${review.rating}"><img src="assets/edit.png"> Editar</button>
+                               <button class="delete-review-btn" data-review-id="${review.id}"><img src="assets/delete.png"> Excluir</button>`;
+                } else if (loggedInUser.role === 'admin') {
+                    buttons = `<button class="delete-review-btn admin-delete" data-review-id="${review.id}"><img src="assets/delete.png"> Excluir (Admin)</button>`;
                 }
+            }
 
-                const li = document.createElement('li');
-                li.className = "review-item";
-                li.id = `review-${review.id}`;
-                let buttons = '';
+            let profileLinkHTML = '';
+            if (loggedInUser && loggedInUser.id == review.user_id) {
+                profileLinkHTML = `<strong><a href="profile.html" class="profile-link">${review.userName || 'Anônimo'}</a></strong>`;
+            } else {
+                profileLinkHTML = `<strong><a href="profile.html?id=${review.user_id}" class="profile-link">${review.userName || 'Anônimo'}</a></strong>`;
+            }
 
-                if (loggedInUser) {
-                    if (loggedInUser.id == review.user_id) {
-                        buttons = `<button class="edit-review-btn" data-review-id="${review.id}" data-comment="${review.comment.replace(/"/g, '&quot;')}" data-rating="${review.rating}"><img src="assets/edit.png"> Editar</button>
-                                <button class="delete-review-btn" data-review-id="${review.id}"><img src="assets/delete.png"> Excluir</button>`;
-                    } else if (loggedInUser.role === 'admin') {
-                        buttons = `<button class="delete-review-btn admin-delete" data-review-id="${review.id}"><img src="assets/delete.png"> Excluir (Admin)</button>`;
-                    }
-                }
+            const likeBtnClass = review.user_has_liked ? 'like-btn liked' : 'like-btn';
+            const likeBtnDisabled = !loggedInUser ? 'disabled' : '';
 
-                let profileLinkHTML = '';
-                if (loggedInUser && loggedInUser.id == review.user_id) {
-                    profileLinkHTML = `<strong><a href="profile.html" class="profile-link">${review.userName || 'Anônimo'}</a></strong>`;
-                } else {
-                    profileLinkHTML = `<strong><a href="profile.html?id=${review.user_id}" class="profile-link">${review.userName || 'Anônimo'}</a></strong>`;
-                }
-
-                // Agora esta linha vai funcionar, pois o backend enviará o valor correto
-                const likeBtnClass = review.user_has_liked ? 'like-btn liked' : 'like-btn';
-                const likeBtnDisabled = !loggedInUser ? 'disabled' : '';
-
-                li.innerHTML = `
-                    <header>
-                        <div class="review-author-info">
-                            <img src="${avatarSrc}" alt="Avatar de ${review.userName}" class="review-avatar">
-                            ${profileLinkHTML}
+            li.innerHTML = `
+                <header>
+                    <div class="review-author-info">
+                        <img src="${avatarSrc}" alt="Avatar de ${review.userName}" class="review-avatar">
+                        ${profileLinkHTML}
+                    </div>
+                    <div class="meta-and-actions">
+                        <div class="like-section">
+                            <button class="${likeBtnClass}" data-review-id="${review.id}" ${likeBtnDisabled}>❤</button>
+                            <span id="like-count-${review.id}">${review.like_count || 0}</span>
                         </div>
-                        <div class="meta-and-actions">
+                        <span class="meta"> • Nota: ${parseFloat(review.rating)}/5⭐</span>
                         <div class="review-actions">${buttons}</div>
-                            <div class="like-section">
-                                <button class="${likeBtnClass}" data-review-id="${review.id}" ${likeBtnDisabled}>❤</button>
-                                <span id="like-count-${review.id}">${review.like_count || 0}</span>
-                            </div>
-                            <span class="meta"> • Nota: ${parseFloat(review.rating)}/5⭐</span>
-                        </div>
-                    </header>
-                    <p>${review.comment}</p>
-                `;
+                    </div>
+                </header>
+                <p>${review.comment}</p>
+            `;
 
-                reviewsList.appendChild(li);
-            });
+            reviewsList.appendChild(li);
+        });
+        
+        updateReviewsPagination(data.currentPage, data.totalPages);
 
             if (reviewsForThisMovie.length > 0) {
                 const avg = sumOfRatings / reviewsForThisMovie.length;
@@ -277,6 +289,17 @@ document.addEventListener('DOMContentLoaded', () => {
             avgRatingEl.textContent = '—';
         }
     }
+
+function updateReviewsPagination(currentPage, totalPages) {
+    if (totalPages <= 1) {
+        reviewsPagination.style.display = 'none';
+        return;
+    }
+    
+    reviewsPageInfo.textContent = `Página ${currentPage} de ${totalPages}`;
+    reviewsPrevBtn.style.display = currentPage > 1 ? 'inline-block' : 'none';
+    reviewsNextBtn.style.display = currentPage < totalPages ? 'inline-block' : 'none';
+}
 
     async function searchMovies(query) {
         const url = `${apiBase}/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=pt-BR`;
@@ -350,7 +373,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const rating = parseFloat(ratingValueInput.value);
         const comment = document.getElementById('text').value.trim();
-        if (rating === 0 || !comment) return alert('Selecione uma nota e escreva sua resenha.');
+        if (rating === 0 || !comment) showToast('Selecione uma nota e escreva sua resenha.');
         try {
             const response = await fetch('http://localhost:3000/api/reviews', {
                 method: 'POST',
@@ -364,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
             setupStarRating();
             renderReviews();
         } catch (error) {
-            alert(`Erro: ${error.message}`);
+            showToast(`Erro: ${error.message}`);
         }
     });
 
@@ -379,10 +402,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             const data = await response.json();
             if (!response.ok) throw new Error(data.message);
-            alert('Avaliação excluída!');
+            showToast('Avaliação excluída!');
             renderReviews();
         } catch (error) {
-            alert(`Erro: ${error.message}`);
+            showToast(`Erro: ${error.message}`);
         }
     }
     
@@ -423,7 +446,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     favoriteBtn.addEventListener('click', async () => {
         if (!token) {
-            return alert('Você precisa estar logado para favoritar filmes.');
+            showToast('Você precisa estar logado para favoritar filmes.');
         }
 
         const isFavorited = favoriteBtn.classList.contains('favorited');
@@ -452,7 +475,7 @@ document.addEventListener('DOMContentLoaded', () => {
             favoriteBtn.classList.toggle('favorited');
 
         } catch (error) {
-            alert(`Erro: ${error.message}`);
+            showToast(`Erro: ${error.message}`);
         }
     });
     // ===================================================================
@@ -461,7 +484,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const likeButton = e.target.closest('.like-btn');
         if (likeButton) {
             if (!token) {
-                return alert('Você precisa estar logado para curtir uma avaliação.');
+                showToast('Você precisa estar logado para curtir uma avaliação.');
             }
             
             const reviewId = likeButton.dataset.reviewId;
@@ -487,9 +510,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 likeCountSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
 
             } catch (error) {
-                alert(`Erro: ${error.message}`);
+                showToast(`Erro: ${error.message}`);
             }
         }
+    });
+
+    // --- ADICIONE os event listeners para os botões ---
+    reviewsPrevBtn.addEventListener('click', () => {
+        if (reviewsCurrentPage > 1) {
+            renderReviews(reviewsCurrentPage - 1);
+        }
+    });
+
+    reviewsNextBtn.addEventListener('click', () => {
+        renderReviews(reviewsCurrentPage + 1);
     });
 
 // --- INICIALIZAÇÃO ---
@@ -497,7 +531,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function initializePage() {
         await loadMovieDetails(movieId); // Espera os detalhes do filme primeiro
         await loadMovieCredits(movieId);
-        renderReviews();
+        renderReviews(reviewsCurrentPage);
         checkFavoriteStatus(); // CORREÇÃO: Chama a verificação de favorito
         setupStarRating();
     }

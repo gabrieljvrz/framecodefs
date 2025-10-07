@@ -3,8 +3,20 @@ const db = require('../config/db');
 // listar todas as avaliações de um filme
 exports.getReviewsByMovie = async (req, res) => {
     const { movieId } = req.params;
-    const userId = req.user ? req.user.id : 0; // Pega o ID do usuário logado, ou 0 se for um visitante
+    const userId = req.user ? req.user.id : 0;
+    
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
     try {
+        // Primeiro, contamos o total de avaliações para este filme
+        const [[{ total }]] = await db.query(
+            'SELECT COUNT(*) as total FROM reviews WHERE movie_id = ?', 
+            [movieId]
+        );
+
+        // Depois, buscamos a página de avaliações
         const [reviews] = await db.query(
           `SELECT 
              r.id, r.user_id, r.rating, r.comment, r.created_at, 
@@ -14,11 +26,22 @@ exports.getReviewsByMovie = async (req, res) => {
            FROM reviews r 
            JOIN users u ON r.user_id = u.id 
            WHERE r.movie_id = ? 
-           ORDER BY r.created_at DESC`,
-          [userId, movieId]
+           ORDER BY r.created_at DESC
+           LIMIT ? OFFSET ?`,
+          [userId, movieId, limit, offset]
         );
-        res.json(reviews);
-    } catch (error) { res.status(500).json({ message: 'Erro no servidor.' }); }
+
+        // Retornamos os dados no formato paginado
+        res.json({
+            total,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page,
+            reviews
+        });
+    } catch (error) { 
+        console.error(error);
+        res.status(500).json({ message: 'Erro no servidor.' }); 
+    }
 };
 
 // criar uma nova avaliação (requer autenticação)
@@ -59,20 +82,31 @@ exports.createReview = async (req, res) => {
 
 // buscar todas as avaliações do usuário logado
 exports.getMyReviews = async (req, res) => {
-  try {
-    const loggedInUserId = req.user.id; // ID do usuário que está logado e pedindo os dados
+  const userId = req.user.id;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  const offset = (page - 1) * limit;
 
-    // CORREÇÃO: A query agora é igual às outras, calculando likes e se o usuário curtiu
-    const [myReviews] = await db.query(
+  try {
+    const [[{ total }]] = await db.query('SELECT COUNT(*) as total FROM reviews WHERE user_id = ?', [userId]);
+
+    const [reviews] = await db.query(
       `SELECT *,
          (SELECT COUNT(*) FROM review_likes WHERE review_id = reviews.id) as like_count,
          (SELECT COUNT(*) FROM review_likes WHERE review_id = reviews.id AND user_id = ?) as user_has_liked
        FROM reviews 
        WHERE user_id = ? 
-       ORDER BY created_at DESC`,
-      [loggedInUserId, loggedInUserId] // Passamos o ID do usuário logado duas vezes
+       ORDER BY created_at DESC
+       LIMIT ? OFFSET ?`,
+      [userId, userId, limit, offset]
     );
-    res.json(myReviews);
+
+    res.json({
+      total,
+      totalPages: Math.ceil(total / limit),
+      currentPage: page,
+      reviews
+    });
   } catch (error) {
     res.status(500).json({ message: 'Erro no servidor.' });
   }
@@ -190,16 +224,53 @@ exports.getAllReviews = async (req, res) => {
 exports.getReviewsByUserId = async (req, res) => {
     const { userId } = req.params;
     const loggedInUserId = req.user ? req.user.id : 0;
+    
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const offset = (page - 1) * limit;
+
     try {
+        const [[{ total }]] = await db.query('SELECT COUNT(*) as total FROM reviews WHERE user_id = ?', [userId]);
+
         const [reviews] = await db.query(
           `SELECT *,
              (SELECT COUNT(*) FROM review_likes WHERE review_id = reviews.id) as like_count,
              (SELECT COUNT(*) FROM review_likes WHERE review_id = reviews.id AND user_id = ?) as user_has_liked
            FROM reviews 
            WHERE user_id = ? 
-           ORDER BY created_at DESC`,
-          [loggedInUserId, userId]
+           ORDER BY created_at DESC
+           LIMIT ? OFFSET ?`,
+          [loggedInUserId, userId, limit, offset]
+        );
+        
+        res.json({
+            total,
+            totalPages: Math.ceil(total / limit),
+            currentPage: page,
+            reviews
+        });
+    } catch (error) { 
+        console.error(error);
+        res.status(500).json({ message: 'Erro no servidor.' }); 
+    }
+};
+
+// Adicione esta nova função no final do arquivo reviewController.js
+
+// Buscar as 7 avaliações mais recentes de um usuário por ID
+exports.getRecentReviewsByUserId = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const [reviews] = await db.query(
+          `SELECT movie_id, movie_title, rating 
+           FROM reviews 
+           WHERE user_id = ? 
+           ORDER BY created_at DESC 
+           LIMIT 7`,
+          [userId]
         );
         res.json(reviews);
-    } catch (error) { res.status(500).json({ message: 'Erro no servidor.' }); }
+    } catch (error) { 
+        res.status(500).json({ message: 'Erro no servidor.' }); 
+    }
 };
