@@ -1,4 +1,3 @@
-console.log("profile.js foi carregado.");
 document.addEventListener('DOMContentLoaded', () => {
   // --- 1. ANÁLISE INICIAL (LÓGICA CORRIGIDA E REORDENADA) ---
   const token = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
@@ -31,14 +30,14 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Se o utilizador tenta ver o seu próprio perfil mas não está logado (ou tem token inválido)
   if (isMyProfile && !loggedInUser) {
-    showToast("Você precisa estar logado para acessar o seu perfil.");
+    alert("Você precisa estar logado para acessar o seu perfil.", 'error');
     window.location.href = "login.html";
     return; // Para a execução do script
   }
 
   // Se o ID na URL é inválido ou não foi possível determinar um utilizador
   if (!userIdToFetch) {
-    showToast("Usuário não encontrado.");
+    alert("Usuário não encontrado.");
     window.location.href = "index.html";
     return; // Para a execução do script
   }
@@ -357,7 +356,7 @@ document.addEventListener('DOMContentLoaded', () => {
     changeAvatarBtn.addEventListener("click", () => avatarInput.click());
     avatarInput.addEventListener("change", async (event) => {
         const file = event.target.files[0];
-        if (!file || !file.type.startsWith("image/")) { showToast("Por favor, selecione um ficheiro de imagem válido."); }
+        if (!file || !file.type.startsWith("image/")) { alert("Por favor, selecione um ficheiro de imagem válido."); }
         const formData = new FormData();
         formData.append('avatar', file);
         try {
@@ -367,11 +366,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: formData,
             });
             const data = await response.json();
+            // console.log("Resposta do servidor recebida:", data);
             if (!response.ok) throw new Error(data.message);
+            // console.log("URL final que será usado na imagem:", `http://localhost:3000${data.avatarUrl}`);
             avatarImg.src = `http://localhost:3000${data.avatarUrl}`;
-            showToast('Foto de perfil atualizada com sucesso!');
+            alert('Foto de perfil atualizada com sucesso!');
         } catch (error) {
-            showToast(`Erro ao atualizar a foto: ${error.message}`);
+            // console.error("Ocorreu um erro no bloco 'catch':", error);
+            alert(`Erro ao atualizar a foto: ${error.message}`);
         }
     });
     
@@ -397,10 +399,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         const data = await response.json();
         if (!response.ok) throw new Error(data.message);
-        showToast('Avaliação excluída!');
+        alert('Avaliação excluída!');
         loadUserReviews(); // Recarrega a lista de avaliações do usuário atual
       } catch (error) {
-        showToast(`Erro: ${error.message}`);
+        alert(`Erro: ${error.message}`);
       }
     }
 
@@ -443,13 +445,13 @@ document.addEventListener('DOMContentLoaded', () => {
       const newEmail = editEmailInput.value.trim();
       const newPassword = editPasswordInput.value.trim();
       if (!newName || !newEmail) {
-        showToast("Nome e e-mail são obrigatórios!");
+        alert("Nome e e-mail são obrigatórios!");
         return;
       }
       const body = { name: newName, email: newEmail };
       if (newPassword && newPassword.length > 0) {
         if (newPassword.length < 6) {
-          showToast("A nova senha deve ter pelo menos 6 caracteres.");
+          alert("A nova senha deve ter pelo menos 6 caracteres.");
           return;
         }
         body.password = newPassword;
@@ -462,11 +464,11 @@ document.addEventListener('DOMContentLoaded', () => {
           });
           const data = await response.json();
           if(!response.ok) throw new Error(data.message || "Erro desconhecido.");
-          showToast('Perfil atualizado com sucesso!');
+          alert('Perfil atualizado com sucesso!');
           await loadProfileData();
           backProfileBtn.click();
       } catch(error) {
-          showToast(`Erro ao atualizar: ${error.message}`);
+          alert(`Erro ao atualizar: ${error.message}`);
       }
     });
     
@@ -475,7 +477,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem('framecode_token');
         sessionStorage.removeItem('framecode_token');
         localStorage.removeItem('userAvatar');
-        showToast('Você saiu da sua conta.');
+        alert('Você saiu da sua conta.');
         window.location.href = 'login.html';
       });
     }
@@ -496,7 +498,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const likeButton = e.target.closest('.like-btn');
         if (likeButton) {
             if (!token) {
-                showToast('Você precisa estar logado para curtir uma avaliação.');
+                alert('Você precisa estar logado para curtir uma avaliação.');
             }
             
             const reviewId = likeButton.dataset.reviewId;
@@ -522,7 +524,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 likeCountSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
 
             } catch (error) {
-                showToast(`Erro: ${error.message}`);
+                alert(`Erro: ${error.message}`);
             }
         }
     });

@@ -373,7 +373,7 @@ function updateReviewsPagination(currentPage, totalPages) {
         e.preventDefault();
         const rating = parseFloat(ratingValueInput.value);
         const comment = document.getElementById('text').value.trim();
-        if (rating === 0 || !comment) showToast('Selecione uma nota e escreva sua resenha.');
+        if (rating === 0 || !comment) alert('Selecione uma nota e escreva sua resenha.');
         try {
             const response = await fetch('http://localhost:3000/api/reviews', {
                 method: 'POST',
@@ -387,7 +387,7 @@ function updateReviewsPagination(currentPage, totalPages) {
             setupStarRating();
             renderReviews();
         } catch (error) {
-            showToast(`Erro: ${error.message}`);
+            alert(`Erro: ${error.message}`);
         }
     });
 
@@ -402,10 +402,10 @@ function updateReviewsPagination(currentPage, totalPages) {
             });
             const data = await response.json();
             if (!response.ok) throw new Error(data.message);
-            showToast('Avaliação excluída!');
+            alert('Avaliação excluída!');
             renderReviews();
         } catch (error) {
-            showToast(`Erro: ${error.message}`);
+            alert(`Erro: ${error.message}`);
         }
     }
     
@@ -446,7 +446,7 @@ function updateReviewsPagination(currentPage, totalPages) {
 
     favoriteBtn.addEventListener('click', async () => {
         if (!token) {
-            showToast('Você precisa estar logado para favoritar filmes.');
+            return alert('Você precisa estar logado para favoritar filmes.');
         }
 
         const isFavorited = favoriteBtn.classList.contains('favorited');
@@ -475,7 +475,7 @@ function updateReviewsPagination(currentPage, totalPages) {
             favoriteBtn.classList.toggle('favorited');
 
         } catch (error) {
-            showToast(`Erro: ${error.message}`);
+            alert(`Erro: ${error.message}`);
         }
     });
     // ===================================================================
@@ -484,7 +484,7 @@ function updateReviewsPagination(currentPage, totalPages) {
         const likeButton = e.target.closest('.like-btn');
         if (likeButton) {
             if (!token) {
-                showToast('Você precisa estar logado para curtir uma avaliação.');
+                alert('Você precisa estar logado para curtir uma avaliação.');
             }
             
             const reviewId = likeButton.dataset.reviewId;
@@ -510,7 +510,7 @@ function updateReviewsPagination(currentPage, totalPages) {
                 likeCountSpan.textContent = isLiked ? currentCount - 1 : currentCount + 1;
 
             } catch (error) {
-                showToast(`Erro: ${error.message}`);
+                alert(`Erro: ${error.message}`);
             }
         }
     });
