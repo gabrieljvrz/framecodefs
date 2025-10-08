@@ -281,23 +281,34 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function displayFavoritePage() {
-      if (!favoritesGrid) return;
-      
-      favoritesGrid.innerHTML = '';
-      const start = favoritesCurrentPage * favoritesPerPage;
-      const end = start + favoritesPerPage;
-      const pageFavorites = allFavorites.slice(start, end);
+    if (!favoritesGrid) return;
 
-      pageFavorites.forEach(fav => {
-          const posterPath = fav.movie_poster_path ? `https://image.tmdb.org/t/p/w200${fav.movie_poster_path}` : "https://via.placeholder.com/200x300?text=Sem+Imagem";
-          const card = document.createElement("div");
-          card.className = "activity-card";
-          card.innerHTML = `<a href="movie.html?id=${fav.movie_id}"><img src="${posterPath}" alt="${fav.movie_title}"></a>`;
-          favoritesGrid.appendChild(card);
-      });
+    favoritesGrid.innerHTML = '';
+    const isMobile = window.innerWidth <= 768;
 
-      favPrevBtn.style.display = favoritesCurrentPage === 0 ? 'none' : 'flex';
-      favNextBtn.style.display = end >= allFavorites.length ? 'none' : 'flex';
+    // Se for mobile, mostra todos os filmes para o utilizador deslizar.
+    // Se for desktop, "corta" a lista para a página atual.
+    const moviesToDisplay = isMobile 
+        ? allFavorites 
+        : allFavorites.slice(favoritesCurrentPage * favoritesPerPage, (favoritesCurrentPage * favoritesPerPage) + favoritesPerPage);
+
+    moviesToDisplay.forEach(fav => {
+        const posterPath = fav.movie_poster_path ? `https://image.tmdb.org/t/p/w200${fav.movie_poster_path}` : "https://via.placeholder.com/200x300?text=Sem+Imagem";
+        const card = document.createElement("div");
+        card.className = "activity-card";
+        card.innerHTML = `<a href="movie.html?id=${fav.movie_id}"><img src="${posterPath}" alt="${fav.movie_title}"></a>`;
+        favoritesGrid.appendChild(card);
+    });
+
+    // No Desktop, controla a visibilidade dos botões de paginação
+    if (!isMobile) {
+        favPrevBtn.style.display = favoritesCurrentPage === 0 ? 'none' : 'flex';
+        const end = (favoritesCurrentPage + 1) * favoritesPerPage;
+        favNextBtn.style.display = end >= allFavorites.length ? 'none' : 'flex';
+    } else {
+      favPrevBtn.style.display = 'none';
+      favNextBtn.style.display = 'none';
+    }
   }
   // =======================================================================
 

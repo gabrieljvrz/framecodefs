@@ -143,7 +143,7 @@
   background-color: #b30000;
 }
 
-@media (max-width: 450px) {
+@media (max-width: 768px) {
   #editProfileBtn{
     margin-left: -0.8rem;
   }
@@ -178,7 +178,242 @@
   max-width: 100%;
   display: block;
 }
-} 
+
+/* ================================================================ */
+/* PARTE 1: ATIVIDADES RECENTES (Layout de Carrossel - CORRIGIDO) */
+/* ================================================================ */
+
+.recent-activities h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Transforma o grid num carrossel horizontal */
+.recent-activities .activities-grid {
+  display: grid;
+  grid-auto-flow: column; /* Coloca todos os itens numa única linha */
+  
+  /* AQUI DIMINUÍMOS O TAMANHO: 
+     Pode ajustar este valor de 100px se quiser diferente. */
+  grid-auto-columns: 100px; 
+  
+  gap: 0.4rem; /* Espaçamento entre os filmes */
+  overflow-x: auto; /* Permite o scroll/deslizar na horizontal */
+  scroll-snap-type: x mandatory; 
+  
+  /* CORREÇÃO PRINCIPAL:
+     Usamos padding para criar o espaçamento correto nas bordas. */
+  padding: 0.5rem 1rem 1rem 1rem; 
+  
+  /* Esconde a barra de scroll visualmente */
+  scrollbar-width: none; /* Para Firefox */
+  -ms-overflow-style: none;  /* Para IE e Edge */
+}
+
+/* Esconde a barra de scroll para Chrome, Safari, etc. */
+.recent-activities .activities-grid::-webkit-scrollbar {
+  display: none;
+}
+
+/* Define o ponto onde cada filme deve "encaixar" ao deslizar */
+.recent-activities .activity-card {
+  scroll-snap-align: start;
+}
+
+.activity-card img {
+  width: 100%;
+  border-radius: 6px;
+  transition: transform 0.2s;
+}
+
+.activity-card img:hover {
+  transform: scale(1.05);
+}
+
+.static-stars {
+  margin-top: 0.4rem;
+}
+
+#no-recent-activities {
+  display: none;
+  justify-content: center;
+  text-align: center;
+}
+
+  .carousel-container {
+    padding: 0; /* Remove o padding lateral no mobile */
+  }
+
+  /* Esconde os botões de paginação */
+  .carousel-btn button {
+    display: none;
+  }
+  
+  /* Layout Mobile: Carrossel com deslize horizontal */
+  #favoritesGrid {
+    grid-template-columns: unset; /* Remove a definição de 7 colunas */
+    grid-auto-flow: column; /* Coloca todos os itens numa única linha */
+    grid-auto-columns: 120px; /* Tamanho de cada filme (pode ajustar) */
+    
+    gap: 0.8rem;
+    overflow-x: auto; /* Permite o deslizar */
+    scroll-snap-type: x mandatory;
+    
+    padding: 0.5rem 1rem 1rem 1rem; /* Espaçamento interno */
+  }
+  
+  /* Esconde a barra de scroll */
+  #favoritesGrid::-webkit-scrollbar { display: none; }
+  #favoritesGrid { scrollbar-width: none; -ms-overflow-style: none; }
+  
+  #favoritesGrid .activity-card {
+      scroll-snap-align: start;
+  }
+
+  /* Adicione estas regras dentro do seu @media (max-width: 768px) no profile.css */
+
+  /* CORREÇÃO PRINCIPAL: Limita o tamanho do título */
+  .review-item header strong {
+    display: block;
+    width: 100%;
+    padding-right: 40px;
+  }
+
+  .review-movie-title {
+    font-size: 0.95rem;
+    font-weight: bold;
+    display: block;
+    /* Força o texto a ficar em uma única linha */
+    white-space: nowrap;
+    /* Esconde o texto que ultrapassar */
+    overflow: hidden;
+    /* Adiciona reticências (...) no final */
+    text-overflow: ellipsis;
+    /* Garante que o título nunca ultrapasse o container */
+    max-width: 100%;
+  }
+
+  /* Garante que o container do título possa encolher */
+  .review-item .review-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* CRÍTICO: permite que o flex item encolha além do tamanho do conteúdo */
+    overflow: hidden;
+  }
+
+  /* Organiza o cabeçalho verticalmente */
+  .review-item header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.3rem;
+    width: 100%;
+    /* Garante que o header também pode encolher */
+    min-width: 0;
+  }
+
+  /* Mantém a linha com nota e botões na mesma linha */
+  .meta-and-actions {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  /* Posiciona o botão de curtir absolutamente no canto superior direito */
+  .like-section {
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    z-index: 10; /* Garante que fica acima do título */
+  }
+  
+  .like-btn {
+    font-size: 1.8rem;
+  }
+
+  /* Adiciona espaço no topo para o botão não sobrepor o título */
+  .reviews-list .review-item {
+    position: relative;
+    padding-top: 2.5rem;
+  }
+
+  /* Mantém o poster com tamanho fixo */
+  .review-item .review-poster {
+    width: 90px;
+    flex-shrink: 0;
+    min-height: 135px;
+    object-fit: cover;
+    background: #2a2a2a;
+    color: transparent;
+    font-size: 0; /* Esconde completamente o texto alt */
+  }
+
+  .meta {
+    font-size: 0.95rem;
+  }
+
+  .review-content p {
+    font-size: 0.9rem;
+  }
+
+  /* ========================================= */
+  /* RESPONSIVIDADE DO FORMULÁRIO DE EDIÇÃO */
+  /* ========================================= */
+
+  .user-info {
+    flex-direction: column; /* Empilha avatar e dados verticalmente */
+    align-items: center;
+    gap: 1.5rem;
+    text-align: center;
+  }
+
+  .user-info .avatar img {
+    width: 80px; /* Diminui um pouco o avatar */
+    height: 80px;
+  }
+
+  .editable-field {
+    width: 315px;
+    margin-bottom: 1rem;
+  }
+
+  .editable-field input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  #editMode {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os campos */
+  }
+
+  #saveProfileBtn {
+    width: 315px;
+    padding: 0.6rem;
+    margin-top: 0.5rem;
+  }
+
+  #displayName {
+    font-size: 1.4rem; /* Diminui o tamanho do nome */
+    text-align: center;
+  }
+
+  #viewMode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #backProfileBtn {
+    margin-top: 0.5rem;
+  }
+
+}
 
 /* === ATIVIDADES RECENTES === */
 .recent-activities h3 {
