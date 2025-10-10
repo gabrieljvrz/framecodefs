@@ -158,7 +158,7 @@
   padding: 0 12px;
   box-shadow: none;
   height: 60px;
-}
+  }
 
   .profile-icon img {
     width: 42px;
@@ -170,76 +170,76 @@
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-}
+  }
 
-.logo img {
-  width: 120px;
-  height: auto;
-  max-width: 100%;
-  display: block;
-}
+  .logo img {
+    width: 120px;
+    height: auto;
+    max-width: 100%;
+    display: block;
+  } 
 
 /* ================================================================ */
 /* PARTE 1: ATIVIDADES RECENTES (Layout de Carrossel - CORRIGIDO) */
 /* ================================================================ */
 
-.recent-activities h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  text-align: center;
-}
+  .recent-activities h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
 
 /* Transforma o grid num carrossel horizontal */
-.recent-activities .activities-grid {
-  display: grid;
-  grid-auto-flow: column; /* Coloca todos os itens numa única linha */
-  
-  /* AQUI DIMINUÍMOS O TAMANHO: 
-     Pode ajustar este valor de 100px se quiser diferente. */
-  grid-auto-columns: 100px; 
-  
-  gap: 0.4rem; /* Espaçamento entre os filmes */
-  overflow-x: auto; /* Permite o scroll/deslizar na horizontal */
-  scroll-snap-type: x mandatory; 
-  
-  /* CORREÇÃO PRINCIPAL:
-     Usamos padding para criar o espaçamento correto nas bordas. */
-  padding: 0.5rem 1rem 1rem 1rem; 
-  
-  /* Esconde a barra de scroll visualmente */
-  scrollbar-width: none; /* Para Firefox */
-  -ms-overflow-style: none;  /* Para IE e Edge */
-}
+  .recent-activities .activities-grid {
+    display: grid;
+    grid-auto-flow: column; /* Coloca todos os itens numa única linha */
+    
+    /* AQUI DIMINUÍMOS O TAMANHO: 
+      Pode ajustar este valor de 100px se quiser diferente. */
+    grid-auto-columns: 100px; 
+    
+    gap: 0.4rem; /* Espaçamento entre os filmes */
+    overflow-x: auto; /* Permite o scroll/deslizar na horizontal */
+    scroll-snap-type: x mandatory; 
+    
+    /* CORREÇÃO PRINCIPAL:
+      Usamos padding para criar o espaçamento correto nas bordas. */
+    padding: 0.5rem 1rem 1rem 1rem; 
+    
+    /* Esconde a barra de scroll visualmente */
+    scrollbar-width: none; /* Para Firefox */
+    -ms-overflow-style: none;  /* Para IE e Edge */
+  }
 
-/* Esconde a barra de scroll para Chrome, Safari, etc. */
-.recent-activities .activities-grid::-webkit-scrollbar {
-  display: none;
-}
+  /* Esconde a barra de scroll para Chrome, Safari, etc. */
+  .recent-activities .activities-grid::-webkit-scrollbar {
+    display: none;
+  }
 
-/* Define o ponto onde cada filme deve "encaixar" ao deslizar */
-.recent-activities .activity-card {
-  scroll-snap-align: start;
-}
+  /* Define o ponto onde cada filme deve "encaixar" ao deslizar */
+  .recent-activities .activity-card {
+    scroll-snap-align: start;
+  }
 
-.activity-card img {
-  width: 100%;
-  border-radius: 6px;
-  transition: transform 0.2s;
-}
+  .activity-card img {
+    width: 100%;
+    border-radius: 6px;
+    transition: transform 0.2s;
+  }
 
-.activity-card img:hover {
-  transform: scale(1.05);
-}
+  .activity-card img:hover {
+    transform: scale(1.05);
+  }
 
-.static-stars {
-  margin-top: 0.4rem;
-}
+  .static-stars {
+    margin-top: 0.4rem;
+  }
 
-#no-recent-activities {
-  display: none;
-  justify-content: center;
-  text-align: center;
-}
+  #no-recent-activities {
+    display: none;
+    justify-content: center;
+    text-align: center;
+  }
 
   .carousel-container {
     padding: 0; /* Remove o padding lateral no mobile */

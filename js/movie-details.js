@@ -244,22 +244,24 @@ async function renderReviews(page = 1) {
             const likeBtnDisabled = !loggedInUser ? 'disabled' : '';
 
             li.innerHTML = `
-                <header>
-                    <div class="review-author-info">
-                        <img src="${avatarSrc}" alt="Avatar de ${review.userName}" class="review-avatar">
-                        ${profileLinkHTML}
-                    </div>
-                    <div class="meta-and-actions">
-                        <div class="like-section">
-                            <button class="${likeBtnClass}" data-review-id="${review.id}" ${likeBtnDisabled}>❤</button>
-                            <span id="like-count-${review.id}">${review.like_count || 0}</span>
-                        </div>
-                        <span class="meta"> • Nota: ${parseFloat(review.rating)}/5⭐</span>
-                        <div class="review-actions">${buttons}</div>
-                    </div>
-                </header>
-                <p>${review.comment}</p>
-            `;
+                                <header class="review-item-header">
+                                    <div class="review-author-container">
+                                        <img src="${avatarSrc}" alt="Avatar de ${review.userName}" class="review-avatar">
+                                        <div class="review-author-details">
+                                            <div class="review-author-name">${profileLinkHTML}</div>
+                                            <div class="review-actions">${buttons}</div>
+                                        </div>
+                                    </div>
+                                    <div class="review-meta-container">
+                                        <span class="meta">${parseFloat(review.rating)}/5⭐</span>
+                                        <div class="like-section">
+                                            <button class="${likeBtnClass}" data-review-id="${review.id}" ${likeBtnDisabled}>❤</button>
+                                            <span id="like-count-${review.id}">${review.like_count || 0}</span>
+                                        </div>
+                                    </div>
+                                </header>
+                                <p>${review.comment}</p>
+                            `;
 
             reviewsList.appendChild(li);
         });

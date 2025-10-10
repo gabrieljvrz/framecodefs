@@ -225,3 +225,57 @@ input #reviewSearchInput {
     align-items: center;
     justify-content: center;
 }
+
+@media (max-width: 768px) {
+    /* === AJUSTE DO HEADER (VERSÃO CORRIGIDA) === */
+    /* Usamos um seletor mais específico para garantir que a regra seja aplicada. */
+    body .header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 1rem;
+        height: 60px;
+    }
+
+    /* Garantimos que os filhos do header não ocupem 100% da largura. */
+    body .header .logo,
+    body .header .header-actions {
+        width: auto;
+        margin: 0;
+    }
+
+    body .header .logo img {
+        width: 140px;
+        height: auto;
+    }
+
+    body .header .header-actions img {
+        width: 40px;
+        height: 40px;
+    }
+    #userSearchForm, #reviewSearchForm {
+        justify-content: normal;
+    }
+    .search-form {
+        flex-direction: column;
+        gap: 10px;
+    }
+    #userSearchForm input, #reviewSearchForm input {
+        max-width: 373px;
+        width: 100%;
+        border-radius: 4px;
+        border-right: 1px solid #555;
+    }
+    #userSearchForm button, #reviewSearchForm button {
+        max-width: 373px;
+        width: 100%;
+        border-radius: 4px;
+    }
+}
+
+.management-section h2 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

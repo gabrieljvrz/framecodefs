@@ -222,7 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 <button class="${likeBtnClass}" data-review-id="${r.id}" ${likeBtnDisabled}>❤</button>
                                 <span id="like-count-${r.id}">${r.like_count || 0}</span>
                             </div>
-                            <span class="meta"> • Nota: ${parseFloat(r.rating)}/5 ⭐</span>
+                            <span class="meta"> ${parseFloat(r.rating)}/5 ⭐</span>
                             <div class="review-actions">${buttons}</div>
                         </div>
                     </header>
