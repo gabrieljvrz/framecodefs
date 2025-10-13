@@ -279,3 +279,10 @@ input #reviewSearchInput {
     align-items: center;
     justify-content: center;
 }
+
+/* Adicione esta regra para quebrar o texto das avaliações na página de admin */
+.admin-review-item p {
+    padding-top: 0.5rem; /* Apenas para dar um espaço */
+    overflow-wrap: break-word;
+    word-break: break-word;
+}

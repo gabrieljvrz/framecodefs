@@ -587,8 +587,6 @@ body {
       line-height: 1.4;
       color: #e5e5e5;
       clear: both;
-      overflow-wrap: break-word;
-      word-break: break-word;
   }
 
 }
@@ -836,4 +834,79 @@ body {
 
 .pagination span {
     font-weight: bold;
+}
+
+/* Garante a quebra de linha em qualquer tamanho de tela */
+.review-item p {
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: #e5e5e5;
+    margin-top: 0.5rem;
+    
+    /* ADICIONE ESTAS DUAS LINHAS */
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* ======================================================= */
+/* NOVOS ESTILOS DESKTOP PARA OS CARDS DE AVALIAÇÃO         */
+/* ======================================================= */
+
+/* A estrutura principal do cabeçalho da avaliação */
+.review-item-header {
+    display: flex;
+    justify-content: space-between; /* Empurra o autor para a esquerda e a nota para a direita */
+    align-items: flex-start; /* Alinha os blocos pelo topo */
+    margin-bottom: 0.75rem;
+}
+
+/* LADO ESQUERDO: Contém a foto, nome e botões de ação */
+.review-author-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px; /* Espaço entre a foto e as informações do autor */
+}
+
+.review-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-top: 2px;
+}
+
+/* O container para o nome de usuário e os botões de ação */
+.review-author-details {
+    display: flex;
+    flex-direction: column; /* Coloca os botões abaixo do nome */
+    align-items: flex-start;
+}
+
+.review-author-name a {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: #fff;
+    text-decoration: none;
+}
+
+.review-author-name a:hover {
+    text-decoration: underline;
+}
+
+.review-actions {
+    margin-top: 4px; /* Pequeno espaço entre o nome e os botões de editar/excluir */
+}
+
+/* LADO DIREITO: Contém a nota e a seção de "curtir" */
+.review-meta-container {
+    display: flex;
+    /* Inverte a ordem visual para mostrar a NOTA PRIMEIRO e depois o botão de curtir */
+    
+    align-items: center;
+    gap: 1rem; /* Espaço entre a nota e a seção de like */
+}
+
+.review-meta-container .meta {
+    font-weight: bold;
+    font-size: 1rem;
 }

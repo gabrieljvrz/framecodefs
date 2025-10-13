@@ -190,25 +190,18 @@
   }
 
 /* Transforma o grid num carrossel horizontal */
+  /* Substitua pelo código abaixo */
   .recent-activities .activities-grid {
     display: grid;
-    grid-auto-flow: column; /* Coloca todos os itens numa única linha */
-    
-    /* AQUI DIMINUÍMOS O TAMANHO: 
-      Pode ajustar este valor de 100px se quiser diferente. */
-    grid-auto-columns: 100px; 
-    
-    gap: 0.4rem; /* Espaçamento entre os filmes */
-    overflow-x: auto; /* Permite o scroll/deslizar na horizontal */
-    scroll-snap-type: x mandatory; 
-    
-    /* CORREÇÃO PRINCIPAL:
-      Usamos padding para criar o espaçamento correto nas bordas. */
-    padding: 0.5rem 1rem 1rem 1rem; 
-    
-    /* Esconde a barra de scroll visualmente */
-    scrollbar-width: none; /* Para Firefox */
-    -ms-overflow-style: none;  /* Para IE e Edge */
+    grid-auto-flow: column;
+    grid-auto-columns: 120px; /* <<== ALTERADO: Deixa os cards maiores, mostrando menos itens */
+    gap: 0.8rem; /* <<== ALTERADO: Aumenta o espaçamento */
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 0.5rem 1rem 1rem 1rem;
+    scroll-padding-right: 1rem; /* <<== ADICIONADO: Corrige o corte do último item */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
   /* Esconde a barra de scroll para Chrome, Safari, etc. */
@@ -216,24 +209,23 @@
     display: none;
   }
 
-  /* Define o ponto onde cada filme deve "encaixar" ao deslizar */
+  /* Substitua pelo código abaixo */
   .recent-activities .activity-card {
     scroll-snap-align: start;
+    display: flex; /* <<== ADICIONADO */
+    flex-direction: column; /* <<== ADICIONADO */
+    justify-content: flex-start; /* <<== ADICIONADO */
   }
 
+  /* Adicione este novo bloco dentro do @media */
   .activity-card img {
-    width: 100%;
-    border-radius: 6px;
-    transition: transform 0.2s;
+      height: 150px; /* Altura mais proporcional para telas menores */
   }
 
   .activity-card img:hover {
     transform: scale(1.05);
   }
 
-  .static-stars {
-    margin-top: 0.4rem;
-  }
 
   #no-recent-activities {
     display: none;
@@ -247,28 +239,44 @@
 
   /* Esconde os botões de paginação */
   .carousel-btn button {
-    display: none;
+    display: none !important;
   }
   
   /* Layout Mobile: Carrossel com deslize horizontal */
   #favoritesGrid {
-    grid-template-columns: unset; /* Remove a definição de 7 colunas */
-    grid-auto-flow: column; /* Coloca todos os itens numa única linha */
-    grid-auto-columns: 120px; /* Tamanho de cada filme (pode ajustar) */
-    
+    display: grid; /* ADICIONADO */
+    grid-template-columns: unset;
+    grid-auto-flow: column;
+    grid-auto-columns: 120px;
     gap: 0.8rem;
-    overflow-x: auto; /* Permite o deslizar */
+    overflow-x: auto;
     scroll-snap-type: x mandatory;
-    
-    padding: 0.5rem 1rem 1rem 1rem; /* Espaçamento interno */
+    padding: 0.5rem 1rem 1rem 1rem;
+    scrollbar-width: none; /* ADICIONADO */
+    -ms-overflow-style: none; /* ADICIONADO */
+    padding-left: 0;
   }
-  
-  /* Esconde a barra de scroll */
-  #favoritesGrid::-webkit-scrollbar { display: none; }
+
+  #favoritesGrid::-webkit-scrollbar { 
+    display: none; 
+  }
+
+  #favoritesGrid .activity-card {
+    scroll-snap-align: start;
+    display: flex; /* ADICIONADO */
+    flex-direction: column; /* ADICIONADO */
+  }
   #favoritesGrid { scrollbar-width: none; -ms-overflow-style: none; }
   
   #favoritesGrid .activity-card {
       scroll-snap-align: start;
+  }
+
+  #favoritesGrid .activity-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 6px;
   }
 
   /* Adicione estas regras dentro do seu @media (max-width: 768px) no profile.css */
@@ -412,7 +420,6 @@
   #backProfileBtn {
     margin-top: 0.5rem;
   }
-
 }
 
 /* === ATIVIDADES RECENTES === */
@@ -427,11 +434,21 @@
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 1rem;
 }
+
+/* Substitua a regra antiga .activities-grid .activity-card por esta */
 .activities-grid .activity-card {
-  text-align: center;
+  display: flex; /* Ativa o Flexbox */
+  flex-direction: column; /* Organiza os itens em uma coluna (um abaixo do outro) */
+  align-items: center; /* Centraliza os itens horizontalmente */
+  gap: 0.5rem; /* Cria um espaço de 0.5rem (8px) entre a imagem e as estrelas */
 }
+
+/* Substitua pelo código abaixo */
 .activity-card img {
   width: 100%;
+  height: 180px; /* Altura fixa para o DESKTOP */
+  object-fit: cover;
+  object-position: top;
   border-radius: 6px;
   transition: transform 0.2s;
 }
@@ -442,6 +459,7 @@
   margin-top: 0.4rem;
   color: gold;
   font-size: 1rem;
+  background: none;
 }
 
 /* === AVALIAÇÕES === */
@@ -630,11 +648,11 @@
 .carousel-container {
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
 }
 
 /* Modifica o grid de atividades para funcionar como um carrossel */
-.activities-grid {
+#favoritesGrid {
   overflow-x: auto; /* Permite o scroll horizontal */
   scroll-behavior: smooth; /* Animação de scroll */
   -ms-overflow-style: none;  /* Esconde a barra de scroll no IE e Edge */
@@ -781,4 +799,9 @@
   margin-bottom: 0;
   overflow: hidden;
   border: none;
+}
+
+.review-content p {
+    overflow-wrap: break-word;
+    word-break: break-word;
 }
