@@ -824,6 +824,13 @@ body {
     padding: 8px 16px;
     font-size: 1rem;
     cursor: pointer;
+    background-color: #e50914;
+    transition: 0.2s;
+}
+
+.pagination button:hover {
+  /* background-color: #ff000d; */
+  transform:scale(1.05)
 }
 
 

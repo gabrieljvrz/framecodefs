@@ -198,8 +198,7 @@
     gap: 0.8rem; /* <<== ALTERADO: Aumenta o espaçamento */
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    padding: 0.5rem 1rem 1rem 1rem;
-    scroll-padding-right: 1rem; /* <<== ADICIONADO: Corrige o corte do último item */
+    padding: 0.5rem 1rem;
     scrollbar-width: none;
     -ms-overflow-style: none;
   }
@@ -231,52 +230,6 @@
     display: none;
     justify-content: center;
     text-align: center;
-  }
-
-  .carousel-container {
-    padding: 0; /* Remove o padding lateral no mobile */
-  }
-
-  /* Esconde os botões de paginação */
-  .carousel-btn button {
-    display: none !important;
-  }
-  
-  /* Layout Mobile: Carrossel com deslize horizontal */
-  #favoritesGrid {
-    display: grid; /* ADICIONADO */
-    grid-template-columns: unset;
-    grid-auto-flow: column;
-    grid-auto-columns: 120px;
-    gap: 0.8rem;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    padding: 0.5rem 1rem 1rem 1rem;
-    scrollbar-width: none; /* ADICIONADO */
-    -ms-overflow-style: none; /* ADICIONADO */
-    padding-left: 0;
-  }
-
-  #favoritesGrid::-webkit-scrollbar { 
-    display: none; 
-  }
-
-  #favoritesGrid .activity-card {
-    scroll-snap-align: start;
-    display: flex; /* ADICIONADO */
-    flex-direction: column; /* ADICIONADO */
-  }
-  #favoritesGrid { scrollbar-width: none; -ms-overflow-style: none; }
-  
-  #favoritesGrid .activity-card {
-      scroll-snap-align: start;
-  }
-
-  #favoritesGrid .activity-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 6px;
   }
 
   /* Adicione estas regras dentro do seu @media (max-width: 768px) no profile.css */
@@ -632,92 +585,6 @@
   background-color: #444;
 }
 
-/* css/profile.css -> Adicione no final */
-
-/* === SEÇÃO DE FAVORITOS === */
-.favorites-section {
-  margin-top: 3rem;
-}
-
-.favorites-section h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
-.carousel-container {
-  position: relative;
-  display: flex;
-  align-items: flex-start;
-}
-
-/* Modifica o grid de atividades para funcionar como um carrossel */
-#favoritesGrid {
-  overflow-x: auto; /* Permite o scroll horizontal */
-  scroll-behavior: smooth; /* Animação de scroll */
-  -ms-overflow-style: none;  /* Esconde a barra de scroll no IE e Edge */
-  scrollbar-width: none;  /* Esconde a barra de scroll no Firefox */
-  display: grid;
-  /* Mostra 7 colunas (filmes) de uma vez */
-  grid-template-columns: repeat(7, 1fr); 
-}
-
-/* Esconde a barra de scroll no Chrome, Safari e Opera */
-.activities-grid::-webkit-scrollbar {
-  display: none;
-}
-
-/* css/profile.css */
-
-.carousel-btn {
-  background-color: rgba(26, 26, 26, 0.8);
-  border: 1px solid #444;
-  color: #fff;
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 10;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  transition: background-color 0.2s ease;
-  
-  /* LINHAS PARA CENTRALIZAR O CONTEÚDO (A IMAGEM) */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0; /* Remove qualquer padding que possa interferir */
-}
-
-.carousel-btn:hover {
-  background-color: #e50914;
-  border-color: #e50914;
-}
-
-.carousel-btn.prev {
-  left: -20px;
-}
-
-.carousel-btn.next {
-  right: -20px;
-}
-
-.carousel-btn:disabled {
-  background-color: #1a1a1a;
-  color: #444;
-  cursor: not-allowed;
-  border-color: #333;
-}
-
-/* css/profile.css */
-
-.carousel-btn img {
-  width: 16px;  /* Ajuste o tamanho do ícone conforme necessário */
-  height: 16px; /* Ajuste o tamanho do ícone conforme necessário */
-}
-
-/* Adicione a ambos os ficheiros: movie.css e profile.css */
 
 .like-section {
   display: flex;
@@ -804,4 +671,101 @@
 .review-content p {
     overflow-wrap: break-word;
     word-break: break-word;
+}
+
+/* ================================================= */
+/* === SEÇÃO DE FAVORITOS (CÓDIGO NOVO E LIMPO) === */
+/* ================================================= */
+
+.favorites-section {
+    margin-top: 3rem;
+}
+
+.favorites-section h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+.carousel-container {
+    position: relative; /* Apenas para posicionar os botões */
+}
+
+/* Regra GERAL para o Grid (Desktop) */
+#favoritesGrid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+    /* No desktop, o scroll é controlado pelo JavaScript, então escondemos o overflow */
+    overflow: hidden;
+}
+
+.carousel-btn {
+    background-color: rgba(26, 26, 26, 0.8);
+    border: 1px solid #444;
+    color: #fff;
+    cursor: pointer;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: background-color 0.2s ease;
+}
+
+.carousel-btn:hover {
+    background-color: #e50914;
+    border-color: #e50914;
+}
+
+.carousel-btn.prev {
+    left: -20px;
+}
+
+.carousel-btn.next {
+    right: -20px;
+}
+
+.carousel-btn img {
+    width: 16px;
+    height: 16px;
+}
+
+/* ============================================= */
+/* === AJUSTES PARA MOBILE (Dentro do @media) === */
+/* ============================================= */
+
+@media (max-width: 768px) {
+
+    /* Oculta os botões de navegação no mobile */
+    .carousel-btn {
+        display: none;
+    }
+
+    /* Transforma o grid de favoritos em um carrossel de rolagem horizontal */
+    #favoritesGrid {
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: 120px; /* Largura de cada pôster */
+        grid-template-columns: unset; /* Remove a configuração de colunas do desktop */
+        gap: 0.8rem;
+        overflow-x: auto; /* Habilita a rolagem horizontal */
+        scroll-snap-type: x mandatory;
+        padding: 0.5rem 1rem; /* Espaçamento interno */
+    }
+
+    /* Esconde a barra de rolagem visualmente */
+    #favoritesGrid {
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+    #favoritesGrid::-webkit-scrollbar {
+        display: none;
+    }
 }
