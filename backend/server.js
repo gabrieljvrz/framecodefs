@@ -7,8 +7,8 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // middlewares
-app.use(cors()); // permite requisições de outras origens (frontend)
-app.use(express.json()); // permite que o servidor entenda JSON no corpo das requisições
+app.use(cors()); 
+app.use(express.json()); 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // rotas da API

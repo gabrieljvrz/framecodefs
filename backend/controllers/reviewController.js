@@ -10,13 +10,13 @@ exports.getReviewsByMovie = async (req, res) => {
     const offset = (page - 1) * limit;
 
     try {
-        // Primeiro, contamos o total de avaliações para este filme
+        // primeiro, conta o total de avaliações para o filme
         const [[{ total }]] = await db.query(
             'SELECT COUNT(*) as total FROM reviews WHERE movie_id = ?', 
             [movieId]
         );
 
-        // Depois, buscamos a página de avaliações
+        // depois, busca a página de avaliações
         const [reviews] = await db.query(
           `SELECT 
              r.id, r.user_id, r.rating, r.comment, r.created_at, 
@@ -31,7 +31,7 @@ exports.getReviewsByMovie = async (req, res) => {
           [userId, movieId, limit, offset]
         );
 
-        // Retornamos os dados no formato paginado
+        // retorna os dados no formato paginado
         res.json({
             total,
             totalPages: Math.ceil(total / limit),
@@ -48,26 +48,24 @@ exports.getReviewsByMovie = async (req, res) => {
 exports.createReview = async (req, res) => {
   try {
     const { rating, comment, movieId, movieTitle } = req.body;
-    const userId = req.user.id; // Pegamos o ID do usuário do token
+    const userId = req.user.id; // pega o ID do usuário do token
 
     if (!rating || !comment || !movieId || !movieTitle) {
       return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
     }
 
-    // ================== NOVA VERIFICAÇÃO ==================
-    // 1. Verifica se já existe uma avaliação para este utilizador e este filme
+    // 1. verifica se já existe uma avaliação desse usuário no filme
     const [existingReview] = await db.query(
       'SELECT id FROM reviews WHERE user_id = ? AND movie_id = ?',
       [userId, movieId]
     );
 
-    // 2. Se a avaliação já existir, retorna um erro de conflito
+    // 2. se a avaliação já existir, retorna um erro de conflito
     if (existingReview.length > 0) {
       return res.status(409).json({ message: 'Você já avaliou este filme.' }); // 409: Conflito
     }
-    // =======================================================
 
-    // 3. Se não existir, insere a nova avaliação (lógica original)
+    // 3. de não existir, cria a nova avaliação
     const [result] = await db.query(
       'INSERT INTO reviews (rating, comment, movie_id, movie_title, user_id) VALUES (?, ?, ?, ?, ?)',
       [rating, comment, movieId, movieTitle, userId]
@@ -126,7 +124,7 @@ exports.deleteReview = async (req, res) => {
 // atualizar uma avaliação que pertence ao usuário logado
 exports.updateMyReview = async (req, res) => {
   try {
-    const { id } = req.params; // ID da review
+    const { id } = req.params; // ID da avaliação
     const { rating, comment } = req.body;
     const userId = req.user.id; // ID do usuário logado
 
@@ -181,7 +179,7 @@ exports.deleteMyReview = async (req, res) => {
   }
 };
 
-// [ADMIN] Listar TODAS as avaliações com paginação e pesquisa
+// [ADMIN] listar todas as avaliações com paginação e pesquisa
 exports.getAllReviews = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -220,7 +218,7 @@ exports.getAllReviews = async (req, res) => {
     }
 };
 
-// Buscar todas as avaliações de um usuário específico por ID
+// buscar todas as avaliações de um usuário específico por ID
 exports.getReviewsByUserId = async (req, res) => {
     const { userId } = req.params;
     const loggedInUserId = req.user ? req.user.id : 0;
@@ -255,9 +253,7 @@ exports.getReviewsByUserId = async (req, res) => {
     }
 };
 
-// Adicione esta nova função no final do arquivo reviewController.js
-
-// Buscar as 7 avaliações mais recentes de um usuário por ID
+// buscar as 7 avaliações mais recentes de um usuário por ID
 exports.getRecentReviewsByUserId = async (req, res) => {
     const { userId } = req.params;
     try {

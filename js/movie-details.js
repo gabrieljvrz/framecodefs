@@ -1,10 +1,8 @@
-// js/movie-details.js
-
 const apiKey    = "3b08d5dfa29024b5dcb74e8bff23f984";
 const apiBase   = "https://api.themoviedb.org/3";
 const imageBase = "https://image.tmdb.org/t/p/w500";
 
-// --- ELEMENTOS DO DOM ---
+// DOM
 const detailsContainer = document.querySelector('.container');
 const movieTitle       = document.getElementById("movieTitle");
 const movieOverview    = document.getElementById("movieOverview");
@@ -38,9 +36,9 @@ const reviewsPageInfo = document.getElementById('reviewsPageInfo');
 
 let currentMovieData = null;
 let reviewsCurrentPage = 1;
-const reviewsPerPage = 10; // 10 avaliações por página
+const reviewsPerPage = 10; 
 
-// --- FUNÇÕES AUXILIARES E DE CRIAÇÃO DE CARDS ---
+// funções auxiliares e de criação de cards
 
 function createMovieCard(movie) {
   const card = document.createElement("div");
@@ -96,7 +94,7 @@ function parseJwt(token) {
     }
 }
 
-// --- LÓGICA PRINCIPAL DA PÁGINA ---
+// lógica principal da página
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
     const movieId   = urlParams.get("id");
@@ -205,13 +203,12 @@ async function renderReviews(page = 1) {
 
         if (reviewsForThisMovie.length === 0) {
             reviewsList.innerHTML = "<h4 id='no-reviews-h4'>Nenhuma avaliação ainda. Seja o primeiro!</h4>";
-            reviewsPagination.style.display = 'none'; // Esconde a paginação se não houver reviews
+            reviewsPagination.style.display = 'none'; 
         } else {
-            reviewsPagination.style.display = 'flex'; // Mostra a paginação
+            reviewsPagination.style.display = 'flex'; 
         }
 
         reviewsForThisMovie.forEach(review => {
-            // ... (TODA a lógica que você já tinha dentro do forEach continua aqui, sem alterações)
             sumOfRatings += parseFloat(review.rating);
             const avatarSrc = review.avatar_url ? `http://localhost:3000${review.avatar_url}` : 'assets/user icon.png';
             
@@ -349,7 +346,7 @@ function updateReviewsPagination(currentPage, totalPages) {
         }
     }
     
-    // --- EVENT LISTENERS GLOBAIS DA PÁGINA ---
+    // event listeners globais da página
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
             const searchTerm = e.target.value.trim();
@@ -422,12 +419,11 @@ function updateReviewsPagination(currentPage, totalPages) {
     
     document.addEventListener('reviewsUpdated', renderReviews);
     
-    // ================== LÓGICA DE FAVORITOS CORRIGIDA ==================
     let favoriteMovieIds = [];
 
     async function checkFavoriteStatus() {
         if (!token) {
-            favoriteBtn.style.display = 'none'; // Esconde o botão se o usuário não estiver logado
+            favoriteBtn.style.display = 'none'; 
             return;
         }
         try {
@@ -480,7 +476,6 @@ function updateReviewsPagination(currentPage, totalPages) {
             alert(`Erro: ${error.message}`);
         }
     });
-    // ===================================================================
 
         document.addEventListener('click', async (e) => {
         const likeButton = e.target.closest('.like-btn');
@@ -505,7 +500,6 @@ function updateReviewsPagination(currentPage, totalPages) {
                     throw new Error(data.message);
                 }
 
-                // Atualiza a UI otimisticamente
                 likeButton.classList.toggle('liked');
                 const likeCountSpan = document.getElementById(`like-count-${reviewId}`);
                 const currentCount = parseInt(likeCountSpan.textContent);
@@ -517,7 +511,6 @@ function updateReviewsPagination(currentPage, totalPages) {
         }
     });
 
-    // --- ADICIONE os event listeners para os botões ---
     reviewsPrevBtn.addEventListener('click', () => {
         if (reviewsCurrentPage > 1) {
             renderReviews(reviewsCurrentPage - 1);
@@ -528,13 +521,12 @@ function updateReviewsPagination(currentPage, totalPages) {
         renderReviews(reviewsCurrentPage + 1);
     });
 
-// --- INICIALIZAÇÃO ---
-    // Agrupamos as chamadas assíncronas para carregar a página
+// inicialização
     async function initializePage() {
-        await loadMovieDetails(movieId); // Espera os detalhes do filme primeiro
+        await loadMovieDetails(movieId); 
         await loadMovieCredits(movieId);
         renderReviews(reviewsCurrentPage);
-        checkFavoriteStatus(); // CORREÇÃO: Chama a verificação de favorito
+        checkFavoriteStatus(); 
         setupStarRating();
     }
 

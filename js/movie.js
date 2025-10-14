@@ -9,7 +9,7 @@ const queryInput = document.querySelector("#searchInput");
 const moviesGrid = document.querySelector(".movies-grid");
 const moviesTitle = document.querySelector("#moviesTitle");
 
-// Cria um card de filme com redirecionamento para a página de detalhes
+// cria um card de filme com redirecionamento para a página de detalhes
 function createMovieCard(movie) {
   const card = document.createElement("div");
   card.classList.add("movie-card");
@@ -34,7 +34,7 @@ function createMovieCard(movie) {
   return card;
 }
 
-// Carrega os filmes populares
+// carrega os filmes populares
 async function fetchPopularMovies() {
   const url = `${apiBase}/movie/popular?api_key=${apiKey}&language=pt-BR`;
 
@@ -53,7 +53,7 @@ async function fetchPopularMovies() {
   }
 }
 
-// Busca os filmes
+// busca os filmes
 async function searchMovies(query) {
   const url = `${apiBase}/search/movie?api_key=${apiKey}&query=${encodeURIComponent(query)}&language=pt-BR`;
 
@@ -77,7 +77,7 @@ async function searchMovies(query) {
   }
 }
 
-// Evento para pesquisa
+// evento para pesquisa
 queryInput.addEventListener("input", (event) => {
   const searchTerm = event.target.value.trim();
 

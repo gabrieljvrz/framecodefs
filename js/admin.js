@@ -1,5 +1,3 @@
-// js/admin.js
-
 document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
     
@@ -38,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchUsers(page = 1, search = '') {
         try {
-            // URL CORRIGIDA
             const response = await fetch(`http://localhost:3000/api/users?page=${page}&limit=10&search=${search}`, { headers });
             const data = await response.json();
 
@@ -62,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchAllReviews(page = 1, search = '') {
         try {
-            // URL CORRIGIDA
             const response = await fetch(`http://localhost:3000/api/reviews/all/reviews?page=${page}&limit=10&search=${search}`, { headers });
             const data = await response.json();
 
@@ -138,7 +134,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const reviewId = e.target.dataset.id;
             if (confirm(`ADMIN: Tem certeza que deseja excluir a avaliação #${reviewId}?`)) {
                 try {
-                    // URL CORRIGIDA
                     const response = await fetch(`http://localhost:3000/api/reviews/${reviewId}`, {
                         method: 'DELETE',
                         headers: headers
@@ -147,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (!response.ok) throw new Error(data.message || 'Falha ao apagar a avaliação.');
                     
                     alert('Avaliação excluída com sucesso!');
-                    fetchAllReviews(currentReviewPage, reviewSearchTerm); // Recarrega a lista
+                    fetchAllReviews(currentReviewPage, reviewSearchTerm); 
                 } catch (error) {
                     alert(error.message);
                 }

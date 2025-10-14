@@ -1,4 +1,3 @@
-/* css/admin.css */
 * {
   margin: 0;
   padding: 0;
@@ -116,49 +115,42 @@ th {
 }
 
 .admin-review-item button:hover {
-    /* background-color: #e50914; */
     transform:scale(1.05);
     transition: 0.25s;
 }
 
-/* css/admin.css */
-
-/* Garante que o formulário de pesquisa ocupe toda a largura */
 .search-form {
   display: flex;
   background-color: #000;
   margin-bottom: 1rem;
-  width: 100%; /* Adicionado para ocupar a largura total */
+  width: 100%; 
 }
 
-/* Estiliza o campo de input */
 .search-form input {
   flex-grow: 1;
-  padding: 12px; /* Aumenta o padding para mais altura */
+  padding: 12px; 
   background-color: #333;
   border: 1px solid #555;
   color: #fff;
   border-radius: 4px 0 0 4px;
-  font-family: inherit; /* Herda a fonte do site ('Segoe UI') */
-  font-size: 1rem;      /* Define um tamanho de fonte consistente */
-  border-right: none;   /* Remove a borda direita para uma junção perfeita com o botão */
+  font-family: inherit; 
+  font-size: 1rem;     
+  border-right: none;   
 }
 
-/* Remove o anel de foco padrão do navegador */
 .search-form input:focus {
   outline: none;
 }
 
-/* Estiliza o botão de pesquisa */
 .search-form button {
-  padding: 12px 20px; /* Aumenta o padding para mais altura */
+  padding: 12px 20px; 
   border: none;
   background-color: #e50914;
   color: #fff;
   cursor: pointer;
   border-radius: 0 4px 4px 0;
-  font-family: inherit; /* Herda a fonte do site ('Segoe UI') */
-  font-size: 1rem;      /* Define um tamanho de fonte consistente */
+  font-family: inherit; 
+  font-size: 1rem;      
   font-weight: bold;
 }
 
@@ -227,8 +219,6 @@ input #reviewSearchInput {
 }
 
 @media (max-width: 768px) {
-    /* === AJUSTE DO HEADER (VERSÃO CORRIGIDA) === */
-    /* Usamos um seletor mais específico para garantir que a regra seja aplicada. */
     body .header {
         display: flex;
         flex-direction: row;
@@ -238,7 +228,6 @@ input #reviewSearchInput {
         height: 60px;
     }
 
-    /* Garantimos que os filhos do header não ocupem 100% da largura. */
     body .header .logo,
     body .header .header-actions {
         width: auto;
@@ -280,9 +269,8 @@ input #reviewSearchInput {
     justify-content: center;
 }
 
-/* Adicione esta regra para quebrar o texto das avaliações na página de admin */
 .admin-review-item p {
-    padding-top: 0.5rem; /* Apenas para dar um espaço */
+    padding-top: 0.5rem; 
     overflow-wrap: break-word;
     word-break: break-word;
 }

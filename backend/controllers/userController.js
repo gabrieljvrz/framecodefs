@@ -46,7 +46,7 @@ exports.updateMyProfile = async (req, res) => {
     }
 };
 
-// [ADMIN] Listar todos os utilizadores com paginação e pesquisa
+// [ADMIN] listar todos os usuários com paginação e pesquisa
 exports.getAllUsers = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -62,10 +62,10 @@ exports.getAllUsers = async (req, res) => {
             params.push(`%${searchTerm}%`, `%${searchTerm}%`);
         }
 
-        // Query para obter o total de utilizadores (para a paginação)
+        // query para obter o total de utilizadores (para a paginação)
         const [[{ total }]] = await db.query(`SELECT COUNT(*) as total FROM users ${whereClause}`, params);
         
-        // Query para obter os utilizadores da página atual
+        // query para obter os utilizadores da página atual
         const [users] = await db.query(`SELECT id, name, email, role, created_at, avatar_url FROM users ${whereClause} ORDER BY id DESC LIMIT ? OFFSET ?`, [...params, limit, offset]);
 
         res.json({
@@ -79,17 +79,17 @@ exports.getAllUsers = async (req, res) => {
     }
 };
 
-// Upload de avatar
+// upload de avatar
 exports.uploadAvatar = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: 'Nenhum ficheiro enviado.' });
     }
 
-    // O caminho do ficheiro guardado pelo multer
+    // o caminho do arquivo guardado pelo multer
     const avatarUrl = `/uploads/${req.file.filename}`;
 
-    // Atualiza o utilizador no banco de dados com o novo URL do avatar
+    // atualiza o usuário no banco de dados com o novo URL do avatar
     await db.query('UPDATE users SET avatar_url = ? WHERE id = ?', [avatarUrl, req.user.id]);
 
     res.json({ message: 'Avatar atualizado com sucesso!', avatarUrl: avatarUrl });
@@ -99,10 +99,9 @@ exports.uploadAvatar = async (req, res) => {
   }
 };
 
-// Também precisamos de atualizar a função getMyProfile para retornar o avatar_url
 exports.getMyProfile = async (req, res) => {
   try {
-    // ATUALIZADO: Adicionado avatar_url ao SELECT
+    // adicionado avatar_url ao SELECT
     const [userRows] = await db.query('SELECT id, name, email, role, avatar_url FROM users WHERE id = ?', [req.user.id]);
     if (userRows.length === 0) {
       return res.status(404).json({ message: 'Usuário não encontrado.' });
@@ -113,11 +112,11 @@ exports.getMyProfile = async (req, res) => {
   }
 };
 
-// Buscar perfil PÚBLICO de um usuário por ID
+// buscar perfil público de um usuário por ID
 exports.getUserById = async (req, res) => {
   try {
     const { id } = req.params;
-    // Selecionamos apenas os dados públicos. NUNCA inclua email ou senha.
+    // seleciona apenas os dados públicos. sem e-mail ou senha.
     const [userRows] = await db.query('SELECT id, name, avatar_url, created_at FROM users WHERE id = ?', [id]);
 
     if (userRows.length === 0) {

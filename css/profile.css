@@ -1,4 +1,3 @@
-/* container mais estreito */
 * {
   margin: 0;
   padding: 0;
@@ -14,22 +13,24 @@
   background-color: #000;
 }
 
-/* === USER INFO === */
 .user-info {
   display: flex;
   align-items: center;
   gap: 2rem;
   margin-bottom: 3rem;
 }
+
 .user-info .avatar {
   position: relative;
 }
+
 .user-info .avatar img {
   width: 100px;
   height: 100px;
   border-radius: 50%;
   border: 3px solid #e50914;
 }
+
 .user-info .avatar button {
   position: absolute;
   bottom: 0;
@@ -40,22 +41,26 @@
   padding: 0.3rem;
   cursor: pointer;
 }
+
 .user-data h2 {
   font-size: 1.8rem;
   display: inline-block;
   margin-right: 0.5rem;
 }
+
 .user-data button {
   background: transparent;
   border: none;
   color: #ccc;
   cursor: pointer;
 }
+
 .user-data p {
   margin: 0.5rem 0;
   font-size: 1rem;
   opacity: 0.8;
 }
+
 #editProfileBtn {
   background-color: #dc060d;
   color: white;
@@ -66,10 +71,12 @@
   font-size: 1rem;
   transition: background-color 0.3s ease;
 }
+
 #editProfileBtn:hover{
    background-color: #dc060d;
    color: white;
 }
+
 #backProfileBtn{
   background-color: #dc060d;
   color: white;
@@ -80,11 +87,12 @@
   font-size: 1rem;
   transition: background-color 0.3s ease;
 }
+
 #backProfileBtn:hover{
   background-color: #dc060d;
    color: white;
 }
-/* === MODOS DE PERFIL - VISUALIZAÇÃO E EDIÇÃO === */
+
 #viewMode h2 {
   margin: 0;
   font-size: 1.8rem;
@@ -139,6 +147,7 @@
   font-size: 1rem;
   transition: background-color 0.3s ease;
 }
+
 #saveProfileBtn:hover {
   background-color: #b30000;
 }
@@ -179,23 +188,17 @@
     display: block;
   } 
 
-/* ================================================================ */
-/* PARTE 1: ATIVIDADES RECENTES (Layout de Carrossel - CORRIGIDO) */
-/* ================================================================ */
-
   .recent-activities h3 {
     font-size: 1.5rem;
     margin-bottom: 1rem;
     text-align: center;
   }
 
-/* Transforma o grid num carrossel horizontal */
-  /* Substitua pelo código abaixo */
   .recent-activities .activities-grid {
     display: grid;
     grid-auto-flow: column;
-    grid-auto-columns: 120px; /* <<== ALTERADO: Deixa os cards maiores, mostrando menos itens */
-    gap: 0.8rem; /* <<== ALTERADO: Aumenta o espaçamento */
+    grid-auto-columns: 120px; 
+    gap: 0.8rem; 
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     padding: 0.5rem 1rem;
@@ -203,22 +206,19 @@
     -ms-overflow-style: none;
   }
 
-  /* Esconde a barra de scroll para Chrome, Safari, etc. */
   .recent-activities .activities-grid::-webkit-scrollbar {
     display: none;
   }
 
-  /* Substitua pelo código abaixo */
   .recent-activities .activity-card {
     scroll-snap-align: start;
-    display: flex; /* <<== ADICIONADO */
-    flex-direction: column; /* <<== ADICIONADO */
-    justify-content: flex-start; /* <<== ADICIONADO */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
   }
 
-  /* Adicione este novo bloco dentro do @media */
   .activity-card img {
-      height: 150px; /* Altura mais proporcional para telas menores */
+      height: 150px; 
   }
 
   .activity-card img:hover {
@@ -232,9 +232,6 @@
     text-align: center;
   }
 
-  /* Adicione estas regras dentro do seu @media (max-width: 768px) no profile.css */
-
-  /* CORREÇÃO PRINCIPAL: Limita o tamanho do título */
   .review-item header strong {
     display: block;
     width: 100%;
@@ -245,35 +242,27 @@
     font-size: 0.95rem;
     font-weight: bold;
     display: block;
-    /* Força o texto a ficar em uma única linha */
     white-space: nowrap;
-    /* Esconde o texto que ultrapassar */
     overflow: hidden;
-    /* Adiciona reticências (...) no final */
     text-overflow: ellipsis;
-    /* Garante que o título nunca ultrapasse o container */
     max-width: 100%;
   }
 
-  /* Garante que o container do título possa encolher */
   .review-item .review-content {
     display: flex;
     flex-direction: column;
-    min-width: 0; /* CRÍTICO: permite que o flex item encolha além do tamanho do conteúdo */
+    min-width: 0; 
     overflow: hidden;
   }
 
-  /* Organiza o cabeçalho verticalmente */
   .review-item header {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.3rem;
     width: 100%;
-    /* Garante que o header também pode encolher */
     min-width: 0;
   }
 
-  /* Mantém a linha com nota e botões na mesma linha */
   .meta-and-actions {
     display: flex;
     align-items: center;
@@ -282,25 +271,22 @@
     width: 100%;
   }
 
-  /* Posiciona o botão de curtir absolutamente no canto superior direito */
   .like-section {
     position: absolute;
     top: 0.75rem;
     right: 1rem;
-    z-index: 10; /* Garante que fica acima do título */
+    z-index: 10; 
   }
   
   .like-btn {
     font-size: 1.8rem;
   }
 
-  /* Adiciona espaço no topo para o botão não sobrepor o título */
   .reviews-list .review-item {
     position: relative;
     padding-top: 2.5rem;
   }
 
-  /* Mantém o poster com tamanho fixo */
   .review-item .review-poster {
     width: 90px;
     flex-shrink: 0;
@@ -308,7 +294,7 @@
     object-fit: cover;
     background: #2a2a2a;
     color: transparent;
-    font-size: 0; /* Esconde completamente o texto alt */
+    font-size: 0; 
   }
 
   .meta {
@@ -319,19 +305,15 @@
     font-size: 0.9rem;
   }
 
-  /* ========================================= */
-  /* RESPONSIVIDADE DO FORMULÁRIO DE EDIÇÃO */
-  /* ========================================= */
-
   .user-info {
-    flex-direction: column; /* Empilha avatar e dados verticalmente */
+    flex-direction: column;
     align-items: center;
     gap: 1.5rem;
     text-align: center;
   }
 
   .user-info .avatar img {
-    width: 80px; /* Diminui um pouco o avatar */
+    width: 80px; 
     height: 80px;
   }
 
@@ -375,39 +357,39 @@
   }
 }
 
-/* === ATIVIDADES RECENTES === */
 .recent-activities h3 {
   font-size: 1.5rem;
   margin-bottom: 1rem;
   display: flex;
   justify-content: center;
 }
+
 .activities-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 1rem;
 }
 
-/* Substitua a regra antiga .activities-grid .activity-card por esta */
 .activities-grid .activity-card {
-  display: flex; /* Ativa o Flexbox */
-  flex-direction: column; /* Organiza os itens em uma coluna (um abaixo do outro) */
-  align-items: center; /* Centraliza os itens horizontalmente */
-  gap: 0.5rem; /* Cria um espaço de 0.5rem (8px) entre a imagem e as estrelas */
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  gap: 0.5rem; 
 }
 
-/* Substitua pelo código abaixo */
 .activity-card img {
   width: 100%;
-  height: 180px; /* Altura fixa para o DESKTOP */
+  height: 180px;
   object-fit: cover;
   object-position: top;
   border-radius: 6px;
   transition: transform 0.2s;
 }
+
 .activity-card img:hover {
   transform: scale(1.05);
 }
+
 .activity-card .stars {
   margin-top: 0.4rem;
   color: gold;
@@ -415,19 +397,20 @@
   background: none;
 }
 
-/* === AVALIAÇÕES === */
 .my-reviews h3 {
   font-size: 1.5rem;
   margin: 2rem 0 0.5rem;
   display: flex;
   justify-content: center;
 }
+
 .my-reviews button {
   border: none;
   background: none;
   color: white;
   cursor: pointer;
 }
+
 .my-reviews hr {
   border: none;
   border-top: 1px solid #333;
@@ -450,15 +433,13 @@
   margin-left: 0.5rem;
 }
 
-/* css/profile.css */
-
 .reviews-list .review-item {
   background-color: #1a1a1a;
   color: #e5e5e5;
   border-radius: 8px;
   padding: 1rem;
-  display: flex; /* Ativa o flexbox para alinhar a imagem e o conteúdo */
-  gap: 1rem;      /* Espaço entre a imagem e o conteúdo */
+  display: flex; 
+  gap: 1rem;      
   margin-bottom: 1rem;
 }
 
@@ -466,11 +447,11 @@
   width: 80px;
   height: auto;
   border-radius: 5px;
-  align-self: flex-start; /* Alinha a imagem ao topo */
+  align-self: flex-start; 
 }
 
 .review-item .review-content {
-  flex: 1; /* Faz esta div ocupar todo o espaço restante */
+  flex: 1; 
 }
 
 .review-item header {
@@ -480,14 +461,12 @@
   margin-bottom: 0.5rem;
 }
 
-/* Agrupa a nota e os botões */
 .meta-and-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-/* Estilo para os botões */
 .review-actions {
   display: flex;
   gap: 0.75rem;
@@ -521,11 +500,8 @@
   text-align: center;
 }
 
-/* css/profile.css -> Adicione no final do ficheiro */
-
-/* Estilos para o contentor das ações no cabeçalho */
 .header-actions {
-  margin-right: 1rem; /* Adiciona um espaço à direita */
+  margin-right: 1rem; 
 }
 
 .review-actions button:hover {
@@ -534,9 +510,8 @@
   transition: 0.35s;
 }
 
-/* Estilo para o botão de Sair */
 .logout-btn {
-  background-color: #e50914; /* Cor vermelha do FrameCode */
+  background-color: #e50914; 
   color: #fff;
   border: none;
   padding: 8px 16px;
@@ -548,7 +523,7 @@
 }
 
 .logout-btn:hover {
-  background-color: #b30000; /* Um vermelho mais escuro ao passar o rato */
+  background-color: #b30000; 
 }
 
 .review-content a {
@@ -585,7 +560,6 @@
   background-color: #444;
 }
 
-
 .like-section {
   display: flex;
   align-items: center;
@@ -599,13 +573,13 @@
   border: none;
   cursor: pointer;
   padding: 0;
-  font-size: 1.5rem; /* Tamanho do coração */
-  color: #888; /* Cor do coração vazio */
+  font-size: 1.5rem; 
+  color: #888; 
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .like-btn.liked {
-  color: #e50914; /* Cor do coração curtido */
+  color: #e50914; 
   transform: scale(1.1);
 }
 
@@ -613,17 +587,14 @@
     cursor: not-allowed;
     color: #444;
 }
-/* ================== ESTILOS DE PAGINAÇÃO ================== */
 
-/* Container principal da paginação */
 .pagination {
     display: flex;
     justify-content: center;
-    align-items: center; /* Garante que botões e texto fiquem na mesma linha */
+    align-items: center; 
     margin-top: 25px;
-    gap: 10px; /* Adiciona um espaço entre os botões e o texto central */
+    gap: 10px; 
 }
-
 
 .pagination button {
     display: flex;
@@ -634,7 +605,6 @@
     cursor: pointer;
 }
 
-
 .pagination button img {
     width: 12px;
     height: 12px;
@@ -644,21 +614,16 @@
     font-weight: bold;
 }
 
-/* Estilos para a transição do formulário de edição */
 #editMode {
   transition: opacity 0.4s ease, transform 0.4s ease;
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Classe auxiliar 'hidden' para esconder elementos suavemente.
-  Vamos usá-la com JavaScript.
-*/
 .hidden {
   opacity: 0;
   transform: translateY(-20px);
-  pointer-events: none; /* Impede interação com o elemento invisível */
-  /* Mantém o elemento no layout para a transição funcionar, mas o esconde */
+  pointer-events: none; 
   max-height: 0;
   padding-top: 0;
   padding-bottom: 0;
@@ -673,10 +638,6 @@
     word-break: break-word;
 }
 
-/* ================================================= */
-/* === SEÇÃO DE FAVORITOS (CÓDIGO NOVO E LIMPO) === */
-/* ================================================= */
-
 .favorites-section {
     margin-top: 3rem;
 }
@@ -688,15 +649,13 @@
 }
 
 .carousel-container {
-    position: relative; /* Apenas para posicionar os botões */
+    position: relative; 
 }
 
-/* Regra GERAL para o Grid (Desktop) */
 #favoritesGrid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
     gap: 1rem;
-    /* No desktop, o scroll é controlado pelo JavaScript, então escondemos o overflow */
     overflow: hidden;
 }
 
@@ -737,30 +696,23 @@
     height: 16px;
 }
 
-/* ============================================= */
-/* === AJUSTES PARA MOBILE (Dentro do @media) === */
-/* ============================================= */
 
 @media (max-width: 768px) {
-
-    /* Oculta os botões de navegação no mobile */
     .carousel-btn {
         display: none;
     }
 
-    /* Transforma o grid de favoritos em um carrossel de rolagem horizontal */
     #favoritesGrid {
         display: grid;
         grid-auto-flow: column;
-        grid-auto-columns: 120px; /* Largura de cada pôster */
-        grid-template-columns: unset; /* Remove a configuração de colunas do desktop */
+        grid-auto-columns: 120px; 
+        grid-template-columns: unset; 
         gap: 0.8rem;
-        overflow-x: auto; /* Habilita a rolagem horizontal */
+        overflow-x: auto; 
         scroll-snap-type: x mandatory;
-        padding: 0.5rem 1rem; /* Espaçamento interno */
+        padding: 0.5rem 1rem; 
     }
 
-    /* Esconde a barra de rolagem visualmente */
     #favoritesGrid {
         scrollbar-width: none;
         -ms-overflow-style: none;

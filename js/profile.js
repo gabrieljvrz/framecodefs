@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // --- 1. ANÁLISE INICIAL (LÓGICA CORRIGIDA E REORDENADA) ---
   const token = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
   
   function parseJwt(token) {
@@ -23,26 +22,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const urlParams = new URLSearchParams(window.location.search);
   const profileIdFromUrl = urlParams.get('id');
   
-  // A forma mais clara de decidir: se não há ID na URL, é o meu perfil.
   const isMyProfile = !profileIdFromUrl;
   
   const userIdToFetch = isMyProfile ? loggedInUser?.id : profileIdFromUrl;
   
-  // Se o utilizador tenta ver o seu próprio perfil mas não está logado (ou tem token inválido)
   if (isMyProfile && !loggedInUser) {
     alert("Você precisa estar logado para acessar o seu perfil.", 'error');
     window.location.href = "login.html";
-    return; // Para a execução do script
+    return;
   }
 
-  // Se o ID na URL é inválido ou não foi possível determinar um utilizador
   if (!userIdToFetch) {
     alert("Usuário não encontrado.");
     window.location.href = "index.html";
-    return; // Para a execução do script
+    return; 
   }
   
-  // --- 2. ELEMENTOS DO DOM (sem alterações) ---
+  // DOM
   const displayNameEl = document.getElementById("displayName");
   const editModeForm = document.getElementById("editMode");
   const editNameInput = document.getElementById("editName");
@@ -74,7 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let myReviewsCurrentPage = 1;
   const reviewsPerPage = 10;
 
-  // --- 3. FUNÇÕES DE LÓGICA ---
+  // funções de lógica
 
   function generateStarsHTML(rating) {
     let starsHTML = '';
@@ -88,7 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function loadRecentActivities() {
-      recentActivitiesEl.innerHTML = ""; // Limpa a área
+      recentActivitiesEl.innerHTML = ""; 
       try {
           const response = await fetch(`http://localhost:3000/api/reviews/user/${userIdToFetch}/recent`);
           if (!response.ok) throw new Error('Falha ao carregar atividades recentes.');
@@ -155,7 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-// Substitua a sua função 'loadUserReviews' inteira por esta:
     async function loadUserReviews(page = 1) {
     myReviewsCurrentPage = page;
     const url = isMyProfile 
@@ -168,7 +163,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     
     myReviewsList.innerHTML = "<li>Carregando avaliações...</li>";
-    // REMOVEMOS: a linha que limpava recentActivitiesEl
     
     try {
         const response = await fetch(url, options);
@@ -179,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         myReviewsList.innerHTML = "";
         
-        if (reviews.length === 0 && page === 1) { // Só mostra mensagem se não houver reviews na primeira página
+        if (reviews.length === 0 && page === 1) { 
             myReviewsList.innerHTML = `<h4 id='no-reviews-h4'>${isMyProfile ? 'Você' : 'Este usuário'} ainda não fez nenhuma avaliação.</h4>`;
             myReviewsPagination.style.display = 'none';
             return;
@@ -238,7 +232,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 }
     
-    // --- ADICIONE esta nova função ---
     function updateMyReviewsPagination(currentPage, totalPages) {
         if (totalPages <= 1) {
             myReviewsPagination.style.display = 'none';
@@ -250,7 +243,6 @@ document.addEventListener('DOMContentLoaded', () => {
         myReviewsNextBtn.style.display = currentPage < totalPages ? 'inline-block' : 'none';
     }
 
-  // ================== LÓGICA DE FAVORITOS (COM PEQUENA ALTERAÇÃO) ==================
   let allFavorites = [];
   let favoritesCurrentPage = 0;
   const favoritesPerPage = 7;
@@ -286,8 +278,6 @@ document.addEventListener('DOMContentLoaded', () => {
     favoritesGrid.innerHTML = '';
     const isMobile = window.innerWidth <= 768;
 
-    // Se for mobile, mostra todos os filmes para o utilizador deslizar.
-    // Se for desktop, "corta" a lista para a página atual.
     const moviesToDisplay = isMobile 
         ? allFavorites 
         : allFavorites.slice(favoritesCurrentPage * favoritesPerPage, (favoritesCurrentPage * favoritesPerPage) + favoritesPerPage);
@@ -300,7 +290,6 @@ document.addEventListener('DOMContentLoaded', () => {
         favoritesGrid.appendChild(card);
     });
 
-    // No Desktop, controla a visibilidade dos botões de paginação
     if (!isMobile) {
         favPrevBtn.style.display = favoritesCurrentPage === 0 ? 'none' : 'flex';
         const end = (favoritesCurrentPage + 1) * favoritesPerPage;
@@ -310,13 +299,11 @@ document.addEventListener('DOMContentLoaded', () => {
       favNextBtn.style.display = 'none';
     }
   }
-  // =======================================================================
 
-  // --- 4. LÓGICA DE EVENTOS ---
+  // lógica de eventos
   
   document.addEventListener('reviewsUpdated', loadUserReviews);
 
-  // CORREÇÃO: Eventos de paginação movidos para fora do 'if (isMyProfile)'
   if (favPrevBtn) {
       favPrevBtn.addEventListener('click', () => {
           if (favoritesCurrentPage > 0) {
@@ -345,7 +332,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     if (myProfileIcon) myProfileIcon.style.display = 'none';
 
-        // EVENTOS PARA PAGINAÇÃO DE FAVORITOS (CORRIGIDOS)
     if (favPrevBtn) {
       favPrevBtn.addEventListener('click', () => {
         if (favoritesCurrentPage > 0) {
@@ -400,7 +386,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const confirmationText = isAdminDelete ? "ADMIN: Tem certeza que deseja excluir esta avaliação?" : "Tem certeza que deseja excluir sua avaliação?";
       if (!confirm(confirmationText)) return;
 
-      // Se for admin, usa a rota de admin. Se não, usa a rota do próprio usuário.
       const url = isAdminDelete ? `http://localhost:3000/api/reviews/${reviewId}` : `http://localhost:3000/api/reviews/me/${reviewId}`;
 
       try {
@@ -411,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await response.json();
         if (!response.ok) throw new Error(data.message);
         alert('Avaliação excluída!');
-        loadUserReviews(); // Recarrega a lista de avaliações do usuário atual
+        loadUserReviews(); 
       } catch (error) {
         alert(`Erro: ${error.message}`);
       }
@@ -494,7 +479,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
   } else {
-    // Se não for o meu perfil, esconde todos os controles de edição
     editProfileBtn.style.display = 'none';
     changeAvatarBtn.style.display = 'none';
     logoutBtn.style.display = 'none';
@@ -528,7 +512,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     throw new Error(data.message);
                 }
 
-                // Atualiza a UI otimisticamente
                 likeButton.classList.toggle('liked');
                 const likeCountSpan = document.getElementById(`like-count-${reviewId}`);
                 const currentCount = parseInt(likeCountSpan.textContent);
@@ -540,7 +523,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-      // --- ADICIONE os event listeners para os botões ---
   myReviewsPrevBtn.addEventListener('click', () => {
       if (myReviewsCurrentPage > 1) {
           loadUserReviews(myReviewsCurrentPage - 1);
@@ -551,7 +533,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loadUserReviews(myReviewsCurrentPage + 1);
   });
 
-  // --- 5. INICIALIZAÇÃO DA PÁGINA ---
+  // inicialização
   loadProfileData();
   loadUserReviews(myReviewsCurrentPage);
   loadFavorites();

@@ -1,10 +1,8 @@
-// js/index.js (VERSÃO COMPLETA E ATUALIZADA)
-
 const apiKey = "3b08d5dfa29024b5dcb74e8bff23f984";
 const apiBase = "https://api.themoviedb.org/3";
 const imageBase = "https://image.tmdb.org/t/p/w500";
 
-// --- ELEMENTOS DO DOM ---
+// DOM
 const banner = document.querySelector(".banner");
 const searchInput = document.getElementById("searchInput");
 
@@ -16,7 +14,7 @@ const usersGridSection = document.getElementById('usersGridSection');
 const usersTitle = document.getElementById("usersTitle");
 const usersGrid = document.getElementById("usersGrid");
 
-// --- FUNÇÕES DE CRIAÇÃO DE CARDS ---
+// função de criação de cards
 
 function createMovieCard(movie) {
   const card = document.createElement("div");
@@ -33,12 +31,12 @@ function createMovieCard(movie) {
   return card;
 }
 
-// NOVA FUNÇÃO para criar cards de usuário
+// função de criação de cards de usuários
 function createUserCard(user) {
     const card = document.createElement('div');
     card.className = 'user-card';
     
-    // Lógica para decidir qual imagem usar (a do usuário ou a padrão)
+    // lógica para decidir qual imagem usar (a do usuário ou a padrão)
     const avatarSrc = user.avatar_url 
         ? `http://localhost:3000${user.avatar_url}` 
         : 'assets/user icon.png';
@@ -52,7 +50,7 @@ function createUserCard(user) {
     return card;
 }
 
-// --- FUNÇÕES DE BUSCA NA API ---
+// funções de busca na API
 
 async function fetchPopularMovies() {
   moviesTitle.textContent = "Carregando...";
@@ -60,23 +58,23 @@ async function fetchPopularMovies() {
   let currentPage = 1;
 
   try {
-    // Continua a buscar filmes até ter pelo menos 24 com pôster
-    while (popularMovies.length < 24 && currentPage <= 5) { // Limita a 5 páginas para evitar loops infinitos
+    // continua buscando filmes até ter pelo menos 24 com pôster
+    while (popularMovies.length < 24 && currentPage <= 5) { // limita a 5 páginas para evitar loops infinitos
       const url = `${apiBase}/movie/popular?api_key=${apiKey}&language=pt-BR&page=${currentPage}`;
       const response = await fetch(url);
       const data = await response.json();
 
-      // Filtra os filmes para incluir apenas aqueles que têm um pôster
+      // filtra os filmes para incluir apenas os que tem um pôster
       const moviesWithPosters = data.results.filter(movie => movie.poster_path);
       
       popularMovies = [...popularMovies, ...moviesWithPosters];
       currentPage++;
     }
 
-    // Pega exatamente os primeiros 24 filmes da lista filtrada
+    // pega exatamente os primeiros 24 filmes da lista filtrada
     const moviesToDisplay = popularMovies.slice(0, 24);
 
-    moviesGrid.innerHTML = ""; // Limpa a grelha
+    moviesGrid.innerHTML = ""; // limpa o grid
     moviesTitle.textContent = "Populares";
 
     moviesToDisplay.forEach((movie) => {
@@ -109,11 +107,11 @@ async function searchMovies(query) {
   }
 }
 
-// NOVA FUNÇÃO para buscar usuários
+// função para buscar usuários
 async function searchUsers(query) {
     const token = localStorage.getItem('framecode_token') || sessionStorage.getItem('framecode_token');
     if (!token) {
-        usersGridSection.style.display = 'none'; // Esconde a seção se não estiver logado
+        usersGridSection.style.display = 'none'; // esconde a seção se não estiver logado
         return;
     }
 
@@ -128,14 +126,14 @@ async function searchUsers(query) {
         usersGrid.innerHTML = '';
 
         if (data.users.length > 0) {
-            usersGridSection.style.display = 'block'; // Mostra a seção de usuários
+            usersGridSection.style.display = 'block'; // mostra a seção de usuários
             usersTitle.textContent = "Usuários Encontrados";
             data.users.forEach(user => {
                 const card = createUserCard(user);
                 usersGrid.appendChild(card);
             });
         } else {
-            usersGridSection.style.display = 'none'; // Esconde a seção se não houver resultados
+            usersGridSection.style.display = 'none'; // esconde a seção se não houver resultados
         }
     } catch (error) {
         console.error(error);
@@ -144,7 +142,7 @@ async function searchUsers(query) {
 }
 
 
-// --- LÓGICA DE EVENTOS ---
+// lógica de eventos
 
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -155,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         banner.style.display = 'none';
         moviesTitle.textContent = `Resultados da busca por Filmes: "${searchQuery}"`;
         searchMovies(searchQuery);
-        searchUsers(searchQuery); // Também busca por usuários
+        searchUsers(searchQuery); 
     } else {
         fetchPopularMovies();
     }
@@ -168,10 +166,10 @@ searchInput.addEventListener("input", (event) => {
     banner.style.display = 'none';
     moviesTitle.textContent = `Resultados da busca por Filmes: "${searchTerm}"`;
     searchMovies(searchTerm);
-    searchUsers(searchTerm); // ATUALIZADO: Chama a busca de usuários também
+    searchUsers(searchTerm); 
   } else {
     banner.style.display = 'flex';
-    usersGridSection.style.display = 'none'; // Esconde a seção de usuários ao limpar a busca
+    usersGridSection.style.display = 'none'; 
     fetchPopularMovies();
   }
 });

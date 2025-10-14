@@ -1,7 +1,5 @@
-// js/modal.js
-
 document.addEventListener('DOMContentLoaded', () => {
-  // --- ELEMENTOS DO MODAL ---
+  // DOM
   const editModal = document.getElementById('editReviewModal');
   const closeModalBtn = document.getElementById('closeModalBtn');
   const modalStarRater = document.getElementById('modalStarRater');
@@ -10,10 +8,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalSaveBtn = document.getElementById('modalSaveBtn');
 
   if (!editModal) {
-    return; // Se não houver modal nesta página, o script não faz nada.
+    return; // se não houver modal nesta página, o script não faz nada.
   }
 
-  // --- FUNÇÕES DO MODAL ---
+  // funções do modal
   function openEditModal(reviewId, comment, rating) {
     modalCommentText.value = comment;
     modalRatingValue.value = rating;
@@ -84,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // --- EVENTOS GLOBAIS DO MODAL ---
+  // eventos globais
   document.addEventListener('click', (e) => {
     const editButton = e.target.closest('.edit-review-btn');
     if (editButton) {

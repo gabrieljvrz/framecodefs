@@ -17,28 +17,28 @@ router.post('/', authMiddleware, reviewController.createReview);
 // rota para buscar as avaliações do usuário logado (protegida)
 router.get('/user/me', authMiddleware, reviewController.getMyReviews);
 
-// rota para o USUÁRIO ATUALIZAR sua própria avaliação (protegida)
+// rota para o usuário atualizar sua própria avaliação (protegida)
 router.put('/me/:id', authMiddleware, reviewController.updateMyReview);
 
-// rota para o USUÁRIO DELETAR sua própria avaliação (protegida)
+// rota para o usuário deletar sua própria avaliação (protegida)
 router.delete('/me/:id', authMiddleware, reviewController.deleteMyReview);
 
 // [ADMIN] rota para deletar qualquer avaliação (protegida por auth e admin)
 router.delete('/:id', [authMiddleware, adminMiddleware], reviewController.deleteReview);
 
-// [ADMIN] Rota para buscar TODAS as avaliações
+// [ADMIN] rota para buscar todas as avaliações
 router.get('/all/reviews', [authMiddleware, adminMiddleware], reviewController.getAllReviews);
 
-// Rota PÚBLICA para buscar avaliações de um usuário por ID
+// rota pública para buscar avaliações de um usuário por ID
 router.get('/user/:userId', authOptionalMiddleware, reviewController.getReviewsByUserId);
 
-// Rota para curtir uma avaliação (protegida)
+// rota para curtir uma avaliação (protegida)
 router.post('/:reviewId/like', authMiddleware, likeController.likeReview);
 
-// Rota para descurtir uma avaliação (protegida)
+// rota para descurtir uma avaliação (protegida)
 router.delete('/:reviewId/like', authMiddleware, likeController.unlikeReview);
 
-// NOVA ROTA: Rota para buscar as 7 avaliações mais recentes de um usuário
+// rota para buscar as 7 avaliações mais recentes de um usuário
 router.get('/user/:userId/recent', reviewController.getRecentReviewsByUserId);
 
 module.exports = router;

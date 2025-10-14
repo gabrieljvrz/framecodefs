@@ -1,7 +1,6 @@
-// backend/controllers/favoritesController.js
 const db = require('../config/db');
 
-// Adicionar um favorito
+// adicionar um favorito
 exports.addFavorite = async (req, res) => {
     const { movieId, movieTitle, moviePosterPath } = req.body;
     const userId = req.user.id;
@@ -19,7 +18,7 @@ exports.addFavorite = async (req, res) => {
     }
 };
 
-// Remover um favorito
+// remover um favorito
 exports.removeFavorite = async (req, res) => {
     const { movieId } = req.params;
     const userId = req.user.id;
@@ -31,7 +30,7 @@ exports.removeFavorite = async (req, res) => {
     }
 };
 
-// Obter todos os favoritos de um usuário
+// obter todos os favoritos de um usuário
 exports.getUserFavorites = async (req, res) => {
     const userId = req.user.id;
     try {
@@ -42,7 +41,7 @@ exports.getUserFavorites = async (req, res) => {
     }
 };
 
-// Obter apenas os IDs dos favoritos (muito útil para a UI)
+// obter apenas os IDs dos favoritos
 exports.getUserFavoriteIds = async (req, res) => {
     const userId = req.user.id;
     try {
@@ -53,9 +52,7 @@ exports.getUserFavoriteIds = async (req, res) => {
     }
 };
 
-// backend/controllers/favoritesController.js
-
-// NOVA FUNÇÃO: Obter favoritos de um usuário por ID (Pública)
+// obter favoritos de um usuário por ID
 exports.getFavoritesByUserId = async (req, res) => {
     const { userId } = req.params;
     try {

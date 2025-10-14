@@ -28,7 +28,7 @@ function clearMessage() {
   messageArea.style.display = 'none';
 }
 
-//Login
+//login
 if (loginForm) {
   loginForm.addEventListener('submit', async function(e) {
     e.preventDefault();
@@ -36,7 +36,7 @@ if (loginForm) {
     const email = emailInput.value.trim();
     const password = senhaInput.value;
     
-    // 1. Capturamos o estado do checkbox
+    // 1. captura o estado do checkbox
     const rememberMeCheckbox = document.getElementById('remember-me-checkbox');
     const rememberMe = rememberMeCheckbox.checked;
 
@@ -49,7 +49,7 @@ if (loginForm) {
         headers: {
           'Content-Type': 'application/json',
         },
-        // 2. Enviamos o estado do 'rememberMe' para o backend
+        // 2. envia o estado do 'rememberMe' para o backend
         body: JSON.stringify({ email, password, rememberMe }),
       });
 
@@ -61,12 +61,12 @@ if (loginForm) {
       localStorage.removeItem('framecode_token');
       sessionStorage.removeItem('framecode_token');
 
-      // 3. Guardamos o token no local correto
+      // 3. guarda o token no local correto
       if (rememberMe) {
-        // Se "Lembrar de mim" estiver marcado, guarda de forma persistente
+        // se "lembrar de mim" estiver marcado, guarda de forma persistente
         localStorage.setItem('framecode_token', data.token);
       } else {
-        // Se não, guarda apenas para a sessão atual (fecha o browser, o token desaparece)
+        // se não, guarda apenas para a sessão atual
         sessionStorage.setItem('framecode_token', data.token);
       }
 
@@ -109,7 +109,7 @@ function validarCPF(cpf) {
 
 // Registro
 if (registerForm) {
-  registerForm.addEventListener('submit', async function(e) { // Adicionamos 'async'
+  registerForm.addEventListener('submit', async function(e) { 
     e.preventDefault();
     clearMessage();
     
@@ -155,7 +155,6 @@ if (registerForm) {
   });
 }
 
-// Função genérica para toggle de senha
 function togglePasswordVisibility(inputId) {
   const input = document.getElementById(inputId);
   const button = input.parentElement.querySelector('.toggle-password-btn');
@@ -172,7 +171,6 @@ function togglePasswordVisibility(inputId) {
   }
 }
 
-// Aplicar evento aos botões de toggle no registro
 document.querySelectorAll('.toggle-password-btn').forEach(button => {
   button.addEventListener('click', function() {
     const targetId = this.getAttribute('data-target');

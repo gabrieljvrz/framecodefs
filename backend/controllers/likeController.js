@@ -1,7 +1,7 @@
 // backend/controllers/likeController.js
 const db = require('../config/db');
 
-// Curtir uma avaliação
+// curtir uma avaliação
 exports.likeReview = async (req, res) => {
     const { reviewId } = req.params;
     const userId = req.user.id;
@@ -19,7 +19,7 @@ exports.likeReview = async (req, res) => {
     }
 };
 
-// Descurtir uma avaliação
+// descurtir uma avaliação
 exports.unlikeReview = async (req, res) => {
     const { reviewId } = req.params;
     const userId = req.user.id;

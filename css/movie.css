@@ -1,4 +1,3 @@
-/* Reset e fontes */
 * {
   margin: 0;
   padding: 0;
@@ -31,7 +30,6 @@ body {
   color: #ff3b3b;
 }
 
-/* Detalhes do Filme */
 .movie-details {
   display: flex;
   gap: 2rem;
@@ -80,11 +78,11 @@ body {
   color: #e50914;
 }
 
-/* Seção de Avaliação */
 .rating-section {
   text-align: center;
   margin: 3rem 0;
 }
+
 .rating-section h2 {
   font-size: 1.5rem;
   font-weight: 600;
@@ -119,13 +117,13 @@ body {
   text-shadow: 1px 1px 2px #000;
 }
 
-/* Formulário de Resenha */
 .review-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   margin-bottom: 2rem;
 }
+
 .review-form textarea,
 .review-form select,
 .review-form button {
@@ -136,9 +134,11 @@ body {
   background-color: #bdbdbd;
   color: #2a2a2a;
 }
+
 .review-form select {
   background-color: #2c2c2c;
 }
+
 .review-form button {
   background: linear-gradient(135deg, #e50914, #ff000d);
   color: #fff;
@@ -147,18 +147,19 @@ body {
   transition: all 0.3s ease;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
+
 .review-form button:hover {
   transform: scale(1.02);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
 }
 
-/* Lista de Resenhas */
 .reviews-list {
   list-style: none;
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
+
 .review-item {
   background-color: #2a2a2a;
   padding: 1rem;
@@ -166,48 +167,43 @@ body {
   position: relative;
   transition: background 0.3s ease;
 }
+
 .review-item:hover {
   background-color: #333333;
 }
 
-/* Regra principal para o cabeçalho da avaliação */
 .review-item header {
   display: flex;
-  justify-content: space-between; /* Empurra o nome para a esquerda e o resto para a direita */
+  justify-content: space-between; 
   align-items: center;
-  margin-bottom: 0.5rem; /* Adiciona um espaço antes do texto do comentário */
+  margin-bottom: 0.5rem; 
 }
 
-/* Estiliza o contentor que agrupa a nota e os botões */
 .meta-and-actions {
   display: flex;
   align-items: center;
-  gap: 1rem; /* Controla o espaço entre a nota e os botões */
+  gap: 1rem; 
 }
 
-/* Estiliza a nota (mantém o estilo anterior) */
 .review-item .meta {
   color: #fff;
   font-weight: 600;
   font-size: 0.95rem;
 }
 
-/* css/movie.css -> Adicione junto aos estilos de .review-item */
-
 .review-author-info {
   display: flex;
   align-items: center;
-  gap: 10px; /* Espaço entre a foto e o nome */
+  gap: 10px; 
 }
 
 .review-avatar {
   width: 35px;
   height: 35px;
-  border-radius: 50%; /* Deixa a imagem redonda */
-  object-fit: cover;    /* Garante que a imagem preenche o círculo sem distorcer */
+  border-radius: 50%; 
+  object-fit: cover;    
 }
 
-/* Estilo final para os botões de ação */
 .review-actions button {
   background: none;
   border: none;
@@ -215,9 +211,8 @@ body {
   margin: 0;
   cursor: pointer;
   font-size: 0.9rem;
-  font-family: 'Segoe UI', sans-serif; /* Garante que a fonte é a mesma do resto do site */
+  font-family: 'Segoe UI', sans-serif; 
   color: #e5e5e5;
-
   transition: text-decoration 0.2s ease;
 }
 
@@ -246,7 +241,6 @@ body {
   gap: 1rem;
 }
 
-/* HEADER */
 .header {
   display: flex;
   flex-direction: row;
@@ -287,8 +281,6 @@ body {
 }
 
 @media (max-width: 768px) {
-  
-  /* HEADER MOBILE - EXATAMENTE COMO O PROTÓTIPO */
   body {
     padding: 0;
   }
@@ -304,21 +296,19 @@ body {
     padding-top: 0px;
   }
 
-  /* Logo à esquerda - BEM PEQUENA */
   .logo {
     flex-shrink: 0;
     margin-right: 0.5rem;
   }
 
   .logo img {
-    width: 100px !important; /* Força o tamanho menor */
+    width: 100px !important;
     height: auto !important;
     max-width: 100px !important;
   }
 
-  /* Busca no centro */
   #searchForm {
-    flex: 1; /* Ocupa o espaço disponível entre logo e perfil */
+    flex: 1; 
     max-width: 180px;
     margin: 0 0.5rem;
   }
@@ -331,13 +321,12 @@ body {
     border: none;
     font-size: 11px;
     background-color: #fff;
-    position: static; /* Remove posicionamento absoluto */
+    position: static; 
     transform: none;
     left: auto;
     top: auto;
   }
 
-  /* Ícone de perfil à direita */
   .profile-icon {
     flex-shrink: 0;
   }
@@ -347,7 +336,6 @@ body {
     height: 42px;
   }
 
-  /* DETALHES DO FILME */
   .movie-details {
     flex-direction: column;
     align-items: center;
@@ -386,45 +374,38 @@ body {
     font-size: 2rem;
   }
 
-  /* ========================================= */
-  /* CARD DE INFORMAÇÕES DO FILME - MOBILE */
-  /* ========================================= */
-
   .movie-details {
-    display: block; /* Muda de flex para block */
+    display: block; 
     padding: 1rem;
     background-color: #1f1f1f;
     border-radius: 12px;
     position: relative;
   }
 
-  /* Container do poster - canto superior esquerdo */
   .movie-poster-container {
-    float: left; /* Poster flutua à esquerda */
+    float: left; 
     margin-right: 1rem;
     margin-bottom: 1rem;
   }
 
   .movie-poster {
-    width: 100px; /* Poster pequeno */
-    height: 150px; /* Proporção 2:3 */
+    width: 100px; 
+    height: 150px; 
     object-fit: cover;
     border-radius: 8px;
   }
 
-  /* Container das informações - ao lado do poster */
   .movie-info-container {
     display: block;
     text-align: left;
   }
 
-  /* Título e botão de favoritar na mesma linha */
   .title-container {
     display: flex;
     align-items: flex-start;
     gap: 0.5rem;
     margin-bottom: 0.75rem;
-    padding-right: 50px; /* Espaço para o botão de favoritar */
+    padding-right: 50px; 
     position: relative;
   }
 
@@ -433,16 +414,13 @@ body {
     font-weight: bold;
     line-height: 1.3;
     margin: 0;
-    /* Limita o título para não passar do botão */
     display: -webkit-box;
-     /* Máximo 2 linhas */
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1;
   }
 
-  /* Botão de favoritar - posição absoluta no canto superior direito */
   .favorite-btn {
     position: absolute;
     top: 0;
@@ -455,31 +433,25 @@ body {
     cursor: pointer;
   }
 
-  /* Sinopse abaixo do título */
   #movieOverview {
     font-size: 0.85rem;
     line-height: 1.4;
     margin-bottom: 1rem;
     text-align: left;
-    clear: both; /* Garante que fica abaixo do poster se necessário */
+    clear: both; 
   }
 
-  /* Informações (lançamento, gênero, elenco) - centralizadas */
   .movie-info-container > p {
     font-size: 0.8rem;
     text-align: center;
     margin: 0.4rem 0;
-    clear: both; /* Fica abaixo de tudo */
+    clear: both; 
   }
 
   .movie-info-container > p strong {
     color: #e50914;
     font-weight: bold;
   }
-
-  /* ======================================================= */
-  /* NOVO ESTILO DE AVALIAÇÕES PARA MOBILE (CORREÇÃO FINAL)   */
-  /* ======================================================= */
 
   .review-item {
       padding: 1rem;
@@ -493,7 +465,6 @@ body {
       margin-bottom: 0.75rem;
   }
 
-  /* LADO ESQUERDO: Avatar, Nome de Usuário e Ações */
   .review-author-container {
       display: flex;
       align-items: flex-start;
@@ -547,14 +518,11 @@ body {
       gap: 4px;
   }
 
-  /* LADO DIREITO: Likes e Nota */
   .review-meta-container {
       display: flex;
-      /* AJUSTE FINAL: Alinha o ícone e a nota pela sua linha de base de texto, forçando-os a "subir". */
       align-items: center;
       gap: 12px;
       flex-shrink: 0;
-      /* A propriedade 'margin-top' foi removida. */
       transform: translateY(-11px);
   }
 
@@ -581,7 +549,6 @@ body {
       color: #fff;
   }
 
-  /* Texto da Avaliação */
   .review-item > p {
       font-size: 0.9rem;
       line-height: 1.4;
@@ -591,9 +558,6 @@ body {
 
 }
 
-/* css/movie.css -> Adicione no final */
-
-/* Estilos para a Grelha de Resultados da Pesquisa (copiado do index.css) */
 .movies-section {
   padding: 20px;
   text-align: center;
@@ -653,41 +617,28 @@ body {
   text-align: center;
 }
 
-/* css/movie.css -> Adicione no final */
-
-/*
-  Ajuste para a secção de avaliações quando o formulário está escondido.
-*/
 .review-section {
-  margin-top: 0.1rem; /* Define uma margem superior menor como padrão */
+  margin-top: 0.1rem; 
 }
 
-/*
-  Quando o formulário (#reviewForm) está visível, 
-  aumentamos a margem para manter o espaçamento original.
-*/
 .review-form:not([style*="display: none"]) + .review-section h2 {
   margin-top: 3rem;
 }
 
-/* css/movie.css */
 .profile-link {
-    color: inherit; /* Herda a cor do elemento pai (branco) */
+    color: inherit; 
     text-decoration: none;
     transition: color 0.2s ease;
     border: none;
     padding-left: 4px;
 }
 .profile-link:hover {
-    color: #e50914; /* Vermelho ao passar o mouse */
+    color: #e50914; 
     text-decoration: underline;
     border: none;
     background: none;
 }
 
-/* css/movie.css -> Adicione no final */
-
-/* Estilos para a busca de usuários */
 .users-section {
   padding: 20px;
   max-width: 1280px;
@@ -740,7 +691,6 @@ body {
   color: #fff;
 }
 
-/* css/movie.css */
 .title-container {
     display: flex;
     align-items: center;
@@ -751,7 +701,7 @@ body {
     background: none;
     border: none;
     font-size: 2rem;
-    color: #555; /* Cor do coração "não favoritado" */
+    color: #555; 
     cursor: pointer;
     transition: color 0.2s ease, transform 0.2s ease;
     padding-left: 2px;
@@ -765,17 +715,15 @@ body {
 }
 
 .favorite-btn.favorited {
-    color: #e50914; /* Cor do coração "favoritado" */
+    color: #e50914; 
     transform: scale(1.25);
 }
 
 .favorite-btn.favorited:hover {
-    color: #e50914; /* Cor do coração "favoritado" */
+    color: #e50914; 
     transform: scale(1.25);
     transition: 0.25s;
 }
-
-/* Adicione a ambos os ficheiros: movie.css e profile.css */
 
 .like-section {
   display: flex;
@@ -790,13 +738,13 @@ body {
   border: none;
   cursor: pointer;
   padding: 0;
-  font-size: 1.5rem; /* Tamanho do coração */
-  color: #888; /* Cor do coração vazio */
+  font-size: 1.5rem; 
+  color: #888; 
   transition: color 0.2s ease, transform 0.2s ease;
 }
 
 .like-btn.liked {
-  color: #e50914; /* Cor do coração curtido */
+  color: #e50914; 
   transform: scale(1.1);
 }
 
@@ -805,15 +753,12 @@ body {
     color: #444;
 }
 
-/* ================== ESTILOS DE PAGINAÇÃO ================== */
-
-/* Container principal da paginação */
 .pagination {
     display: flex;
     justify-content: center;
-    align-items: center; /* Garante que botões e texto fiquem na mesma linha */
+    align-items: center; 
     margin-top: 25px;
-    gap: 10px; /* Adiciona um espaço entre os botões e o texto central */
+    gap: 10px;
 }
 
 
@@ -829,7 +774,6 @@ body {
 }
 
 .pagination button:hover {
-  /* background-color: #ff000d; */
   transform:scale(1.05)
 }
 
@@ -843,35 +787,26 @@ body {
     font-weight: bold;
 }
 
-/* Garante a quebra de linha em qualquer tamanho de tela */
 .review-item p {
     font-size: 0.9rem;
     line-height: 1.4;
     color: #e5e5e5;
     margin-top: 0.5rem;
-    
-    /* ADICIONE ESTAS DUAS LINHAS */
     overflow-wrap: break-word;
     word-break: break-word;
 }
 
-/* ======================================================= */
-/* NOVOS ESTILOS DESKTOP PARA OS CARDS DE AVALIAÇÃO         */
-/* ======================================================= */
-
-/* A estrutura principal do cabeçalho da avaliação */
 .review-item-header {
     display: flex;
-    justify-content: space-between; /* Empurra o autor para a esquerda e a nota para a direita */
-    align-items: flex-start; /* Alinha os blocos pelo topo */
+    justify-content: space-between; 
+    align-items: flex-start; 
     margin-bottom: 0.75rem;
 }
 
-/* LADO ESQUERDO: Contém a foto, nome e botões de ação */
 .review-author-container {
     display: flex;
     align-items: flex-start;
-    gap: 12px; /* Espaço entre a foto e as informações do autor */
+    gap: 12px; 
 }
 
 .review-avatar {
@@ -882,10 +817,9 @@ body {
     margin-top: 2px;
 }
 
-/* O container para o nome de usuário e os botões de ação */
 .review-author-details {
     display: flex;
-    flex-direction: column; /* Coloca os botões abaixo do nome */
+    flex-direction: column; 
     align-items: flex-start;
 }
 
@@ -901,16 +835,13 @@ body {
 }
 
 .review-actions {
-    margin-top: 4px; /* Pequeno espaço entre o nome e os botões de editar/excluir */
+    margin-top: 4px; 
 }
 
-/* LADO DIREITO: Contém a nota e a seção de "curtir" */
 .review-meta-container {
     display: flex;
-    /* Inverte a ordem visual para mostrar a NOTA PRIMEIRO e depois o botão de curtir */
-    
     align-items: center;
-    gap: 1rem; /* Espaço entre a nota e a seção de like */
+    gap: 1rem; 
 }
 
 .review-meta-container .meta {

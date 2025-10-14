@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = function(req, res, next) {
-  // 1. pega o token do cabeçalho da requisição
+  // 1. pega o token do header da requisição
   const token = req.header('x-auth-token');
 
   // 2. se não houver token, recusa o acesso

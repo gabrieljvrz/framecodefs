@@ -1,6 +1,3 @@
-/* css/stars.css */
-
-/* Estilos para o SELETOR de estrelas INTERATIVO (no formulário de avaliação) */
 .new-star-rating {
   display: flex;
   justify-content: center;
@@ -9,12 +6,11 @@
 }
 
 .new-star-rating img {
-  width: 32px; /* Tamanho maior para as estrelas que são clicáveis */
+  width: 32px;
   height: 32px;
   cursor: pointer;
 }
 
-/* Estilos para a EXIBIÇÃO de estrelas ESTÁTICA (Média e Atividades Recentes) */
 .static-stars {
   display: flex;
   align-items: center;
@@ -23,6 +19,6 @@
 }
 
 .static-stars img {
-  width: 24px; /* Tamanho menor e controlado para as estrelas de exibição */
+  width: 24px;
   height: 24px;
 }

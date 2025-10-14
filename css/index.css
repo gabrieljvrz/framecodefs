@@ -45,7 +45,6 @@ body {
   height: 40px;
 }
 
-/* RESPONSIVIDADE */
 @media (max-width: 768px) {
 
   .movies-grid {
@@ -161,7 +160,7 @@ body {
 }
 
 .movie-card .movie-info {
-  padding: 0 8px; /* Adiciona um pequeno espaçamento lateral ao texto */
+  padding: 0 8px; 
 }
 
 .movie-card h3 {
@@ -169,12 +168,7 @@ body {
   font-weight: bold;
   font-size: 14px;
   margin-top: 8px;
-
-  /* 1. Define uma altura mínima para alinhar todos os cards */
-  /* A altura de 42px é suficiente para duas linhas de texto com este tamanho de fonte. */
   min-height: 42px; 
-
-  /* 2. Lógica para cortar o texto após 2 linhas e adicionar "..." */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -201,8 +195,6 @@ body {
   font-weight: 600;
   text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
 }
-
-/* css/index.css -> Adicione no final */
 
 .users-section {
   padding: 20px;

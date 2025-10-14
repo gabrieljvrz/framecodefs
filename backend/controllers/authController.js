@@ -2,7 +2,6 @@ const db = require('../config/db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Esta função de registo permanece exatamente a mesma, não precisa de ser alterada.
 exports.register = async (req, res) => {
   // 1. extrair os dados do corpo da requisição
   const { name, email, cpf, data_nascimento, password } = req.body;
@@ -42,12 +41,7 @@ exports.register = async (req, res) => {
   }
 };
 
-
-// ================== ESTA É A FUNÇÃO ATUALIZADA ==================
-// Substitua a sua função exports.login por esta versão completa.
-
 exports.login = async (req, res) => {
-  // Adicionamos 'rememberMe' para ser lido do corpo da requisição
   const { email, password, rememberMe } = req.body;
 
   if (!email || !password) {
@@ -55,7 +49,7 @@ exports.login = async (req, res) => {
   }
 
   try {
-    // 1. encontrar o usuário pelo e-mail (lógica mantida)
+    // 1. encontrar o usuário pelo e-mail
     const [userRows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
     
     if (userRows.length === 0) {
@@ -64,14 +58,14 @@ exports.login = async (req, res) => {
 
     const user = userRows[0];
 
-    // 2. comparar a senha (lógica mantida)
+    // 2. comparar a senha 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
       return res.status(401).json({ message: 'Credenciais inválidas.' });
     }
 
-    // 3. criar o payload do token (lógica mantida)
+    // 3. criar o payload do token 
     const payload = {
       user: {
         id: user.id,
@@ -81,14 +75,14 @@ exports.login = async (req, res) => {
       }
     };
     
-    // 4. NOVA LÓGICA: Definir a duração do token
+    // 4. definir a duração do token
     const expiresIn = rememberMe ? '30d' : '1d'; // 30 dias se marcado, 1 dia se não
 
     // 5. criar e enviar o token com a duração correta
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: expiresIn }, // Usamos a nova duração variável
+      { expiresIn: expiresIn }, 
       (err, token) => {
         if (err) throw err;
         res.json({ token });
