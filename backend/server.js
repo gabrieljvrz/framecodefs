@@ -9,7 +9,8 @@ const PORT = process.env.PORT || 3000;
 // middlewares
 const corsOptions = {
   origin: 'https://framecode.netlify.app',
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  credentials: true
 };
 app.use(cors(corsOptions));
 app.use(express.json()); 
