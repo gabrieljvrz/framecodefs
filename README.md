@@ -41,6 +41,20 @@ Este projeto foi construído com as seguintes tecnologias:
 - **.env**: Para gerenciamento de variáveis de ambiente.
 - **Multer**: Middleware para upload de arquivos (utilizado para os avatares dos usuários).
 
+## 🚀 Deploy
+
+O deploy desta aplicação foi distribuído em três serviços de nuvem diferentes, seguindo uma arquitetura moderna e desacoplada:
+
+- **Frontend:** O deploy do cliente (HTML, CSS, JS) foi realizado na **[Netlify](https://www.netlify.com/)**. A Netlify é responsável por servir os arquivos estáticos de forma rápida e eficiente para os usuários finais.
+
+- **Backend:** A API REST (Node.js/Express) foi hospedada no **[Render](https://render.com/)**. O Render gerencia o servidor da aplicação, processando as requisições, aplicando a lógica de negócio e se comunicando com o banco de dados.
+
+- **Banco de Dados:** O banco de dados MySQL foi provisionado através do **[Railway](https://railway.app/)**. O Railway oferece um serviço gerenciado para o banco de dados, garantindo que ele esteja sempre disponível e seguro para ser acessado pelo backend.
+
+Essa arquitetura permite que cada parte da aplicação (frontend, backend, banco de dados) seja escalada e mantida de forma independente.
+
+- URL do Frontend: https://framecode.netlify.app
+
 ## 👨‍💻 Autores
 
 - **Gabriel Jerônimo** ([@gabrieljvrz](https://github.com/gabrieljvrz))
