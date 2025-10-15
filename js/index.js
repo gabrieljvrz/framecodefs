@@ -38,7 +38,7 @@ function createUserCard(user) {
     
     // lógica para decidir qual imagem usar (a do usuário ou a padrão)
     const avatarSrc = user.avatar_url 
-        ? `https://framecode-backend.onrender.com${user.avatar_url}` 
+        ? `https://framecodefs.onrender.comkend.onrender.com${user.avatar_url}` 
         : 'assets/user icon.png';
 
     card.innerHTML = `
@@ -115,7 +115,7 @@ async function searchUsers(query) {
         return;
     }
 
-    const url = `https://framecode-backend.onrender.com/api/users?search=${encodeURIComponent(query)}`;
+    const url = `https://framecodefs.onrender.comkend.onrender.com/api/users?search=${encodeURIComponent(query)}`;
     try {
         const response = await fetch(url, {
             headers: { 'x-auth-token': token }
