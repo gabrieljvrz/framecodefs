@@ -9,7 +9,8 @@ const pool = mysql.createPool({
   database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  ssl: { rejectUnauthorized: true }
 });
 
 // exporta a pool de conexões para ser usada em outros arquivos
