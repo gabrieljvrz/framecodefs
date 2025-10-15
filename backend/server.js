@@ -7,7 +7,11 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // middlewares
-app.use(cors()); 
+const corsOptions = {
+  origin: 'https://framecode.netlify.app',
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 app.use(express.json()); 
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
